@@ -3,6 +3,9 @@ class Parede():
         self.objetos = [] # lista de Objeto
 
     def tick(self):
+        for objeto in self.objetos:
+            objeto.colidirLimites((0, 800, 0, 800))
+
         for i in range(len(self.objetos)):
             for j in range(len(self.objetos)):
                 if i != j:
@@ -10,6 +13,11 @@ class Parede():
                 
         for objeto in self.objetos:
             objeto.tick()
+
+        energia = 0
+        for objeto in self.objetos:
+            energia += objeto.energiaCinetica()+objeto.energiaPotencial()
+        # print(energia)
         
 
     def render(self, screen):
