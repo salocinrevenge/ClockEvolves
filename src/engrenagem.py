@@ -21,6 +21,11 @@ class Engrenagem(Objeto):
 
     def render(self, screen):
         pygame.draw.circle(screen, self.cor, (self.posicao[0],self.posicao[1]), self.raio)
+        if self.debug:
+            pygame.draw.line(screen, (255,0,0), (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.velocidade[0]*10,self.posicao[1]+self.velocidade[1]*10), 2)
+            # desenha a aceleracao de todas as colisoes
+            for colisao in self.colisoes:
+                pygame.draw.line(screen, (0,255,0), (self.posicao[0],self.posicao[1]), (self.posicao[0]+colisao[0]*10,self.posicao[1]+colisao[1]*10), 2)
 
 
         

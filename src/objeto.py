@@ -1,13 +1,15 @@
 import numpy as np
 
 class Objeto():
-    massa: int = 1
+    massa: int = 0.01
     posicao = np.zeros(3) # x, y, angulo (centro do objeto)
     velocidade = np.zeros(3) # vx, vy, vang
-    gravidade = 0.1
+    gravidade = 0.15
     aceleracao = np.array([0,gravidade,0]) # ax, ay, aang
-    k = 0.1 # constante de elasticidade
+    colisoes = [] # lista de aceleracoes
+    k = 0.2 # constante de elasticidade
     conexoes = [] # lista de Conexao
+    debug = True
 
 
     def distancia(self, objeto):
@@ -17,7 +19,6 @@ class Objeto():
     def tick(self):
         self.posicao += self.velocidade
         self.velocidade += self.aceleracao
-        self.aceleracao = np.array([0,self.gravidade,0]) # ax, ay, aang
 
     def render(self, screen):
         pass
@@ -31,7 +32,16 @@ class Objeto():
 
     def projetar(self, a, b):
         # projeta o vetor a no vetor b
+        print("projetando")
+        print(np.dot(a, b))
+        print(np.dot(b, b))
+        print(np.dot(a, b) / np.dot(b, b))
+        print(b)
         return np.dot(a, b) / np.dot(b, b) * b
+
+    def resetTick(self):
+        self.colisoes = []
+        self.aceleracao = np.array([0,self.gravidade,0]) # ax, ay, aang
 
 
     def colidir(self, objeto: 'Objeto'):
@@ -41,15 +51,22 @@ class Objeto():
             moduloForcaDele = objeto.k*colisao
             moduloTotal = moduloForcaMinha + moduloForcaDele
             direcao = self.posicao - objeto.posicao
-            forcaMinha = self.projetar(moduloTotal, direcao)
-            self.aceleracao += forcaMinha/self.massa
+            print("direcao:")
+            print(direcao)
+            print("moduloTotal:")
+            print(moduloTotal)
+            forcaMinha = moduloTotal* direcao/np.linalg.norm(direcao)
+            acc = forcaMinha/self.massa
+            self.aceleracao += acc
+            self.colisoes.append(acc)
+            print(acc)
             print("colidi")
     
 
     def detectarColisao(self, objeto):
         dist = self.distancia(objeto)
         if dist < self.raio + objeto.raio:
-            compressao = self.raio + objeto.raio - dist # aqui a compressao eh simplificada, uma vez que devido a cada k, a compressao de cada um sera diferente
+            compressao = (self.raio + objeto.raio - dist)/2 # aqui a compressao eh simplificada, uma vez que devido a cada k, a compressao de cada um sera diferente
             return compressao   # retorna a compressão
         return None
     

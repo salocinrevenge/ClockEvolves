@@ -16,7 +16,7 @@ class Coracao():
         self.WINDOW_WIDTH = 800
         self.WINDOW_HEIGHT = dimensoes[1] * 0.7
         self.WINDOW_HEIGHT = 800
-        self.FPS_PADRAO = 60.0
+        self.FPS_PADRAO = 60.0 - 7*3
         self.UPDATE_CAP = 1.0/self.FPS_PADRAO
         self.menu = Menu()
         # Criar a janela
@@ -35,6 +35,7 @@ class Coracao():
         frameTime = 0
         frames = 0
         fps = 0
+        self.pause = False
 
         while self.running:
                 render = False
@@ -73,6 +74,8 @@ class Coracao():
       
     def tick(self): # metodo chamado a cada frame
         self.input()
+        if self.pause:
+            return
         self.menu.tick()
 
     def render(self, gc): # metodo chamado a cada frame
@@ -91,6 +94,17 @@ class Coracao():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            # se seta pra cima
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.FPS_PADRAO += 7
+                    self.UPDATE_CAP = 1.0/self.FPS_PADRAO
+                if event.key == pygame.K_DOWN:
+                    print("abaixei o fps")
+                    self.FPS_PADRAO = max(3, self.FPS_PADRAO - 7)
+                    self.UPDATE_CAP = 1.0/self.FPS_PADRAO
+                if event.key == pygame.K_SPACE:
+                    self.pause = not self.pause
             self.menu.input(event)
 
     def dispose(self):      # metodo chamado quando o jogo fecha

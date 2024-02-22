@@ -4,6 +4,9 @@ class Parede():
 
     def tick(self):
         for objeto in self.objetos:
+            objeto.resetTick()
+
+        for objeto in self.objetos:
             objeto.colidirLimites((0, 800, 0, 800))
 
         for i in range(len(self.objetos)): # para cada objeto
