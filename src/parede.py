@@ -6,9 +6,9 @@ class Parede():
         for objeto in self.objetos:
             objeto.colidirLimites((0, 800, 0, 800))
 
-        for i in range(len(self.objetos)):
-            for j in range(len(self.objetos)):
-                if i != j:
+        for i in range(len(self.objetos)): # para cada objeto
+            for j in range(len(self.objetos)):  # para cada outro objeto
+                if i != j:  # se não for o mesmo objeto
                     self.objetos[i].colidir(self.objetos[j])
                 
         for objeto in self.objetos:
