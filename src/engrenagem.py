@@ -3,12 +3,14 @@ import numpy as np
 import pygame
 
 class Engrenagem(Objeto):
-    def __init__(self, pos: np.ndarray, raio = 10, dentes = 1000, velocidade = np.zeros(3), massa = 1) -> None:
+    def __init__(self, pos: np.ndarray, raio = 10, dentes = 1000, velocidade = None, massa = 1) -> None:
         super().__init__()
         self.posicao = pos
         self.raio = raio
         self.dentes = dentes
         self.velocidade = velocidade
+        if velocidade is None:
+            self.velocidade = np.zeros(3)
         self.corPadrao = (255, 255, 255)
         self.cor = self.corPadrao
         self.cor = (100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155))

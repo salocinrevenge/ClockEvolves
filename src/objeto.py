@@ -1,15 +1,17 @@
 import numpy as np
 
 class Objeto():
-    massa: int = 1
-    posicao = np.zeros(3) # x, y, angulo
-    velocidade = np.zeros(3) # vx, vy, vang
-    gravidade = 0.1
-    aceleracao = np.array([0,gravidade,0]) # ax, ay, aang
-    velocidadeAcressimo = np.zeros(3) # lista de Forca
-    conexoes = [] # lista de Conexao
-    debug = True
-    atrito = 0.0001
+
+    def __init__(self) -> None:
+        self.massa: int = 1
+        self.posicao = np.zeros(3,dtype=float) # x, y, angulo
+        self.velocidade = np.zeros(3,dtype=float) # vx, vy, vang
+        self.gravidade = 0.1
+        self.aceleracao = np.array([0,self.gravidade,0]) # ax, ay, aang
+        self.velocidadeAcressimo = np.zeros(3) # lista de Forca
+        self.conexoes = [] # lista de Conexao
+        self.debug = True
+        self.atrito = 0.0001
 
 
     def distancia(self, objeto):
@@ -17,6 +19,7 @@ class Objeto():
         return np.linalg.norm(self.posicao[:2] - objeto.posicao[:2])
 
     def tick(self):
+        print(self.posicao, "posicao")
         self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.velocidade += self.aceleracao
