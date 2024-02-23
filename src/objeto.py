@@ -1,4 +1,5 @@
 import numpy as np
+import algebra
 
 class Objeto():
 
@@ -23,7 +24,7 @@ class Objeto():
         self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.velocidade += self.aceleracao
-        # self.velocidade *= 1-self.atrito
+        self.velocidade *= 1-self.atrito
         self.velocidadeAcressimo = np.zeros(3)
 
     def render(self, screen):
@@ -36,15 +37,11 @@ class Objeto():
         if self.posicao[1] - self.raio + self.velocidade[1] < limites[2] or self.posicao[1] + self.raio + self.velocidade[1] > limites[3]: # limite de y
             self.velocidadeAcressimo += self.velocidade * np.array([0,-2,0])
 
-    def projetar(self, a, b):
-        # projeta o vetor a no vetor b
-        return np.dot(a, b) / np.dot(b, b) * b
-
 
     def colidir(self, objeto: 'Objeto'):
         if self.detectarColisao(objeto):
             print("colidindo")
-            self.velocidadeAcressimo += ((self.massa-objeto.massa)*self.velocidade/(self.massa+objeto.massa) + 2*objeto.massa*objeto.velocidade/(self.massa+objeto.massa))  # formula da conservacao de momento
+            self.velocidadeAcressimo += algebra.colisaoCirculos(self, objeto)
             self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 
     
