@@ -11,6 +11,7 @@ class Engrenagem(Objeto):
         self.velocidade = velocidade
         self.corPadrao = (255, 255, 255)
         self.cor = self.corPadrao
+        self.cor = (100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155))
         self.massa = massa
 
 
@@ -21,6 +22,8 @@ class Engrenagem(Objeto):
 
     def render(self, screen):
         pygame.draw.circle(screen, self.cor, (self.posicao[0],self.posicao[1]), self.raio)
+        if self.debug:
+            pygame.draw.line(screen, self.cor, (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.velocidade[0]*10,self.posicao[1]+self.velocidade[1]*10), 2)
 
 
         

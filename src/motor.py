@@ -19,6 +19,7 @@ class Coracao():
         self.FPS_PADRAO = 60.0
         self.UPDATE_CAP = 1.0/self.FPS_PADRAO
         self.menu = Menu()
+        self.pause = False
         # Criar a janela
         self.screen = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT), pygame.RESIZABLE)
         pygame.display.set_caption("Clock Evolves") # titulo da janela
@@ -73,6 +74,8 @@ class Coracao():
       
     def tick(self): # metodo chamado a cada frame
         self.input()
+        if self.pause:
+            return
         self.menu.tick()
 
     def render(self, gc): # metodo chamado a cada frame
@@ -91,6 +94,17 @@ class Coracao():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.pause = not self.pause
+                if event.key == pygame.K_UP:
+                    self.FPS_PADRAO += 19
+                    self.UPDATE_CAP = 1.0/self.FPS_PADRAO
+                    print("FPS: " + str(self.FPS_PADRAO))
+                if event.key == pygame.K_DOWN:
+                    self.FPS_PADRAO = max(3.0, self.FPS_PADRAO - 19)
+                    self.UPDATE_CAP = 1.0/self.FPS_PADRAO
+                    print("FPS: " + str(self.FPS_PADRAO))
             self.menu.input(event)
 
     def dispose(self):      # metodo chamado quando o jogo fecha

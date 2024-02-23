@@ -8,6 +8,8 @@ class Objeto():
     aceleracao = np.array([0,gravidade,0]) # ax, ay, aang
     velocidadeAcressimo = np.zeros(3) # lista de Forca
     conexoes = [] # lista de Conexao
+    debug = True
+    atrito = 0.0001
 
 
     def distancia(self, objeto):
@@ -18,6 +20,7 @@ class Objeto():
         self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.velocidade += self.aceleracao
+        # self.velocidade *= 1-self.atrito
         self.velocidadeAcressimo = np.zeros(3)
 
     def render(self, screen):
@@ -25,9 +28,9 @@ class Objeto():
 
     def colidirLimites(self, limites):
         # limites é uma tupla no formato (minX, maxX, minY, maxY)
-        if self.posicao[0] - self.raio + self.velocidade[0] < limites[0] or self.posicao[0] + self.raio + self.velocidade[0] > limites[1]:
+        if self.posicao[0] - self.raio + self.velocidade[0] < limites[0] or self.posicao[0] + self.raio + self.velocidade[0] > limites[1]: # limite de x
             self.velocidadeAcressimo += self.velocidade * np.array([-2,0,0])
-        if self.posicao[1] - self.raio + self.velocidade[1] < limites[2] or self.posicao[1] + self.raio + self.velocidade[1] > limites[3]:
+        if self.posicao[1] - self.raio + self.velocidade[1] < limites[2] or self.posicao[1] + self.raio + self.velocidade[1] > limites[3]: # limite de y
             self.velocidadeAcressimo += self.velocidade * np.array([0,-2,0])
 
     def projetar(self, a, b):
@@ -37,13 +40,10 @@ class Objeto():
 
     def colidir(self, objeto: 'Objeto'):
         if self.detectarColisao(objeto):
-            vetorObjeto = objeto.posicao - self.posicao
-            vetorSelf = self.posicao - objeto.posicao
-            velocidadeColisao = self.projetar(self.velocidade, vetorObjeto)
-            velocidadeColisaoObjeto = self.projetar(objeto.velocidade, vetorSelf)
+            print("colidindo")
+            self.velocidadeAcressimo += ((self.massa-objeto.massa)*self.velocidade/(self.massa+objeto.massa) + 2*objeto.massa*objeto.velocidade/(self.massa+objeto.massa))  # formula da conservacao de momento
+            self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 
-            self.velocidadeAcressimo += ((self.massa-objeto.massa)*velocidadeColisao/(self.massa+objeto.massa) + 2*objeto.massa*velocidadeColisaoObjeto/(self.massa+objeto.massa)) - self.velocidade
-            # print(self.velocidadeAcressimo)
     
 
     def detectarColisao(self, objeto):
@@ -55,4 +55,4 @@ class Objeto():
         return self.massa * np.dot(self.velocidade, self.velocidade) / 2
     
     def energiaPotencial(self, altura = 800):
-        return self.massa * self.gravidade * (800-self.posicao[1])
+        return self.massa * self.gravidade * (altura-self.posicao[1])

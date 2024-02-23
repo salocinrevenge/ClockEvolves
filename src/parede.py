@@ -17,7 +17,7 @@ class Parede():
         energia = 0
         for objeto in self.objetos:
             energia += objeto.energiaCinetica()+objeto.energiaPotencial()
-        # print(energia)
+        print(energia)
         
 
     def render(self, screen):
