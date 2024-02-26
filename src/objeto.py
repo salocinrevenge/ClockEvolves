@@ -20,7 +20,6 @@ class Objeto():
         return np.linalg.norm(self.posicao[:2] - objeto.posicao[:2])
 
     def tick(self):
-        print(self.posicao, "posicao")
         self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.velocidade += self.aceleracao
@@ -31,11 +30,7 @@ class Objeto():
         pass
 
     def colidirLimites(self, limites):
-        # limites é uma tupla no formato (minX, maxX, minY, maxY)
-        if self.posicao[0] - self.raio + self.velocidade[0] < limites[0] or self.posicao[0] + self.raio + self.velocidade[0] > limites[1]: # limite de x
-            self.velocidadeAcressimo += self.velocidade * np.array([-2,0,0])
-        if self.posicao[1] - self.raio + self.velocidade[1] < limites[2] or self.posicao[1] + self.raio + self.velocidade[1] > limites[3]: # limite de y
-            self.velocidadeAcressimo += self.velocidade * np.array([0,-2,0])
+        pass
 
 
     def colidir(self, objeto: 'Objeto'):
@@ -47,8 +42,6 @@ class Objeto():
     
 
     def detectarColisao(self, objeto):
-        if self.distancia(objeto) < self.raio + objeto.raio:
-            return True
         return False
     
     def energiaCinetica(self):
