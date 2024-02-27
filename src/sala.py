@@ -25,9 +25,13 @@ class Sala():
         if self.estado == "Criando":
             self.terremoto.tick()
 
+
     def input(self, evento):
         if self.estado == "Criando":
-            self.terremoto.input(evento)
+            resposta = self.terremoto.input(evento)
+            if resposta == "Iniciar":
+                print("Iniciar simulacao")
+                self.estado = "Simular"
 
     def render(self, screen):
         # desenha a borda da sala

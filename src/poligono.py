@@ -21,7 +21,7 @@ class Poligono(Objeto):
 
     def tick(self):
         super().tick()
-        self.semitick(self)
+        self.semitick()
     
     def semitick(self):
         self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao[0], self.posicao[1], self.angulo)

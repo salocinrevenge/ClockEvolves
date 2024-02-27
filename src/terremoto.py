@@ -1,5 +1,6 @@
 from parede import Parede
 from engrenagem import Engrenagem
+from catraca import Catraca
 from viga import Viga
 import numpy as np
 from botao import Botao
@@ -64,8 +65,10 @@ class Terremoto():
                                 self.pecaSelecionada = Viga(np.array([evento.pos[0], evento.pos[1]]))
                             if clique == "Engrenagem":
                                 self.pecaSelecionada = Engrenagem(np.array([evento.pos[0], evento.pos[1]]))
+                            if clique == "Catraca":
+                                self.pecaSelecionada = Catraca(np.array([evento.pos[0], evento.pos[1]]))
                             if clique == "Iniciar":
-                                self.estados["menu"] = False
+                                return "Iniciar"
             if evento.button == 3:
                 self.pecaSelecionada = None
                     
