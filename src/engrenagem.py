@@ -11,7 +11,7 @@ class Engrenagem(Objeto):
         self.dentes = dentes
         self.velocidade = velocidade
         if velocidade is None:
-            self.velocidade = np.zeros(3)
+            self.velocidade = np.zeros(2)
         self.corPadrao = (255, 255, 255)
         self.cor = self.corPadrao
         self.cor = (100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155))

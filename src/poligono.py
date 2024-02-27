@@ -21,7 +21,7 @@ class Poligono(Objeto):
 
     def tick(self):
         super().tick()
-        self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao[0], self.posicao[1], self.posicao[2])
+        self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao[0], self.posicao[1], self.angulo)
 
     def colidirLimites(self, limites):
         # limites é uma tupla no formato (minX, maxX, minY, maxY)

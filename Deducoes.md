@@ -42,6 +42,11 @@ $v_f = \frac{2M}{M+m}V_i + \frac{m-M}{M+m}v_i$
 $V_f = \frac{M-m}{M+m}V_i + \frac{2m}{M+m}v_i$
 
 
+# Momento de inércia de retangulo:
+
+$I = \frac{M*(L^2+C^2)}{12}$
+com M sendo a massa do corpo, L é a largura, C é o comprimento e I é o momento de inércia
+
 
 
 
