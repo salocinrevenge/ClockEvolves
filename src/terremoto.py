@@ -24,6 +24,6 @@ class Terremoto():
         self.parede.objetos.append(Engrenagem(np.array([450.,50.,0.]), 10, velocidade=np.array([1.,4.,0.]), massa=1))
         self.parede.objetos.append(Engrenagem(np.array([500.,200.,0.]), 10, velocidade=np.array([1.,1.,0.]), massa=1))
 
-        self.parede.objetos.append(Viga(np.array([300.,300.,0.]), 100, 10, velocidade=np.array([1.,1.,0.]), massa=1))
+        self.parede.objetos.append(Viga(np.array([100.,200.,0.]), 100, 10, velocidade=np.array([1.,-3.,0.1]), massa=1))
         
         return self.parede

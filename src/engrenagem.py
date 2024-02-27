@@ -1,7 +1,7 @@
 from objeto import Objeto
 import numpy as np
 import pygame
-from viga import Viga
+from poligono import Poligono
 
 class Engrenagem(Objeto):
     def __init__(self, pos: np.ndarray, raio = 10, dentes = 1000, velocidade = None, massa = 1) -> None:
@@ -34,7 +34,7 @@ class Engrenagem(Objeto):
             self.velocidadeAcressimo += self.velocidade * np.array([0,-2,0])
 
     def detectarColisao(self, objeto):
-        if isinstance(objeto, Viga):
+        if isinstance(objeto, Poligono):
             return False
         if self.distancia(objeto) < self.raio + objeto.raio:
             return True
