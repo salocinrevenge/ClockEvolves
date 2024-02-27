@@ -23,6 +23,7 @@ class Objeto():
         return np.linalg.norm(self.posicao - objeto.posicao)
 
     def tick(self):
+        self.semitick()
         self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.angulo += self.velocidadeAngularAcressimo
@@ -30,6 +31,9 @@ class Objeto():
         self.velocidade *= 1-self.atrito
         self.velocidadeAcressimo = np.zeros(2)
         self.velocidadeAngularAcressimo = 0
+
+    def semitick(self):
+        pass
 
     def render(self, screen):
         pass
@@ -45,8 +49,8 @@ class Objeto():
             self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 
         #if circulo e retangulo
-            self.velocidadeAcressimo += algebra.colisaoCirculoRetangulo(self, objeto)
-            self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
+            # self.velocidadeAcressimo += algebra.colisaoCirculoPoligono(self, objeto)
+            # self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 
     
 

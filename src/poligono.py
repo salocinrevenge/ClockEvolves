@@ -21,7 +21,11 @@ class Poligono(Objeto):
 
     def tick(self):
         super().tick()
+        self.semitick(self)
+    
+    def semitick(self):
         self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao[0], self.posicao[1], self.angulo)
+
 
     def colidirLimites(self, limites):
         # limites é uma tupla no formato (minX, maxX, minY, maxY)
@@ -38,10 +42,10 @@ class Poligono(Objeto):
         # verifica qual ponto está fora dos limites
         for ponto in self.pontos:
             if ponto[0] < limites[0] or ponto[0] > limites[1]: # limite de x
-                self.velocidadeAcressimo += self.velocidade * np.array([-2,0,0])
+                self.velocidadeAcressimo += self.velocidade * np.array([-2,0])
                 return
             if ponto[1] < limites[2] or ponto[1] > limites[3]: # limite de y
-                self.velocidadeAcressimo += self.velocidade * np.array([0,-2,0])
+                self.velocidadeAcressimo += self.velocidade * np.array([0,-2])
                 return
     
 

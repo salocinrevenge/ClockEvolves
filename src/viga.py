@@ -1,6 +1,7 @@
 import numpy as np
 import pygame
 from poligono import Poligono
+import algebra
 
 class Viga(Poligono):
     def __init__(self, pos: np.ndarray, comprimento = 100, largura = 10, velocidade = None, velocidadeAngular = 0, angulo = 0, massa = 1) -> None:
@@ -27,5 +28,5 @@ class Viga(Poligono):
     def detectarColisao(self, objeto):
         colisao = False
         if colisao:
-            
+            algebra.colisaoCirculoPoligono(self, objeto)
         

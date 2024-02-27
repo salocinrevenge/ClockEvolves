@@ -3,26 +3,37 @@ from parede import Parede
 from terremoto import Terremoto
 
 class Sala():
-    def __init__(self) -> None:
+    def __init__(self, random = True) -> None:
         self.paredes = []
-        self.estado = "Criar"
+        self.estado = "Aleatorio" if random else "Criar"
         self.terremoto = Terremoto()
 
     def organizar(self):
-        if self.estado == "Criar":
+        if self.estado == "Aleatorio":
             self.paredes.append(self.terremoto.inicializaAleatorio())
             self.estado = "Simular"
+        if self.estado == "Criar":
+            self.paredes.append(self.terremoto.criarSalaVazia())
+            self.terremoto.editar()
+            self.estado = "Criando"
 
     def tick(self):
         self.organizar()
-        for parede in self.paredes:
-            parede.tick()
+        if self.estado == "Simular":
+            for parede in self.paredes:
+                parede.tick()
+        if self.estado == "Criando":
+            self.terremoto.tick()
 
     def input(self, evento):
-        pass
+        if self.estado == "Criando":
+            self.terremoto.input(evento)
 
     def render(self, screen):
         # desenha a borda da sala
         pygame.draw.rect(screen, (255, 60, 60), pygame.Rect(0, 0, 800, 800), 2)
-        for parede in self.paredes:
-            parede.render(screen)
+        if self.estado == "Criando":
+            self.terremoto.render(screen)
+        if self.estado == "Simular":
+            for parede in self.paredes:
+                parede.render(screen)

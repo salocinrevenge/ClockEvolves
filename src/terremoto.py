@@ -2,6 +2,8 @@ from parede import Parede
 from engrenagem import Engrenagem
 from viga import Viga
 import numpy as np
+from botao import Botao
+import pygame
 
 class Terremoto():
 
@@ -24,6 +26,63 @@ class Terremoto():
         self.parede.objetos.append(Engrenagem(np.array([450.,50.]), 10, velocidade=np.array([1.,4.]), massa=1))
         self.parede.objetos.append(Engrenagem(np.array([500.,200.]), 10, velocidade=np.array([1.,1.]), massa=1))
 
-        # self.parede.objetos.append(Viga(np.array([100.,200.]), 100, 10, velocidade=np.array([1.,-3.]),velocidadeAngular=0.1, massa=1))
+        self.parede.objetos.append(Viga(np.array([100.,200.]), 100, 10, velocidade=np.array([1.,-3.]),velocidadeAngular=0.1, massa=1))
         
         return self.parede
+    
+    def criarSalaVazia(self):
+        self.parede = Parede()
+        return self.parede
+    
+    def editar(self):
+        self.botoes = []
+        self.botoes.append(Botao(10, 100, 140, 20, "M para ocultar", textSize = 24))
+        self.botoes.append(Botao(20, 130, 120, 20, "Viga", textSize = 24))
+        self.botoes.append(Botao(20, 160, 120, 20, "Engrenagem", textSize = 24))
+        self.botoes.append(Botao(20, 190, 120, 20, "Catraca", textSize = 24))
+        self.botoes.append(Botao(340, 700, 120, 40, "Iniciar", textSize = 36))
+        self.estados = {"menu": True}
+        self.pecaSelecionada = None
+        return self.parede
+    
+    def input(self, evento):
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            # ver se é o botão esquierdo
+            if evento.button == 1:
+                if self.pecaSelecionada is not None:
+                    self.parede.objetos.append(self.pecaSelecionada)
+                    self.pecaSelecionada = None
+                    return
+                if self.estados["menu"]:
+                    for botao in self.botoes:
+                        clique = botao.identificaClique(evento.pos)
+                        if clique:
+                            print(clique)
+                            if clique == "M para ocultar":
+                                self.estados["menu"] = not self.estados["menu"]
+                            if clique == "Viga":
+                                self.pecaSelecionada = Viga(np.array([evento.pos[0], evento.pos[1]]))
+                            if clique == "Engrenagem":
+                                self.pecaSelecionada = Engrenagem(np.array([evento.pos[0], evento.pos[1]]))
+                            if clique == "Iniciar":
+                                self.estados["menu"] = False
+            if evento.button == 3:
+                self.pecaSelecionada = None
+                    
+        # se apertar a tecla M, oculta o menu
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_m:
+                self.estados["menu"] = not self.estados["menu"]
+
+    def render(self, screen):
+        self.parede.render(screen)
+        if self.estados["menu"]:
+            for botao in self.botoes:
+                botao.render(screen)
+        if self.pecaSelecionada is not None:
+            self.pecaSelecionada.render(screen)
+
+    def tick(self):
+        if self.pecaSelecionada is not None:
+            self.pecaSelecionada.posicao = np.array(pygame.mouse.get_pos()).astype(float)
+            self.pecaSelecionada.semitick()
