@@ -16,6 +16,9 @@ class Objeto():
         self.conexoes = [] # lista de Conexao
         self.debug = True
         self.atrito = 0.0001
+        self.corPadrao = (100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155))
+        self.cor = self.corPadrao
+        self.colidindo = False
 
 
     def distancia(self, objeto):
@@ -23,7 +26,6 @@ class Objeto():
         return np.linalg.norm(self.posicao - objeto.posicao)
 
     def tick(self):
-        self.semitick()
         self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.angulo += self.velocidadeAngularAcressimo
@@ -31,9 +33,12 @@ class Objeto():
         self.velocidade *= 1-self.atrito
         self.velocidadeAcressimo = np.zeros(2)
         self.velocidadeAngularAcressimo = 0
+        self.semitick()
 
     def semitick(self):
-        pass
+        if self.colidindo:
+            self.colidindo = False
+            self.cor = self.corPadrao
 
     def render(self, screen):
         pass
@@ -44,7 +49,6 @@ class Objeto():
 
     def colidir(self, objeto: 'Objeto'):
         if self.detectarColisao(objeto):
-            print("colidindo")
             self.velocidadeAcressimo += algebra.colisaoCirculos(self, objeto)
             self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 

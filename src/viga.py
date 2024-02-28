@@ -12,10 +12,7 @@ class Viga(Poligono):
         if velocidade is None:
             self.velocidade = np.zeros(2)
         self.velocidadeAngular = velocidadeAngular
-        self.corPadrao = (255, 255, 255)
         self.angulo = angulo
-        self.cor = self.corPadrao
-        self.cor = (100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155))
         self.massa = massa
         self.comprimento = comprimento
         self.largura = largura
@@ -25,8 +22,4 @@ class Viga(Poligono):
     def tick(self):
         super().tick()
 
-    def detectarColisao(self, objeto):
-        colisao = False
-        if colisao:
-            algebra.colisaoCirculoPoligono(self, objeto)
         

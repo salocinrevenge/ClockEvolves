@@ -1,6 +1,7 @@
 from objeto import Objeto
 import numpy as np
 import pygame
+import algebra
 
 class Poligono(Objeto):
     def __init__(self, pontos) -> None:
@@ -21,9 +22,9 @@ class Poligono(Objeto):
 
     def tick(self):
         super().tick()
-        self.semitick()
     
     def semitick(self):
+        super().semitick()
         self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao[0], self.posicao[1], self.angulo)
 
 
@@ -50,7 +51,12 @@ class Poligono(Objeto):
     
 
     def detectarColisao(self, objeto):
-        return False
+        if isinstance(objeto, Poligono):
+            if algebra.intersecaoPoligonos(self, objeto):
+                self.colidindo = True
+                self.cor = (255,0,0)
+                print("alterando cor")
+                return True
 
 
     def render(self, screen):

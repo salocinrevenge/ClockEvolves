@@ -36,11 +36,39 @@ def colisaoCirculoPoligono(circulo, poligono):
     velocidadeFinal = V+np.array([0,0,w]) # TODO vetor velocidade final
     return velocidadeFinal
 
-def colisaoRetanguloCirculo(a, b):
-    # TODO
-    v1 = 0 # TODO velocidadePerpendicularColisao
-    c = 0 # TODO distancia horizontal até o centro de massa (ou vertical se a colisao ocorrer na lateral)
-    w = 2*v1*c*self.massa*objeto.massa/(self.massa*objeto.massa*c*c+objeto.massa-self.inercia*self.massa) # velocidade angular final
-    V = self.inercia*w/(self.massa*c) # velocidade linear final na direcao da colisao
-    velocidadeFinal = V+np.array([0,0,w]) # TODO vetor velocidade final
-    self.velocidadeAcressimo += velocidadeFinal
+
+def intersecaoPoligonos(a, b):
+    for i in range(len(a.pontos)):
+        va = a.pontos[i]
+        vb = a.pontos[(i+1)%len(a.pontos)]
+
+        edge = vb - va
+        normal = np.array([-edge[1], edge[0]])
+        minA, maxA = projectVertices(a.pontos, normal)
+        minB, maxB = projectVertices(b.pontos, normal)
+        if maxA < minB or maxB < minA:
+            return False
+        
+    for i in range(len(b.pontos)):
+        va = b.pontos[i]
+        vb = b.pontos[(i+1)%len(b.pontos)]
+
+        edge = vb - va
+        normal = np.array([-edge[1], edge[0]])
+        minA, maxA = projectVertices(a.pontos, normal)
+        minB, maxB = projectVertices(b.pontos, normal)
+        if maxA < minB or maxB < minA:
+            return False
+    return True
+        
+
+def projectVertices(vertices, axis):
+    min = np.dot(axis, vertices[0])
+    max = min
+    for i in range(1, len(vertices)):
+        p = np.dot(axis, vertices[i])
+        if p < min:
+            min = p
+        elif p > max:
+            max = p
+    return (min, max)
