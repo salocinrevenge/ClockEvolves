@@ -26,37 +26,52 @@ def colisaoCirculos(a, b):
     velocidadeAFinal = velocidadeAFinal + velASuperficie
     return velocidadeAFinal
 
-def colisaoCirculoPoligono(circulo, poligono):
-    # TODO
-    normal
-    v1 = 0 # TODO velocidadePerpendicularColisao
-    c = 0 # TODO distancia horizontal até o centro de massa (ou vertical se a colisao ocorrer na lateral)
-    w = 2*v1*c*self.massa*objeto.massa/(self.massa*objeto.massa*c*c+objeto.massa-self.inercia*self.massa) # velocidade angular final
-    v2 = (m*v1*c-I*w)/(m*c)
-    velocidadeFinal = V+np.array([0,0,w]) # TODO vetor velocidade final
-    return velocidadeFinal
-
+def intersecaoPoligonosCompostos(a, b):
+    # poligonos compostos sao poligonos que sao formados por uma lista de poligonos
+    # print("a: ", a, "b: ", b)
+    for poligonoA in a:
+        for poligonoB in b:
+            # input()
+            # print("Poligono A: ", poligonoA, "Poligono B: ", poligonoB)
+            if intersecaoPoligonos(poligonoA, poligonoB):
+                # print("interceptou!")
+                return True
+    # print("Não interceptou!")
+    return False
 
 def intersecaoPoligonos(a, b):
-    for i in range(len(a.pontos)):
-        va = a.pontos[i]
-        vb = a.pontos[(i+1)%len(a.pontos)]
+    for i in range(len(a)):
+        va = a[i]
+        vb = a[(i+1)%len(a)]
 
         edge = vb - va
         normal = np.array([-edge[1], edge[0]])
-        minA, maxA = projectVertices(a.pontos, normal)
-        minB, maxB = projectVertices(b.pontos, normal)
+        minA, maxA = projectVertices(a, normal)
+        minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return False
         
-    for i in range(len(b.pontos)):
-        va = b.pontos[i]
-        vb = b.pontos[(i+1)%len(b.pontos)]
+    for i in range(len(b)):
+        va = b[i]
+        vb = b[(i+1)%len(b)]
 
         edge = vb - va
         normal = np.array([-edge[1], edge[0]])
-        minA, maxA = projectVertices(a.pontos, normal)
-        minB, maxB = projectVertices(b.pontos, normal)
+        minA, maxA = projectVertices(a, normal)
+        minB, maxB = projectVertices(b, normal)
+        if maxA < minB or maxB < minA:
+            return False
+    return True
+
+def intersecaoPoligonoPonto(a, b):
+    for i in range(len(a)):
+        va = a[i]
+        vb = a[(i+1)%len(a)]
+
+        edge = vb - va
+        normal = np.array([-edge[1], edge[0]])
+        minA, maxA = projectVertices(a, normal)
+        minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return False
     return True
@@ -72,3 +87,34 @@ def projectVertices(vertices, axis):
         elif p > max:
             max = p
     return (min, max)
+
+def triangulariza(pontos):
+    pontos = pontos.tolist()
+    
+    # recebe um vetor numpy de n x 2 e devolve um vetor numpy de (n-2) x 3 x 2
+    triangulos = []
+
+    verticeAlvo = -1
+    while len(pontos) > 3:
+        # pega o proximo vertice
+        verticeAlvo = (verticeAlvo + 1) % len(pontos)
+        # input()
+        # print("Vertice Alvo: ", verticeAlvo, "Pontos: ", pontos, "Triangulos: ", triangulos)
+        # verifica se o triangulo formado pelo verticeAlvo e os dois vizinhos contem algum outro vertice
+        possivelTriangulo = np.asarray([pontos[verticeAlvo], pontos[(verticeAlvo+1)%len(pontos)], pontos[(verticeAlvo+2)%len(pontos)]])
+        # verifica se o angulo formado pelos 3 pontos é maior que 180 graus
+        if np.cross(possivelTriangulo[1]-possivelTriangulo[0], possivelTriangulo[2]-possivelTriangulo[0]) < 0:
+            continue
+        contem = False
+        for i in range(len(pontos)):
+            if i == verticeAlvo or i == (verticeAlvo+1)%len(pontos) or i == (verticeAlvo+2)%len(pontos):
+                continue
+            if intersecaoPoligonoPonto(possivelTriangulo, np.asarray([pontos[i]])):
+                contem = True
+                break
+        if not contem:
+            triangulos.append(possivelTriangulo)
+            pontos.pop((verticeAlvo+1)%len(pontos))
+    triangulos.append(np.asarray(pontos))
+    return np.array(triangulos)
+

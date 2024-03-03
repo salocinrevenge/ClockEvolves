@@ -32,6 +32,12 @@ class Sala():
             if resposta == "Iniciar":
                 print("Iniciar simulacao")
                 self.estado = "Simular"
+        # testa se evento eh pressioanr tecla D
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_d:
+                for parede in self.paredes:
+                    for objeto in parede.objetos:
+                        objeto.debug = not objeto.debug
 
     def render(self, screen):
         # desenha a borda da sala

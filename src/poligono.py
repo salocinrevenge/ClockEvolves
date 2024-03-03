@@ -8,24 +8,28 @@ class Poligono(Objeto):
         super().__init__()
         self.pontosOriginais = pontos
         self.pontos = self.pontosOriginais.copy()
+        self.pontosColisaoOriginal = algebra.triangulariza(self.pontos)
+        self.pontosColisao = self.pontosColisaoOriginal.copy()
         #obtem a maior distancia até o centro
         print(self.pontos)
         self.raio = np.max(np.linalg.norm(self.pontos, axis=1))
+        self.debugColors = []
 
-    def posicionaPontos(self, pontos, x, y, angulo):
+    def posicionaPontos(self, pontos, posicao, angulo):
         # pontos é um vetor numpy de n x 2
         # x e y são as coordenadas que devem ser adicionadas a cada ponto
         # angulo é o angulo de rotacao em radianos
         # retorna um vetor numpy de n x 2
         matrizRotacao = np.array([[np.cos(angulo), -np.sin(angulo)], [np.sin(angulo), np.cos(angulo)]])
-        return np.dot(pontos, matrizRotacao) + np.array([x, y])
+        return np.dot(pontos, matrizRotacao) + np.array(posicao)
 
     def tick(self):
         super().tick()
     
     def semitick(self):
         super().semitick()
-        self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao[0], self.posicao[1], self.angulo)
+        self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao, self.angulo)
+        self.pontosColisao = self.posicionaPontos(self.pontosColisaoOriginal, self.posicao, self.angulo)
 
 
     def colidirLimites(self, limites):
@@ -52,7 +56,7 @@ class Poligono(Objeto):
 
     def detectarColisao(self, objeto):
         if isinstance(objeto, Poligono):
-            if algebra.intersecaoPoligonos(self, objeto):
+            if algebra.intersecaoPoligonosCompostos(self.pontosColisao, objeto.pontosColisao):
                 self.colidindo = True
                 self.cor = (255,0,0)
                 print("alterando cor")
@@ -63,8 +67,13 @@ class Poligono(Objeto):
         pygame.draw.polygon(screen, self.cor, self.pontos)
         if self.debug:
             #desenha circulo de colisao
-            pygame.draw.circle(screen, (255,0,0), (self.posicao[0],self.posicao[1]), self.raio, 1)
+            pygame.draw.circle(screen, self.cor, (self.posicao[0],self.posicao[1]), self.raio, 1)
             pygame.draw.line(screen, self.cor, (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.velocidade[0]*10,self.posicao[1]+self.velocidade[1]*10), 2)
+            
+            for i in range(len(self.pontosColisao)):
+                if len(self.debugColors) <= i:
+                    self.debugColors.append((100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155)))
+                pygame.draw.polygon(screen, self.debugColors[i], self.pontosColisao[i])
 
 
         
