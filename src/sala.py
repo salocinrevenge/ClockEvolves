@@ -3,13 +3,13 @@ from parede import Parede
 from terremoto import Terremoto
 
 class Sala():
-    def __init__(self, random = True) -> None:
+    def __init__(self, config = "Aleatorizar") -> None:
         self.paredes = []
-        self.estado = "Aleatorio" if random else "Criar"
+        self.estado = config
         self.terremoto = Terremoto()
 
     def organizar(self):
-        if self.estado == "Aleatorio":
+        if self.estado == "Aleatorizar":
             self.paredes.append(self.terremoto.inicializaAleatorio())
             self.estado = "Simular"
         if self.estado == "Criar":

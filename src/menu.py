@@ -24,8 +24,8 @@ class Menu():
         if self.STATE == "Sala":
             self.sala.render(screen)
         
-    def criarSala(self, random = True):
-        self.sala = Sala(random)
+    def criarSala(self, config = "Aleatorio"):
+        self.sala = Sala(config)
 
     def criaBotoesMenuPrincipal(self):
         self.botoesMenuPrincipal = []
@@ -53,12 +53,8 @@ class Menu():
                     clique = botao.identificaClique(evento.pos)
                     if clique:
                         print(clique)
-                        if clique == "Aleatorizar":
-                            self.STATE = "Sala"
-                            self.criarSala(random = True)
-                        if clique == "Criar":
-                            self.STATE = "Sala"
-                            self.criarSala(random = False)
-                            return
+                        self.STATE = "Sala"
+                        self.criarSala(config = clique)
+                        return
         if self.STATE == "Sala":
             self.sala.input(evento)

@@ -33,13 +33,16 @@ def intersecaoPoligonosCompostos(a, b):
         for poligonoB in b:
             # input()
             # print("Poligono A: ", poligonoA, "Poligono B: ", poligonoB)
-            if intersecaoPoligonos(poligonoA, poligonoB):
+            colisao = intersecaoPoligonos(poligonoA, poligonoB)
+            if colisao[0]:
+                print(colisao)
                 # print("interceptou!")
-                return True
+                return colisao
     # print("Não interceptou!")
-    return False
+    return (False,)
 
-def intersecaoPoligonos(a, b):
+def intersecaoPoligonos(a, b):  # a e b são vetores numpy de n x 2, a está colidindo com b, o que a deve fazer? retorna a normal de b
+    penetracoes = np.zeros(len(a)+len(b))
     for i in range(len(a)):
         va = a[i]
         vb = a[(i+1)%len(a)]
@@ -49,9 +52,10 @@ def intersecaoPoligonos(a, b):
         minA, maxA = projectVertices(a, normal)
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
-            return False
+            return (False,)
+        penetracoes[i]=min(abs(maxB - minA), abs(maxA - minB))
         
-    for i in range(len(b)):
+    for i in range(len(b)): # necessario pois ha casos em que o lado que garante nao intercecao esta de frente para um vertice do outro poligono, exemplo: equilatero sobre equilatero pertinho.
         va = b[i]
         vb = b[(i+1)%len(b)]
 
@@ -60,8 +64,22 @@ def intersecaoPoligonos(a, b):
         minA, maxA = projectVertices(a, normal)
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
-            return False
-    return True
+            return (False,)
+        penetracoes[i+len(a)]=min(abs(maxB - minA), abs(maxA - minB))
+    
+    direcao = np.argmin(penetracoes)
+    if direcao < len(a):
+        direcao = direcao - len(a)
+        edge = b[(i+1)%len(b)] - b[i]
+        direcao = np.array([edge[1], -edge[0]]) # rotacioona -90 graus, pois A esta sendo penetrado em sua aresta
+    else:
+        direcao = direcao - len(a)
+        edge = b[(i+1)%len(b)] - b[i]
+        direcao = np.array([-edge[1], edge[0]]) # rotacioona 90 graus, pois A esta penetrando B
+    direcao = direcao / np.linalg.norm(direcao) # normaliza o vetor de penetracao
+    distPenetrada = np.min(penetracoes)
+
+    return (True, direcao, distPenetrada)
 
 def intersecaoPoligonoPonto(a, b):
     for i in range(len(a)):

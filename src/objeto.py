@@ -52,10 +52,6 @@ class Objeto():
             self.velocidadeAcressimo += algebra.colisaoCirculos(self, objeto)
             self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 
-        #if circulo e retangulo
-            # self.velocidadeAcressimo += algebra.colisaoCirculoPoligono(self, objeto)
-            # self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
-
     
 
     def detectarColisao(self, objeto):

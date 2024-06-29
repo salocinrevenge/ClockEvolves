@@ -91,3 +91,4 @@ class Terremoto():
         if self.pecaSelecionada is not None:
             self.pecaSelecionada.posicao = np.array(pygame.mouse.get_pos()).astype(float)
             self.pecaSelecionada.semitick()
+            self.parede.teste_coolisao(self.pecaSelecionada)

@@ -2,6 +2,14 @@ class Parede():
     def __init__(self, preset = None) -> None:
         self.objetos = [] # lista de Objeto
 
+    def teste_coolisao(self, objeto):
+        colisoes = []
+        for alvo in self.objetos:
+                if objeto is not alvo:
+                    if objeto.colidir(alvo):
+                        colisoes.append(alvo)
+        return colisoes # util para ver colisoes quando criando sala (terremoto.tick)
+
     def tick(self):
         for objeto in self.objetos:
             objeto.tick()
@@ -9,16 +17,14 @@ class Parede():
         for objeto in self.objetos:
             objeto.colidirLimites((0, 800, 0, 800))
 
-        for i in range(len(self.objetos)):
-            for j in range(len(self.objetos)):
-                if i != j:
-                    self.objetos[i].colidir(self.objetos[j])
+        for objeto in self.objetos:
+            self.teste_coolisao(objeto)
                 
 
         energia = 0
         for objeto in self.objetos:
             energia += objeto.energiaCinetica()+objeto.energiaPotencial()
-        print(energia)
+        # print(energia)
         
 
     def render(self, screen):

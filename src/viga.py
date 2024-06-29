@@ -2,7 +2,7 @@ import numpy as np
 from poligono import Poligono
 
 class Viga(Poligono):
-    def __init__(self, pos: np.ndarray, comprimento = 100, largura = 10, velocidade = None, velocidadeAngular = 0, angulo = 0, massa = 1) -> None:
+    def __init__(self, pos: np.ndarray, comprimento = 100, largura = 100, velocidade = None, velocidadeAngular = 0, angulo = 0, massa = 1) -> None: # largura padrao é 10
         pontos = np.array([[-comprimento//2,-largura//2],[comprimento//2,-largura//2],[comprimento//2,largura//2],[-comprimento//2,largura//2]])
         super().__init__(pontos)
         self.posicao = pos

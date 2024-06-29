@@ -56,7 +56,8 @@ class Poligono(Objeto):
 
     def detectarColisao(self, objeto):
         if isinstance(objeto, Poligono):
-            if algebra.intersecaoPoligonosCompostos(self.pontosColisao, objeto.pontosColisao):
+            colisao = algebra.intersecaoPoligonosCompostos(self.pontosColisao, objeto.pontosColisao)
+            if colisao[0]:
                 self.colidindo = True
                 self.cor = (255,0,0)
                 print("alterando cor")
