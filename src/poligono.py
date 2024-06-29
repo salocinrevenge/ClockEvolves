@@ -61,20 +61,23 @@ class Poligono(Objeto):
                 self.colidindo = True
                 self.cor = (255,0,0)
                 print("alterando cor")
+                self.vetor_colisao = colisao[1]*colisao[2]
                 return True
 
 
     def render(self, screen):
         pygame.draw.polygon(screen, self.cor, self.pontos)
         if self.debug:
-            #desenha circulo de colisao
-            pygame.draw.circle(screen, self.cor, (self.posicao[0],self.posicao[1]), self.raio, 1)
-            pygame.draw.line(screen, self.cor, (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.velocidade[0]*10,self.posicao[1]+self.velocidade[1]*10), 2)
-            
             for i in range(len(self.pontosColisao)):
                 if len(self.debugColors) <= i:
                     self.debugColors.append((100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155)))
                 pygame.draw.polygon(screen, self.debugColors[i], self.pontosColisao[i])
+
+            #desenha circulo de colisao
+            pygame.draw.circle(screen, self.cor, (self.posicao[0],self.posicao[1]), self.raio, 1)
+            pygame.draw.line(screen, self.cor, (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.velocidade[0]*10,self.posicao[1]+self.velocidade[1]*10), 2)
+            if self.colidindo:
+                pygame.draw.line(screen, (255,0,0), (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.vetor_colisao[0],self.posicao[1]+self.vetor_colisao[1]), 2)
 
 
         

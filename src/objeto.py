@@ -39,6 +39,7 @@ class Objeto():
         if self.colidindo:
             self.colidindo = False
             self.cor = self.corPadrao
+            self.vetor_colisao = None
 
     def render(self, screen):
         pass

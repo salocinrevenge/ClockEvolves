@@ -48,34 +48,34 @@ def intersecaoPoligonos(a, b):  # a e b são vetores numpy de n x 2, a está col
         vb = a[(i+1)%len(a)]
 
         edge = vb - va
-        normal = np.array([-edge[1], edge[0]])
+        normal = np.array([edge[1], -edge[0]]) # coordenadas com y invertido
         minA, maxA = projectVertices(a, normal)
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return (False,)
-        penetracoes[i]=min(abs(maxB - minA), abs(maxA - minB))
+        penetracoes[i]=min(maxB - minA, maxA - minB) # não eh necessario abs pois o if acima garante que a subtracao seja positiva
         
     for i in range(len(b)): # necessario pois ha casos em que o lado que garante nao intercecao esta de frente para um vertice do outro poligono, exemplo: equilatero sobre equilatero pertinho.
         va = b[i]
         vb = b[(i+1)%len(b)]
 
         edge = vb - va
-        normal = np.array([-edge[1], edge[0]])
+        normal = np.array([edge[1], -edge[0]])
         minA, maxA = projectVertices(a, normal)
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return (False,)
-        penetracoes[i+len(a)]=min(abs(maxB - minA), abs(maxA - minB))
+        penetracoes[i+len(a)]=min(maxB - minA, maxA - minB)
     
-    direcao = np.argmin(penetracoes)
-    if direcao < len(a):
-        direcao = direcao - len(a)
+    i = np.argmin(penetracoes)
+    print(i)
+    if i < len(a):
+        edge = a[(i+1)%len(b)] - a[i]
+        direcao = np.array([-edge[1], edge[0]]) # rotacioona 90 graus, pois A esta penetrando B
+    else:
+        i = i - len(a)
         edge = b[(i+1)%len(b)] - b[i]
         direcao = np.array([edge[1], -edge[0]]) # rotacioona -90 graus, pois A esta sendo penetrado em sua aresta
-    else:
-        direcao = direcao - len(a)
-        edge = b[(i+1)%len(b)] - b[i]
-        direcao = np.array([-edge[1], edge[0]]) # rotacioona 90 graus, pois A esta penetrando B
     direcao = direcao / np.linalg.norm(direcao) # normaliza o vetor de penetracao
     distPenetrada = np.min(penetracoes)
 
