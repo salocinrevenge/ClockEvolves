@@ -26,14 +26,14 @@ def colisaoCirculos(a, b):
     velocidadeAFinal = velocidadeAFinal + velASuperficie
     return velocidadeAFinal
 
-def intersecaoPoligonosCompostos(a, b, internos_a = None, internos_b = None):
+def intersecaoPoligonosCompostos(a, b, externos_a = None, externos_b = None):
     # poligonos compostos sao poligonos que sao formados por uma lista de poligonos
     # print("a: ", a, "b: ", b)
     for i in range(len(a)):
         for j in range(len(b)):
             # input()
             # print("Poligono A: ", poligonoA, "Poligono B: ", poligonoB)
-            colisao = intersecaoPoligonos(a[i], b[j],internos_a[i],internos_b[j])
+            colisao = intersecaoPoligonos(a[i], b[j],externos_a[i],externos_b[j])
             if colisao[0]:
                 print(colisao)
                 # print("interceptou!")
@@ -41,15 +41,15 @@ def intersecaoPoligonosCompostos(a, b, internos_a = None, internos_b = None):
     # print("Não interceptou!")
     return (False,)
 
-def intersecaoPoligonos(a, b, a_internos = None, b_internos = None):  # a e b são vetores numpy de n x 2, a está colidindo com b, o que a deve fazer? retorna a normal de b
-    if a_internos is None:
-        a_internos = np.array([False]*len(a))
-    if b_internos is None:
-        b_internos = np.array([False]*len(b))
+def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b são vetores numpy de n x 2, a está colidindo com b, o que a deve fazer? retorna a normal de b
+    if a_externos is None:
+        a_externos = np.array([False]*len(a))
+    if b_externos is None:
+        b_externos = np.array([False]*len(b))
 
     penetracoes = np.zeros(len(a)+len(b))
     for i in range(len(a)):
-        if a_internos[i]:
+        if not a_externos[i]:
             continue
         va = a[i]
         vb = a[(i+1)%len(a)]
@@ -63,7 +63,7 @@ def intersecaoPoligonos(a, b, a_internos = None, b_internos = None):  # a e b s�
         penetracoes[i]=min(maxB - minA, maxA - minB) # não eh necessario abs pois o if acima garante que a subtracao seja positiva
         
     for i in range(len(b)): # necessario pois ha casos em que o lado que garante nao intercecao esta de frente para um vertice do outro poligono, exemplo: equilatero sobre equilatero pertinho.
-        if b_internos[i]:
+        if not b_externos[i]:
             continue
         va = b[i]
         vb = b[(i+1)%len(b)]
@@ -77,7 +77,6 @@ def intersecaoPoligonos(a, b, a_internos = None, b_internos = None):  # a e b s�
         penetracoes[i+len(a)]=min(maxB - minA, maxA - minB)
     
     i = np.argmin(penetracoes)
-    print(i)
     if i < len(a):
         edge = a[(i+1)%len(b)] - a[i]
         direcao = np.array([-edge[1], edge[0]]) # rotacioona 90 graus, pois A esta penetrando B
@@ -117,14 +116,13 @@ def projectVertices(vertices, axis):
 
 def triangulariza(pontos):
     pontos = pontos.tolist()
-    print("mostrar pontos: ",pontos, " mostrei!")
     # pontos passa a ser uma lista de tuplas com o primeiro valor sendo o index
     for i in range(len(pontos)):
         pontos[i] = (i, pontos[i])
     
     # recebe um vetor numpy de n x 2 e devolve um vetor numpy de (n-2) x 3 x 2, e um vetor numpy de n x 2 representando os vertices iniciais das arestas internas
     triangulos = []
-    internos = []
+    externos = []
 
     verticeAlvo = -1
     max_len = len(pontos)
@@ -147,16 +145,10 @@ def triangulariza(pontos):
                 break
         if not contem:
             triangulos.append(possivelTriangulo)
-            adicionar = np.asarray([pontos[verticeAlvo+1][0]-pontos[verticeAlvo][0]==1, pontos[verticeAlvo+2][0]-pontos[verticeAlvo+1][0]==1, pontos[verticeAlvo][0]-pontos[verticeAlvo+2][0]==1])
-            print(f"adicionando {adicionar=}")
-            internos.append(adicionar)
+            externos.append(np.asarray([pontos[verticeAlvo+1][0]-pontos[verticeAlvo][0]==1, pontos[verticeAlvo+2][0]-pontos[verticeAlvo+1][0]==1, pontos[verticeAlvo][0]-pontos[verticeAlvo+2][0]==1]))
             pontos.pop((verticeAlvo+1)%len(pontos))
     triangulos.append(np.asarray([pontos[0][1], pontos[(1)%len(pontos)][1], pontos[(2)%len(pontos)][1]]))
-    print("os pontos que restaram sao: ", pontos)
-    internos.append(np.asarray([(pontos[1][0]-pontos[0][0])%max_len==1, (pontos[2][0]-pontos[1][0])%max_len==1, (pontos[0][0]-pontos[2][0])%max_len==1]))
+    externos.append(np.asarray([(pontos[1][0]-pontos[0][0])%max_len==1, (pontos[2][0]-pontos[1][0])%max_len==1, (pontos[0][0]-pontos[2][0])%max_len==1]))
     # print(f"ultima conta: {pontos[0][0]=} {pontos[2][0]=} {max_len} {(pontos[0][0]-pontos[2][0])%len(pontos)=} {(pontos[0][0]-pontos[2][0])%len(pontos)==1} {internos[-1]=}")
-    print("triangulos: ", triangulos)
-    print("internos: ", internos)
-    print("triangulos: ", triangulos, "internos: ", internos)
-    return np.array(triangulos), np.array(internos)
+    return np.array(triangulos), np.array(externos)
 
