@@ -47,7 +47,7 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
     if b_externos is None:
         b_externos = np.array([False]*len(b))
 
-    penetracoes = np.zeros(len(a)+len(b))
+    penetracoes = np.full(len(a)+len(b), np.inf)
     for i in range(len(a)):
         if not a_externos[i]:
             continue
@@ -61,6 +61,7 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         if maxA < minB or maxB < minA:
             return (False,)
         penetracoes[i]=min(maxB - minA, maxA - minB) # n√£o eh necessario abs pois o if acima garante que a subtracao seja positiva
+        print(penetracoes[i])
         
     for i in range(len(b)): # necessario pois ha casos em que o lado que garante nao intercecao esta de frente para um vertice do outro poligono, exemplo: equilatero sobre equilatero pertinho.
         if not b_externos[i]:
@@ -75,6 +76,7 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         if maxA < minB or maxB < minA:
             return (False,)
         penetracoes[i+len(a)]=min(maxB - minA, maxA - minB)
+        print(penetracoes[i+len(a)])
     
     i = np.argmin(penetracoes)
     if i < len(a):
