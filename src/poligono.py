@@ -8,7 +8,7 @@ class Poligono(Objeto):
         super().__init__()
         self.pontosOriginais = pontos
         self.pontos = self.pontosOriginais.copy()
-        self.pontosColisaoOriginal = algebra.triangulariza(self.pontos)
+        self.pontosColisaoOriginal, self.pontos_internos = algebra.triangulariza(self.pontos)
         self.pontosColisao = self.pontosColisaoOriginal.copy()
         #obtem a maior distancia até o centro
         print(self.pontos)
@@ -56,7 +56,7 @@ class Poligono(Objeto):
 
     def detectarColisao(self, objeto):
         if isinstance(objeto, Poligono):
-            colisao = algebra.intersecaoPoligonosCompostos(self.pontosColisao, objeto.pontosColisao)
+            colisao = algebra.intersecaoPoligonosCompostos(self.pontosColisao, objeto.pontosColisao, self.pontos_internos, objeto.pontos_internos)
             if colisao[0]:
                 self.colidindo = True
                 self.cor = (255,0,0)
