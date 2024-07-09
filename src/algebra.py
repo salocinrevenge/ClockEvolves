@@ -29,6 +29,7 @@ def colisaoCirculos(a, b):
 def intersecaoPoligonosCompostos(a, b, externos_a = None, externos_b = None):
     # poligonos compostos sao poligonos que sao formados por uma lista de poligonos
     # print("a: ", a, "b: ", b)
+    colisoes = []
     for i in range(len(a)):
         for j in range(len(b)):
             # input()
@@ -38,7 +39,9 @@ def intersecaoPoligonosCompostos(a, b, externos_a = None, externos_b = None):
                 print(colisao)
                 print(f"colidiu poligono {i} com poligono {j}")
                 # print("interceptou!")
-                return colisao
+                colisoes.append(colisao)
+    if len(colisoes) > 0:
+        return colisoes[np.argmax([colisao[2] for colisao in colisoes])]
     # print("N√£o interceptou!")
     return (False,)
 
@@ -49,17 +52,21 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         b_externos = np.array([False]*len(b))
 
     penetracoes = np.full(len(a)+len(b), np.inf)
+    
     for i in range(len(a)):
         va = a[i]
         vb = a[(i+1)%len(a)]
 
         edge = vb - va
         normal = np.array([edge[1], -edge[0]]) # coordenadas com y invertido
+        normal = normal / np.linalg.norm(normal) # normaliza o vetor
         minA, maxA = projectVertices(a, normal)
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return (False,)
         if a_externos[i]:
+            print(f"EU: minA: {minA} maxA: {maxA} minB: {minB} maxB: {maxB}")
+            print(f"{maxB - minA=}, {maxA - minB=}")
             penetracoes[i]=min(maxB - minA, maxA - minB) # n√£o eh necessario abs pois o if acima garante que a subtracao seja positiva
         
     for i in range(len(b)): # necessario pois ha casos em que o lado que garante nao intercecao esta de frente para um vertice do outro poligono, exemplo: equilatero sobre equilatero pertinho.
@@ -68,13 +75,16 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
 
         edge = vb - va
         normal = np.array([edge[1], -edge[0]])
+        normal = normal / np.linalg.norm(normal) # normaliza o vetor
         minA, maxA = projectVertices(a, normal)
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return (False,)
         if b_externos[i]:
+            print(f"ELE: minA: {minA} maxA: {maxA} minB: {minB} maxB: {maxB}")
+            print(f"{maxB - minA=}, {maxA - minB=}")
             penetracoes[i+len(a)]=min(maxB - minA, maxA - minB)
-    
+
     i = np.argmin(penetracoes)
     if i < len(a):
         edge = a[(i+1)%len(b)] - a[i]
@@ -87,7 +97,7 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
     distPenetrada = np.min(penetracoes)
     print(penetracoes)
 
-    return (True, direcao, distPenetrada)
+    return (True, direcao, distPenetrada+0.01)
 
 def intersecaoPoligonoPonto(a, b):
     for i in range(len(a)):

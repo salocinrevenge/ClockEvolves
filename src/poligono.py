@@ -77,7 +77,7 @@ class Poligono(Objeto):
             pygame.draw.circle(screen, self.cor, (self.posicao[0],self.posicao[1]), self.raio, 1)
             pygame.draw.line(screen, self.cor, (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.velocidade[0]*10,self.posicao[1]+self.velocidade[1]*10), 2)
             if self.colidindo:
-                pygame.draw.line(screen, (255,0,0), (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.vetor_colisao[0],self.posicao[1]+self.vetor_colisao[1]), 2)
+                pygame.draw.line(screen, (255,0,0), (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.vetor_colisao[0]*10,self.posicao[1]+self.vetor_colisao[1]*10), 2)
 
 
         
