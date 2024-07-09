@@ -36,6 +36,7 @@ def intersecaoPoligonosCompostos(a, b, externos_a = None, externos_b = None):
             colisao = intersecaoPoligonos(a[i], b[j],externos_a[i],externos_b[j])
             if colisao[0]:
                 print(colisao)
+                print(f"colidiu poligono {i} com poligono {j}")
                 # print("interceptou!")
                 return colisao
     # print("N√£o interceptou!")
@@ -49,8 +50,6 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
 
     penetracoes = np.full(len(a)+len(b), np.inf)
     for i in range(len(a)):
-        if not a_externos[i]:
-            continue
         va = a[i]
         vb = a[(i+1)%len(a)]
 
@@ -60,12 +59,10 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return (False,)
-        penetracoes[i]=min(maxB - minA, maxA - minB) # n√£o eh necessario abs pois o if acima garante que a subtracao seja positiva
-        print(penetracoes[i])
+        if a_externos[i]:
+            penetracoes[i]=min(maxB - minA, maxA - minB) # n√£o eh necessario abs pois o if acima garante que a subtracao seja positiva
         
     for i in range(len(b)): # necessario pois ha casos em que o lado que garante nao intercecao esta de frente para um vertice do outro poligono, exemplo: equilatero sobre equilatero pertinho.
-        if not b_externos[i]:
-            continue
         va = b[i]
         vb = b[(i+1)%len(b)]
 
@@ -75,8 +72,8 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         minB, maxB = projectVertices(b, normal)
         if maxA < minB or maxB < minA:
             return (False,)
-        penetracoes[i+len(a)]=min(maxB - minA, maxA - minB)
-        print(penetracoes[i+len(a)])
+        if b_externos[i]:
+            penetracoes[i+len(a)]=min(maxB - minA, maxA - minB)
     
     i = np.argmin(penetracoes)
     if i < len(a):
@@ -88,6 +85,7 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         direcao = np.array([edge[1], -edge[0]]) # rotacioona -90 graus, pois A esta sendo penetrado em sua aresta
     direcao = direcao / np.linalg.norm(direcao) # normaliza o vetor de penetracao
     distPenetrada = np.min(penetracoes)
+    print(penetracoes)
 
     return (True, direcao, distPenetrada)
 
