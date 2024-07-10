@@ -91,9 +91,9 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
             print(f"ELE: minA: {minA} maxA: {maxA} minB: {minB} maxB: {maxB}")
             print(f"{maxB - minA=}, {maxA - minB=}")
 
-            # sentido = 1
-            # if maxB - minA < maxA - minB:
-            #     sentido = -1
+            # if maxB - minA > maxA - minB:
+            #     print("marquei para inverter")
+            #     sentidos[i] = -1
             penetracoes[i+len(a)]=min(maxB - minA, maxA - minB)
 
     i = np.argmin(penetracoes)

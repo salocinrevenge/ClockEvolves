@@ -14,6 +14,7 @@ class Poligono(Objeto):
         print(self.pontos)
         self.raio = np.max(np.linalg.norm(self.pontos, axis=1))
         self.debugColors = []
+        self.vetor_colisao = np.zeros(2)
 
     def posicionaPontos(self, pontos, posicao, angulo):
         # pontos é um vetor numpy de n x 2
@@ -52,6 +53,13 @@ class Poligono(Objeto):
             if ponto[1] < limites[2] or ponto[1] > limites[3]: # limite de y
                 self.velocidadeAcressimo += self.velocidade * np.array([0,-2])
                 return
+            
+    def colidir(self, objeto: Objeto):
+        if isinstance(objeto, Poligono):
+            if self.detectarColisao(objeto):
+                self.velocidadeAcressimo += self.vetor_colisao
+                self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
+
     
 
     def detectarColisao(self, objeto):
