@@ -27,10 +27,13 @@ class Poligono(Objeto):
     def tick(self):
         super().tick()
     
-    def semitick(self):
-        super().semitick()
+    def atualizaPontos(self):
         self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao, self.angulo)
         self.pontosColisao = self.posicionaPontos(self.pontosColisaoOriginal, self.posicao, self.angulo)
+
+    def semitick(self):
+        super().semitick()
+        self.atualizaPontos()
 
 
     def colidirLimites(self, limites):
@@ -57,8 +60,13 @@ class Poligono(Objeto):
     def colidir(self, objeto: Objeto):
         if isinstance(objeto, Poligono):
             if self.detectarColisao(objeto):
-                self.velocidadeAcressimo += self.vetor_colisao
-                self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
+                self.posicao+=self.vetor_colisao
+                self.atualizaPontos()
+                self.vetor_colisao = np.zeros(2)
+                self.velocidade = np.zeros(2)
+                self.velocidadeAcressimo = np.zeros(2)
+                # self.velocidadeAcressimo += self.vetor_colisao
+                # self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 
     
 
