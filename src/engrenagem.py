@@ -26,9 +26,11 @@ class Engrenagem(Objeto):
     def colidirLimites(self, limites):
         # limites é uma tupla no formato (minX, maxX, minY, maxY)
         if self.posicao[0] - self.raio + self.velocidade[0] < limites[0] or self.posicao[0] + self.raio + self.velocidade[0] > limites[1]: # limite de x
-            self.velocidadeAcressimo += self.velocidade * np.array([-2,0])
+            pass
+            # self.velocidadeAcressimo += self.velocidade * np.array([-2,0])
         if self.posicao[1] - self.raio + self.velocidade[1] < limites[2] or self.posicao[1] + self.raio + self.velocidade[1] > limites[3]: # limite de y
-            self.velocidadeAcressimo += self.velocidade * np.array([0,-2])
+            pass
+            # self.velocidadeAcressimo += self.velocidade * np.array([0,-2])
 
     def detectarColisao(self, objeto):
         if isinstance(objeto, Poligono):

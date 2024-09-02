@@ -11,7 +11,8 @@ class Objeto():
         self.velocidadeAngular = 0
         self.gravidade = 0.1
         self.aceleracao = np.array([0,self.gravidade]) # ax, ay
-        self.velocidadeAcressimo = np.zeros(2) # lista de Forca
+        # self.velocidadeAcressimo = np.zeros(2) # lista de Forca
+        self.forca = np.zeros(2)
         self.velocidadeAngularAcressimo = 0
         self.conexoes = [] # lista de Conexao
         self.debug = True
@@ -26,20 +27,17 @@ class Objeto():
         return np.linalg.norm(self.posicao - objeto.posicao)
 
     def tick(self):
-        self.velocidade += self.velocidadeAcressimo
+        # self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.angulo += self.velocidadeAngularAcressimo
         self.velocidade += self.aceleracao
         self.velocidade *= 1-self.atrito
-        self.velocidadeAcressimo = np.zeros(2)
+        # self.velocidadeAcressimo = np.zeros(2)
         self.velocidadeAngularAcressimo = 0
-        self.semitick()
-
-    def semitick(self):
         if self.colidindo:
-            self.colidindo = False
-            self.cor = self.corPadrao
-            self.vetor_colisao = None
+                    self.colidindo = False
+                    self.cor = self.corPadrao
+                    self.vetor_colisao = None
 
     def render(self, screen):
         pass
@@ -50,8 +48,9 @@ class Objeto():
 
     def colidir(self, objeto: 'Objeto'):
         if self.detectarColisao(objeto):
-            self.velocidadeAcressimo += algebra.colisaoCirculos(self, objeto)
-            self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
+            # self.velocidadeAcressimo += algebra.colisaoCirculos(self, objeto)
+            # self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
+            pass
 
     
 

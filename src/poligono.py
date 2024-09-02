@@ -26,14 +26,11 @@ class Poligono(Objeto):
 
     def tick(self):
         super().tick()
+        self.atualizaPontos()
     
     def atualizaPontos(self):
         self.pontos = self.posicionaPontos(self.pontosOriginais, self.posicao, self.angulo)
         self.pontosColisao = self.posicionaPontos(self.pontosColisaoOriginal, self.posicao, self.angulo)
-
-    def semitick(self):
-        super().semitick()
-        self.atualizaPontos()
 
 
     def colidirLimites(self, limites):
@@ -51,10 +48,12 @@ class Poligono(Objeto):
         # verifica qual ponto está fora dos limites
         for ponto in self.pontos:
             if ponto[0] < limites[0] or ponto[0] > limites[1]: # limite de x
-                self.velocidadeAcressimo += self.velocidade * np.array([-2,0])
+                # acelera o objeto para dentro dos limites
+                # self.velocidadeAcressimo += self.velocidade * np.array([-2,0])
                 return
             if ponto[1] < limites[2] or ponto[1] > limites[3]: # limite de y
-                self.velocidadeAcressimo += self.velocidade * np.array([0,-2])
+                # acelera o objeto para dentro dos limites
+                # self.velocidadeAcressimo += self.velocidade * np.array([0,-2])
                 return
             
     def colidir(self, objeto: Objeto):
@@ -64,7 +63,7 @@ class Poligono(Objeto):
                 self.atualizaPontos()
                 self.vetor_colisao = np.zeros(2)
                 self.velocidade = np.zeros(2)
-                self.velocidadeAcressimo = np.zeros(2)
+                # self.velocidadeAcressimo = np.zeros(2)
                 # self.velocidadeAcressimo += self.vetor_colisao
                 # self.velocidadeAcressimo -= self.velocidade # para simular aceleracao
 
