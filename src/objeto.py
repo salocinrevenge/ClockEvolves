@@ -20,6 +20,7 @@ class Objeto():
         self.corPadrao = (100+np.random.randint(155),100+np.random.randint(155),100+np.random.randint(155))
         self.cor = self.corPadrao
         self.colidindo = False
+        self.restituicao = 0.5
 
 
     def distancia(self, objeto):
@@ -30,6 +31,7 @@ class Objeto():
         # self.velocidade += self.velocidadeAcressimo
         self.posicao += self.velocidade
         self.angulo += self.velocidadeAngularAcressimo
+        self.aceleracao += self.forca / self.massa
         self.velocidade += self.aceleracao
         self.velocidade *= 1-self.atrito
         # self.velocidadeAcressimo = np.zeros(2)
@@ -38,6 +40,11 @@ class Objeto():
                     self.colidindo = False
                     self.cor = self.corPadrao
                     self.vetor_colisao = None
+        self.aceleracao = np.array([0,self.gravidade])
+        self.forca = np.zeros(2)
+
+    def addForca(self, forca):
+        self.forca += forca
 
     def render(self, screen):
         pass

@@ -59,10 +59,16 @@ class Poligono(Objeto):
     def colidir(self, objeto: Objeto):
         if isinstance(objeto, Poligono):
             if self.detectarColisao(objeto):
+                # separa a briga
                 self.posicao+=self.vetor_colisao
                 self.atualizaPontos()
                 self.vetor_colisao = np.zeros(2)
-                self.velocidade = np.zeros(2)
+
+                # resolve a colisao como descrito por chrishecker: https://www.chrishecker.com/Rigid_Body_Dynamics
+                algebra.resolveCollision(self, objeto, self.vetor_colisao)
+
+
+                # self.velocidade = np.zeros(2)
                 # self.velocidadeAcressimo = np.zeros(2)
                 # self.velocidadeAcressimo += self.vetor_colisao
                 # self.velocidadeAcressimo -= self.velocidade # para simular aceleracao

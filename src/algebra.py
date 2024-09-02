@@ -114,6 +114,14 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
 
     return (True, direcao, distPenetrada+0.01)
 
+def resolveCollision(bodyA, bodyB, vetorColision):
+    velRel = bodyB.velocidade - bodyA.velocidade
+    e = min(bodyA.restituicao, bodyB.restituicao)
+    normal = vetorColision/np.linalg.norm(vetorColision)
+    j = -(1+e)* np.dot(velRel, normal) / (1/bodyA.massa + 1/bodyB.massa)
+    bodyA.velocidade += j/bodyA.massa * normal
+    
+
 def intersecaoPoligonoPonto(a, b):
     for i in range(len(a)):
         va = a[i]
