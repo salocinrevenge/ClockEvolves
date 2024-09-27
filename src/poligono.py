@@ -11,7 +11,6 @@ class Poligono(Objeto):
         self.pontosColisaoOriginal, self.pontos_externos = algebra.triangulariza(self.pontos)
         self.pontosColisao = self.pontosColisaoOriginal.copy()
         #obtem a maior distancia até o centro
-        print(self.pontos)
         self.raio = np.max(np.linalg.norm(self.pontos, axis=1))
         self.debugColors = []
         self.vetor_colisao = np.zeros(2)
@@ -62,10 +61,10 @@ class Poligono(Objeto):
                 # separa a briga
                 self.posicao+=self.vetor_colisao
                 self.atualizaPontos()
-                self.vetor_colisao = np.zeros(2)
 
                 # resolve a colisao como descrito por chrishecker: https://www.chrishecker.com/Rigid_Body_Dynamics
                 algebra.resolveCollision(self, objeto, self.vetor_colisao)
+                self.vetor_colisao = np.zeros(2)
 
 
                 # self.velocidade = np.zeros(2)
@@ -81,7 +80,7 @@ class Poligono(Objeto):
             if colisao[0]:
                 self.colidindo = True
                 self.cor = (255,0,0)
-                print("alterando cor")
+                print("detectei colisao, alterando cor")
                 self.vetor_colisao = colisao[1]*colisao[2]
                 return True
 
@@ -97,8 +96,5 @@ class Poligono(Objeto):
             #desenha circulo de colisao
             pygame.draw.circle(screen, self.cor, (self.posicao[0],self.posicao[1]), self.raio, 1)
             pygame.draw.line(screen, self.cor, (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.velocidade[0]*10,self.posicao[1]+self.velocidade[1]*10), 2)
-            if self.colidindo:
-                pygame.draw.line(screen, (255,0,0), (self.posicao[0],self.posicao[1]), (self.posicao[0]+self.vetor_colisao[0]*10,self.posicao[1]+self.vetor_colisao[1]*10), 2)
-
 
         

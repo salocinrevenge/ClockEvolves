@@ -16,6 +16,7 @@ class Player(Poligono):
         self.angulo = angulo
         self.massa = massa
         self.inercia = 0
+        self.maxVelocidade = 2
 
 
     def tick(self):
@@ -25,28 +26,28 @@ class Player(Poligono):
         # verifica se o evento é de teclado
         if event.type == pygame.KEYDOWN:
             # verifica se a tecla pressionada é a seta para cima
-            if event.key == pygame.K_UP:
-                self.velocidade[1] += 1
+            if event.key == pygame.K_s:
+                self.velocidade[1] += self.maxVelocidade
             # verifica se a tecla pressionada é a seta para baixo
-            elif event.key == pygame.K_DOWN:
-                self.velocidade[1] -= 1
+            elif event.key == pygame.K_w:
+                self.velocidade[1] -= self.maxVelocidade
             # verifica se a tecla pressionada é a seta para esquerda
-            elif event.key == pygame.K_LEFT:
-                self.velocidade[0] -= 1
+            elif event.key == pygame.K_a:
+                self.velocidade[0] -= self.maxVelocidade
             # verifica se a tecla pressionada é a seta para direita
-            elif event.key == pygame.K_RIGHT:
-                self.velocidade[0] += 1
+            elif event.key == pygame.K_d:
+                self.velocidade[0] += self.maxVelocidade
         # verifica se o evento é de soltar tecla
         elif event.type == pygame.KEYUP:
             # verifica se a tecla solta é a seta para cima
-            if event.key == pygame.K_UP:
-                self.velocidade[1] -= 1
+            if event.key == pygame.K_s:
+                self.velocidade[1] -= self.maxVelocidade
             # verifica se a tecla solta é a seta para baixo
-            elif event.key == pygame.K_DOWN:
-                self.velocidade[1] += 1
+            elif event.key == pygame.K_w:
+                self.velocidade[1] += self.maxVelocidade
             # verifica se a tecla solta é a seta para esquerda
-            elif event.key == pygame.K_LEFT:
-                self.velocidade[0] += 1
+            elif event.key == pygame.K_a:
+                self.velocidade[0] += self.maxVelocidade
             # verifica se a tecla solta é a seta para direita
-            elif event.key == pygame.K_RIGHT:
-                self.velocidade[0] -= 1
+            elif event.key == pygame.K_d:
+                self.velocidade[0] -= self.maxVelocidade

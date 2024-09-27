@@ -40,10 +40,10 @@ def intersecaoPoligonosCompostos(a, b, externos_a = None, externos_b = None):
                 print(f"colidiu poligono {i} com poligono {j}")
                 # print("interceptou!")
                 colisoes.append(colisao)
-    print(colisoes)
+    # print(colisoes)
     if len(colisoes) > 0:
         colisaoescolida = colisoes[np.argmax([colisao[2] for colisao in colisoes])]
-        print(colisaoescolida)
+        print("a colisao que eu detectei foi: ", colisaoescolida)
         return colisaoescolida
     # print("N√£o interceptou!")
     return (False,)
@@ -69,10 +69,10 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         if maxA < minB or maxB < minA:
             return (False,)
         if a_externos[i]:
-            print(f"EU: minA: {minA} maxA: {maxA} minB: {minB} maxB: {maxB}")
-            print(f"{maxB - minA=}, {maxA - minB=}")
+            # print(f"EU: minA: {minA} maxA: {maxA} minB: {minB} maxB: {maxB}")
+            # print(f"{maxB - minA=}, {maxA - minB=}")
             if maxB - minA < maxA - minB:
-                print("marquei para inverter")
+                # print("marquei para inverter")
                 sentidos[i] = -1
             penetracoes[i]=min(maxB - minA, maxA - minB) # n√£o eh necessario abs pois o if acima garante que a subtracao seja positiva
         
@@ -88,8 +88,8 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         if maxA < minB or maxB < minA:
             return (False,)
         if b_externos[i]:
-            print(f"ELE: minA: {minA} maxA: {maxA} minB: {minB} maxB: {maxB}")
-            print(f"{maxB - minA=}, {maxA - minB=}")
+            # print(f"ELE: minA: {minA} maxA: {maxA} minB: {minB} maxB: {maxB}")
+            # print(f"{maxB - minA=}, {maxA - minB=}")
 
             # if maxB - minA > maxA - minB:
             #     print("marquei para inverter")
@@ -106,20 +106,25 @@ def intersecaoPoligonos(a, b, a_externos = None, b_externos = None):  # a e b s√
         edge = b[(i+1)%len(b)] - b[i]
         direcao = np.array([edge[1], -edge[0]]) # rotacioona -90 graus, pois A esta sendo penetrado em sua aresta
     direcao = direcao / np.linalg.norm(direcao) # normaliza o vetor de penetracao
-    if sentido<1:
-        print("inverteu")
+    # if sentido<1:
+    #     print("inverteu")
     direcao = direcao * sentido # inverte a direcao se necessario
     distPenetrada = np.min(penetracoes)
-    print(penetracoes)
+    # print(penetracoes)
 
     return (True, direcao, distPenetrada+0.01)
 
 def resolveCollision(bodyA, bodyB, vetorColision):
+    print("resolveCollision, vetorColision: ", vetorColision)
+    print(f"{bodyA.velocidade=}, {bodyB.velocidade=}")
     velRel = bodyB.velocidade - bodyA.velocidade
     e = min(bodyA.restituicao, bodyB.restituicao)
     normal = vetorColision/np.linalg.norm(vetorColision)
-    j = -(1+e)* np.dot(velRel, normal) / (1/bodyA.massa + 1/bodyB.massa)
+    j = (1+e)* np.dot(velRel, normal) / (1/bodyA.massa + 1/bodyB.massa)
+    print(f"{j=}")
     bodyA.velocidade += j/bodyA.massa * normal
+    print(f"{bodyA.velocidade=}, {bodyB.velocidade=}")
+    # raise Exception("colisao")
     
 
 def intersecaoPoligonoPonto(a, b):

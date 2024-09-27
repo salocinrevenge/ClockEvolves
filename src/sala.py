@@ -37,7 +37,7 @@ class Sala():
                 parede.input(evento)
         # testa se evento eh pressioanr tecla D
         if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_d:
+            if evento.key == pygame.K_0:
                 for parede in self.paredes:
                     for objeto in parede.objetos:
                         objeto.debug = not objeto.debug

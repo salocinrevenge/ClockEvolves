@@ -12,6 +12,7 @@ class Parede():
         return colisoes # util para ver colisoes quando criando sala (terremoto.tick)
 
     def tick(self):
+        print("tick")
         for objeto in self.objetos:
             objeto.tick()
             
