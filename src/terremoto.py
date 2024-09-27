@@ -5,6 +5,7 @@ from viga import Viga
 import numpy as np
 from botao import Botao
 import pygame
+from player import Player
 
 class Terremoto():
 
@@ -30,6 +31,7 @@ class Terremoto():
         # self.parede.objetos.append(Viga(np.array([100.,200.]), 100, 10, velocidade=np.array([1.,-3.]),velocidadeAngular=0.1, massa=1))
         self.parede.objetos.append(Ancora(np.array([392.0, 311.0]), escala=1))
         self.parede.objetos.append(Ancora(np.array([390.0, 279.0]), escala=1))
+        self.parede.objetos.append(Player(np.array([500., 300.])))
         
         return self.parede
     

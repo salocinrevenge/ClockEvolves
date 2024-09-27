@@ -10,6 +10,7 @@ class Objeto():
         self.velocidade = np.zeros(2,dtype=float) # vx, vy
         self.velocidadeAngular = 0
         self.gravidade = 0.1
+        self.gravidade = 0.0
         self.aceleracao = np.array([0,self.gravidade]) # ax, ay
         # self.velocidadeAcressimo = np.zeros(2) # lista de Forca
         self.forca = np.zeros(2)
