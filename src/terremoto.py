@@ -32,6 +32,12 @@ class Terremoto():
         self.parede.objetos.append(Ancora(np.array([392.0, 311.0]), escala=1))
         self.parede.objetos.append(Ancora(np.array([390.0, 279.0]), escala=1))
 
+        self.parede.objetos.append(Viga(np.array([410.0, 279.0]), escala=1))
+        self.parede.objetos.append(Ancora(np.array([390.0, 200.0]), escala=1))
+        self.parede.objetos.append(Ancora(np.array([490.0, 200.0]), escala=1))
+        self.parede.objetos.append(Ancora(np.array([590.0, 200.0]), escala=1))
+        self.parede.objetos.append(Viga(np.array([300.0, 300.0]), escala=1))
+
         self.parede.player = Player(np.array([500., 300.]))
         self.parede.objetos.append(self.parede.player)
         
