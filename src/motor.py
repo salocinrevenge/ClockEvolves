@@ -1,7 +1,10 @@
 import pygame
 from threading import Thread
 import time
+
+import pymunk.pygame_util
 from menu import Menu
+pymunk.pygame_util.positive_y_is_up = False
 
 
 class Coracao():
@@ -16,12 +19,13 @@ class Coracao():
         self.WINDOW_WIDTH = 800
         self.WINDOW_HEIGHT = dimensoes[1] * 0.7
         self.WINDOW_HEIGHT = 800
-        self.FPS_PADRAO = 60.0
+        self.FPS_PADRAO = 120.0
         self.UPDATE_CAP = 1.0/self.FPS_PADRAO
         self.menu = Menu()
         self.pause = False
         # Criar a janela
         self.screen = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT), pygame.RESIZABLE)
+
         pygame.display.set_caption("Clock Evolves") # titulo da janela
         Thread(self.run())
 
@@ -55,13 +59,13 @@ class Coracao():
                     unprocessedTime -= self.UPDATE_CAP  # Tempo comido
                     render = True
 
-                    self.tick()
+                    self.tick(self.UPDATE_CAP)
 
                     if frameTime >= 1.0:
                             frameTime = 0
                             fps = frames
                             frames = 0
-                            # print("FPS: " + str(fps))
+                            print("FPS: " + str(fps))
 
                 # Depois de processar o tempo, renderiza
                 if render:
@@ -72,11 +76,11 @@ class Coracao():
                 
         self.dispose()
       
-    def tick(self): # metodo chamado a cada frame
+    def tick(self, dt): # metodo chamado a cada frame
         self.input()
         if self.pause:
             return
-        self.menu.tick()
+        self.menu.tick(dt)
 
     def render(self, gc): # metodo chamado a cada frame
         # Limpar a telaa

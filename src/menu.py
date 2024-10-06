@@ -10,9 +10,9 @@ class Menu():
         self.sala = None
 
 
-    def tick(self):
+    def tick(self, dt):
         if self.STATE == "Sala":
-            self.sala.tick()
+            self.sala.tick(dt)
 
     def render(self, screen):
         if self.STATE == "Menu":
@@ -25,7 +25,7 @@ class Menu():
             self.sala.render(screen)
         
     def criarSala(self, config = "Aleatorio"):
-        self.sala = Sala(config)
+        self.sala = Sala()
 
     def criaBotoesMenuPrincipal(self):
         self.botoesMenuPrincipal = []
