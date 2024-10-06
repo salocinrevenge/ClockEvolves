@@ -1,6 +1,7 @@
 import pygame
 import pymunk
 from engrenagem import Engrenagem
+from ancora import Ancora
 
 class Sala():
     def __init__(self) -> None:
@@ -14,12 +15,37 @@ class Sala():
 
 
         self.space = pymunk.Space()
-        self.space.gravity = 0.0, 10.0
+        self.space.gravity = 0.0, 1000.0
 
-        engrenagem = Engrenagem(pos = (392.0, 311.0))
-        self.space.add(engrenagem.ball_body, engrenagem.ball_shape)
+        engrenagem = Engrenagem(pos = (391.0, 311.0))
+        self.space.add(engrenagem.body, engrenagem.shape)
+        engrenagem = Engrenagem(pos = (492.0, 311.0))
+        self.space.add(engrenagem.body, engrenagem.shape)
+        engrenagem = Engrenagem(pos = (392.0, 211.0))
+        self.space.add(engrenagem.body, engrenagem.shape)
+
+        engrenagem = Ancora(pos = (392.0, 211.0))
+        self.space.add(engrenagem.body, engrenagem.shape)
 
         segment_shape = pymunk.Segment(self.space.static_body, (0, 800), (800, 800), 2)
+        # muda a cor do segmento
+        segment_shape.color = (255, 255, 0, 1)
+        segment_shape.elasticity = 0.95
+        self.space.add(segment_shape)
+
+        segment_shape = pymunk.Segment(self.space.static_body, (0, 0), (0, 800), 2)
+        # muda a cor do segmento
+        segment_shape.color = (255, 255, 0, 1)
+        segment_shape.elasticity = 0.95
+        self.space.add(segment_shape)
+
+        segment_shape = pymunk.Segment(self.space.static_body, (800, 0), (800, 800), 2)
+        # muda a cor do segmento
+        segment_shape.color = (255, 255, 0, 1)
+        segment_shape.elasticity = 0.95
+        self.space.add(segment_shape)
+
+        segment_shape = pymunk.Segment(self.space.static_body, (0, 0), (800, 0), 2)
         # muda a cor do segmento
         segment_shape.color = (255, 255, 0, 1)
         segment_shape.elasticity = 0.95
@@ -34,7 +60,6 @@ class Sala():
 
     def render(self, screen):
         # desenha a borda da sala
-        pygame.draw.rect(screen, (255, 60, 60), pygame.Rect(0, 0, 800, 800), 2)
         if self.draw_options is None:
             self.draw_options = pymunk.pygame_util.DrawOptions(screen)
         self.space.debug_draw(self.draw_options)
