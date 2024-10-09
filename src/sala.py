@@ -17,20 +17,18 @@ class Sala():
         self.space = pymunk.Space()
         self.space.gravity = 0.0, 1000.0
 
-        engrenagem = Engrenagem(pos = (391.0, 311.0))
-        self.space.add(engrenagem.body, engrenagem.shape)
-        engrenagem = Engrenagem(pos = (492.0, 311.0))
-        self.space.add(engrenagem.body, engrenagem.shape)
-        engrenagem = Engrenagem(pos = (392.0, 211.0))
-        self.space.add(engrenagem.body, engrenagem.shape)
+        Engrenagem(pos = (391.0, 311.0), space = self.space)
+        Engrenagem(pos = (492.0, 311.0), space = self.space)
+        Engrenagem(pos = (392.0, 211.0), space = self.space)
 
-        engrenagem = Ancora(pos = (392.0, 211.0))
-        self.space.add(engrenagem.body, engrenagem.shape)
+        Ancora(pos = (392.0, 211.0), space = self.space)
+        Ancora(pos = (392.0, 311.0), space = self.space)
 
         segment_shape = pymunk.Segment(self.space.static_body, (0, 800), (800, 800), 2)
         # muda a cor do segmento
         segment_shape.color = (255, 255, 0, 1)
-        segment_shape.elasticity = 0.95
+        segment_shape.elasticity = 0.3
+        segment_shape.friction = 1.8
         self.space.add(segment_shape)
 
         segment_shape = pymunk.Segment(self.space.static_body, (0, 0), (0, 800), 2)
