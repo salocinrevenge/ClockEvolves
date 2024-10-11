@@ -2,6 +2,7 @@ import pygame
 import pymunk
 from engrenagem import Engrenagem
 from ancora import Ancora
+from viga import Viga
 
 class Sala():
     def __init__(self) -> None:
@@ -21,8 +22,10 @@ class Sala():
         Engrenagem(pos = (492.0, 311.0), space = self.space)
         Engrenagem(pos = (392.0, 211.0), space = self.space)
 
-        Ancora(pos = (392.0, 211.0), space = self.space)
-        Ancora(pos = (392.0, 311.0), space = self.space)
+        Ancora(pos = (392.0, 211.0), space = self.space, massa=4, escala=0.75, color = (255,255,0,1))
+        Ancora(pos = (392.0, 311.0), space = self.space, massa=4, color = (255,100,0,1))
+
+        Viga(pos = (192.0, 511.0), space = self.space, massa=2, escala=2)
 
         segment_shape = pymunk.Segment(self.space.static_body, (0, 800), (800, 800), 2)
         # muda a cor do segmento
