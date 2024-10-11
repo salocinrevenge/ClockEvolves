@@ -22,3 +22,7 @@ class Poligono(Objeto):
         self.space = space
         if self.space:
             self.space.add(self.body, *self.shapes)
+
+    def set_group(self, group):
+        for shape in self.shapes:
+            shape.filter = pymunk.ShapeFilter(group=group)

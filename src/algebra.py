@@ -183,7 +183,7 @@ def triangulariza(pontos):
                 break
         if not contem:
             triangulos.append(possivelTriangulo)
-            externos.append(np.asarray([pontos[verticeAlvo+1][0]-pontos[verticeAlvo][0]==1, pontos[verticeAlvo+2][0]-pontos[verticeAlvo+1][0]==1, pontos[verticeAlvo][0]-pontos[verticeAlvo+2][0]==1]))
+            externos.append(np.asarray([pontos[(verticeAlvo+1)%len(pontos)][0]-pontos[verticeAlvo][0]==1, pontos[(verticeAlvo+2)%len(pontos)][0]-pontos[(verticeAlvo+1)%len(pontos)][0]==1, pontos[verticeAlvo][0]-pontos[(verticeAlvo+2)%len(pontos)][0]==1]))
             pontos.pop((verticeAlvo+1)%len(pontos))
     triangulos.append(np.asarray([pontos[0][1], pontos[(1)%len(pontos)][1], pontos[(2)%len(pontos)][1]]))
     externos.append(np.asarray([(pontos[1][0]-pontos[0][0])%max_len==1, (pontos[2][0]-pontos[1][0])%max_len==1, (pontos[0][0]-pontos[2][0])%max_len==1]))

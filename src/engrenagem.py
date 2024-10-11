@@ -1,18 +1,25 @@
-from objeto import Objeto
 import numpy as np
-import pygame
-import pymunk
 from poligono import Poligono
 
-class Engrenagem(Objeto):
-    def __init__(self, pos: tuple, raio = 10, dentes = 1000, velocidade = None, massa = 1, space = None) -> None:
-        super().__init__()
-        moment = pymunk.moment_for_circle(massa, 0, raio)
-        self.body = pymunk.Body(massa, moment)
-        self.body.position = pos
-        self.shape = pymunk.Circle(self.body, raio)
-        self.shape.elasticity = 0.95
-        self.shape.friction = 0.9
-        self.space = space
-        if self.space:
-            self.space.add(self.body, self.shape)
+class Engrenagem(Poligono):
+    def __init__(self, pos: tuple, raio = 10, dentes = None, velocidade = None, massa = 1, space = None, elasticity = 0.3, friction = 1.0, color = (255,255,255,1)) -> None:
+        if raio < 10:
+            raise ValueError("raio de engrenagem deve ser no mínimo 10")
+        if dentes is None:
+            dentes = int(raio/2)
+        pontos = self.get_points(raio, dentes)
+        super().__init__(pontos, pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space)
+
+    def get_points(self, raio, dentes):
+        # um poligono com 20 pontos é equivalente a uma circunferencia
+        pontos = []
+        lados = dentes*3
+        for i in range(lados):
+            angulo = 2*np.pi*i/lados
+            mutiplier = 1
+            if i % 3 == 0:
+                mutiplier = 1.5
+            x = float(raio*mutiplier*np.cos(angulo))
+            y = float(raio*mutiplier*np.sin(angulo))
+            pontos.append((x,y))
+        return pontos
