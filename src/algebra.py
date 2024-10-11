@@ -153,7 +153,7 @@ def projectVertices(vertices, axis):
     return (min, max)
 
 def triangulariza(pontos):
-    pontos = pontos.tolist()
+    pontos = pontos.copy()
     # pontos passa a ser uma lista de tuplas com o primeiro valor sendo o index
     for i in range(len(pontos)):
         pontos[i] = (i, pontos[i])
