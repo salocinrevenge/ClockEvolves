@@ -187,6 +187,7 @@ def triangulariza(pontos):
             pontos.pop((verticeAlvo+1)%len(pontos))
     triangulos.append(np.asarray([pontos[0][1], pontos[(1)%len(pontos)][1], pontos[(2)%len(pontos)][1]]))
     externos.append(np.asarray([(pontos[1][0]-pontos[0][0])%max_len==1, (pontos[2][0]-pontos[1][0])%max_len==1, (pontos[0][0]-pontos[2][0])%max_len==1]))
-    # print(f"ultima conta: {pontos[0][0]=} {pontos[2][0]=} {max_len} {(pontos[0][0]-pontos[2][0])%len(pontos)=} {(pontos[0][0]-pontos[2][0])%len(pontos)==1} {internos[-1]=}")
     return np.array(triangulos), np.array(externos)
 
+def rotaciona(angulo):
+    return np.array([[np.cos(angulo), -np.sin(angulo)], [np.sin(angulo), np.cos(angulo)]])

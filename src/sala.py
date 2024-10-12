@@ -1,4 +1,3 @@
-import pygame
 import pymunk
 from engrenagem import Engrenagem
 from ancora import Ancora
@@ -12,14 +11,12 @@ class Sala():
         self.space = pymunk.Space()
         self.space.gravity = 0.0, 1000.0
 
-        Engrenagem(pos = (301.0, 311.0), space = self.space)
-        Engrenagem(pos = (492.0, 311.0), space = self.space)
-        Engrenagem(pos = (300.0, 200.0), space = self.space, color = (0,255,0,1), raio = 50)
+        Engrenagem(pos = (311.0, 311.0), space = self.space)
         a = Engrenagem(pos = (192.0, 511.0), space = self.space)
         a.set_group(1)
 
-        Ancora(pos = (392.0, 211.0), space = self.space, massa=4, escala=0.75, color = (255,255,0,1))
-        Ancora(pos = (392.0, 311.0), space = self.space, massa=4, color = (255,100,0,1))
+        # Ancora(pos = (392.0, 211.0), space = self.space, massa=4, escala=0.75, color = (255,255,0,1))
+        # Ancora(pos = (392.0, 311.0), space = self.space, massa=4, color = (255,100,0,1))
 
         b = Viga(pos = (192.0, 521.0), space = self.space, massa=2, escala=2)
         b.set_group(1)
@@ -27,6 +24,11 @@ class Sala():
         Pino(a.body, b.body, pos = (195.0, 524.0), space = self.space)
         Viga(pos = (192.0, 621.0), space = self.space, massa=2, largura=100, comprimento=100, color = (255,100,0,1))
         
+        engre = Engrenagem(pos = (392.0, 521.0), space = self.space, color = (0,255,0,1), raio = 50)
+        Pino(engre.body, (392.0, 521.0), pos = (392.0, 521.0), space = self.space)
+
+        roda = Engrenagem(pos = (540.0, 531.0), space = self.space, raio = 50)
+        Pino(roda.body, (540.0, 531.0), pos = (540.0, 531.0), space = self.space)
 
         self.build_border()
 
