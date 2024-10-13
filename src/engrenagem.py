@@ -14,14 +14,14 @@ class Engrenagem(Poligono):
     def get_points(self, raio, dentes, angulo):
         # um poligono com 20 pontos é equivalente a uma circunferencia
         pontos = []
-        # lados = dentes*5
-        lados = dentes*3
+        lados = dentes*5
+        # lados = dentes*3
 
         for i in range(lados):
             angulo = 2*np.pi*i/lados
             mutiplier = 1
-            # if i % 5 == 0 or i % 5 == 1:
-            if i % 3 == 0:
+            if i % 5 == 0 or i % 5 == 1:
+            # if i % 3 == 0:
                 mutiplier = 1.5
             x = float(raio*mutiplier*np.cos(angulo))
             y = float(raio*mutiplier*np.sin(angulo))

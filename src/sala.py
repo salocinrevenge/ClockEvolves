@@ -11,7 +11,7 @@ class Sala():
         self.space = pymunk.Space()
         self.space.gravity = 0.0, 1000.0
 
-        Engrenagem(pos = (311.0, 311.0), space = self.space)
+        Engrenagem(pos = (301.0, 311.0), space = self.space, raio = 20, massa=10)
         a = Engrenagem(pos = (192.0, 511.0), space = self.space)
         a.set_group(1)
 
@@ -24,11 +24,11 @@ class Sala():
         Pino(a.body, b.body, pos = (195.0, 524.0), space = self.space)
         Viga(pos = (192.0, 621.0), space = self.space, massa=2, largura=100, comprimento=100, color = (255,100,0,1))
         
-        engre = Engrenagem(pos = (392.0, 521.0), space = self.space, color = (0,255,0,1), raio = 50)
+        engre = Engrenagem(pos = (392.0, 521.0), space = self.space, color = (0,255,0,1), raio = 50, friction=0)
         Pino(engre.body, (392.0, 521.0), pos = (392.0, 521.0), space = self.space)
 
-        roda = Engrenagem(pos = (540.0, 531.0), space = self.space, raio = 50)
-        Pino(roda.body, (540.0, 531.0), pos = (540.0, 531.0), space = self.space)
+        roda = Engrenagem(pos = (535.0, 531.0), space = self.space, raio = 50, friction=0)
+        Pino(roda.body, (535.0, 531.0), pos = (535.0, 531.0), space = self.space)
 
         self.build_border()
 
