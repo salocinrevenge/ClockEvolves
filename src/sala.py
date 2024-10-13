@@ -24,10 +24,10 @@ class Sala():
         Pino(a.body, b.body, pos = (195.0, 524.0), space = self.space)
         Viga(pos = (192.0, 621.0), space = self.space, massa=2, largura=100, comprimento=100, color = (255,100,0,1))
         
-        engre = Engrenagem(pos = (392.0, 521.0), space = self.space, color = (0,255,0,1), raio = 50, friction=0)
+        engre = Engrenagem(pos = (392.0, 521.0), space = self.space, color = (0,255,0,1), raio = 50, friction=0, elasticity=0)
         Pino(engre.body, (392.0, 521.0), pos = (392.0, 521.0), space = self.space)
 
-        roda = Engrenagem(pos = (535.0, 531.0), space = self.space, raio = 50, friction=0)
+        roda = Engrenagem(pos = (535.0, 531.0), space = self.space, raio = 50, friction=0, elasticity=0)
         Pino(roda.body, (535.0, 531.0), pos = (535.0, 531.0), space = self.space)
 
         self.build_border()
