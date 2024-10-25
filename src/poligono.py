@@ -1,12 +1,9 @@
-from objeto import Objeto
-import numpy as np
-import pygame
 import algebra
 import pymunk
+import pygame
 
-class Poligono(Objeto):
+class Poligono():
     def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = (255,255,255,1), space = None) -> None:
-        super().__init__()
         self.pontosColisao, self.pontos_externos = algebra.triangulariza(pontos)
         moment = pymunk.moment_for_poly(mass = massa, vertices=pontos)
         self.body = pymunk.Body(massa, moment)
@@ -26,3 +23,6 @@ class Poligono(Objeto):
     def set_group(self, group):
         for shape in self.shapes:
             shape.filter = pymunk.ShapeFilter(group=group)
+
+    def render(self, screen):
+        pass

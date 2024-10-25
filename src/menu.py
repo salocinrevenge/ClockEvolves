@@ -24,8 +24,11 @@ class Menu():
         if self.STATE == "Sala":
             self.sala.render(screen)
         
-    def criarSala(self, config = "Aleatorio"):
-        self.sala = Sala()
+    def criarSala(self, config = "Aleatorizar"):
+        if config == "Aleatorizar":
+            self.sala = Sala()
+        else:
+            self.sala = Sala(editor=True)
 
     def criaBotoesMenuPrincipal(self):
         self.botoesMenuPrincipal = []

@@ -25,7 +25,8 @@ class Pino:
                 # procura se as shapes do corpo contem o ponto
                 for shape in body.shapes:
                     if shape.point_query(pos).distance <= 0:
-                        conectados.append(body)
+                        if body not in conectados:
+                            conectados.append(body)
                         # nao colide
                         for shape in body.shapes:
                             shape.filter = pymunk.ShapeFilter(group=1)
