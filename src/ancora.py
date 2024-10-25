@@ -1,6 +1,5 @@
 import numpy as np
 from poligono import Poligono
-import pymunk
 
 class Ancora(Poligono):
     def __init__(self, pos: np.ndarray, escala = 1, velocidade = None, velocidadeAngular = 0, angulo = 0, massa = 1, space = None, elasticity = 0.3, friction = 1.0, color = (255,255,255,1)) -> None:

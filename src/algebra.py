@@ -191,3 +191,6 @@ def triangulariza(pontos):
 
 def rotaciona(angulo):
     return np.array([[np.cos(angulo), -np.sin(angulo)], [np.sin(angulo), np.cos(angulo)]])
+
+def clamp(n, minn, maxn):
+    return max(min(maxn, n), minn)

@@ -1,6 +1,5 @@
 import algebra
 import pymunk
-import pygame
 
 class Poligono():
     def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = (255,255,255,1), space = None) -> None:
@@ -26,3 +25,7 @@ class Poligono():
 
     def render(self, screen):
         pass
+
+    def update_parametros(self, param: dict):
+        self.body.position = param["x"], param["y"]
+        self.body.angle = param["angulo"]
