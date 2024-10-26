@@ -3,13 +3,13 @@ from poligono import Poligono
 from algebra import rotaciona
 
 class Engrenagem(Poligono):
-    def __init__(self, pos: tuple, raio = 16, dentes = None, velocidade = None, massa = 1, space = None, elasticity = 0.3, friction = 1.0, color = (255,255,255,1), angulo = 0) -> None:
+    def __init__(self, pos: tuple, raio = 16, dentes = None, massa = 1, space = None, elasticity = 0.3, friction = 1.0, color = (255,255,255,1), angulo = 0, categoria = 1) -> None:
         if raio < 16:
             raise ValueError("raio de engrenagem deve ser no mínimo 16")
         if dentes is None:
             dentes = int(raio/4)
         pontos = self.get_points(raio, dentes, angulo)
-        super().__init__(pontos, pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space)
+        super().__init__(pontos, pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space, categoria = categoria)
 
     def get_points(self, raio, dentes, angulo):
         # um poligono com 20 pontos é equivalente a uma circunferencia

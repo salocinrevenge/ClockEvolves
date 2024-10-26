@@ -11,14 +11,15 @@ class Pino:
             if type(body2) == tuple:
                 body2 = space.static_body
             else:
-                # 
-                for shape in body2.shapes:
-                            shape.filter = pymunk.ShapeFilter(group=grupo)
+                # garante que o plano do corpo 1 é diferente do corpo 2
+                # shapes não é subscritivel
+                for shape in body1.shapes:
+                    for shape2 in body2.shapes:
+                        if shape.filter.categories == shape2.filter.categories:
+                            print("Corpos com categorias iguais: ", shape.filter.categories, shape2.filter.categories)
+                            return
             joint = PivotJoint(body1, body2, pos)
             space.add(joint)
-            # seta o grupo para as shapes do corpo
-            for shape in body1.shapes:
-                            shape.filter = pymunk.ShapeFilter(group=grupo)
         else:
             # busca todos os corpos no espaco para conectar nesse ponto
             conectados = []
@@ -27,23 +28,28 @@ class Pino:
                 for shape in body.shapes:
                     if shape.point_query(pos).distance <= 0:
                         if body not in conectados:
+                            # procura um corpo com grupo igual no conectados
+                            igual = False
+                            for body2 in conectados:
+                                for shape2 in body2.shapes:
+                                    if shape2.filter.group == shape.filter.group:
+                                        igual = True
+                                    break
+                            if igual:
+                                continue
                             conectados.append(body)
                         # nao colide
                         if parede:
                             joint = PivotJoint(body, space.static_body, pos)
                             space.add(joint)
+                            
             # procura grupo nao nulo
             for body in conectados:
                 for shape in body.shapes:
                     if shape.filter.group != 0:
                         grupo = shape.filter.group
                         break
-            for body in conectados:
-                for shape in body.shapes:
-                    shape.filter = pymunk.ShapeFilter(group=grupo)
-                    random.seed(grupo)
-                    cor = (random.randint(50,255), random.randint(50,255), random.randint(50,255), 1)
-                    shape.color = cor
+            
             for i in range(len(conectados)-1):
                 joint = PivotJoint(conectados[i], conectados[i+1], pos)
                 space.add(joint)
