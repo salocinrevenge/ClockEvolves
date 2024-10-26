@@ -16,7 +16,6 @@ class Pino:
                 for shape in body1.shapes:
                     for shape2 in body2.shapes:
                         if shape.filter.categories == shape2.filter.categories:
-                            print("Corpos com categorias iguais: ", shape.filter.categories, shape2.filter.categories)
                             return
             joint = PivotJoint(body1, body2, pos)
             space.add(joint)
@@ -32,7 +31,7 @@ class Pino:
                             igual = False
                             for body2 in conectados:
                                 for shape2 in body2.shapes:
-                                    if shape2.filter.group == shape.filter.group:
+                                    if shape2.filter.categories == shape.filter.categories:
                                         igual = True
                                     break
                             if igual:
@@ -42,7 +41,7 @@ class Pino:
                         if parede:
                             joint = PivotJoint(body, space.static_body, pos)
                             space.add(joint)
-                            
+            
             # procura grupo nao nulo
             for body in conectados:
                 for shape in body.shapes:

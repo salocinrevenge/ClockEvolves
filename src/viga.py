@@ -9,5 +9,4 @@ class Viga(Poligono):
         self.massa = massa
         self.elasticity = elasticity
         self.friction = friction
-        self.color = color
         super().__init__(self.pontos.tolist(), pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space,categoria=categoria)

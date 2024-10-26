@@ -3,7 +3,7 @@ import pymunk
 import random
 
 class Poligono():
-    def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = (255,255,255,1), space = None, categoria = 1) -> None:
+    def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1) -> None:
         self.pontosColisao, self.pontos_externos = algebra.triangulariza(pontos)
         moment = pymunk.moment_for_poly(mass = massa, vertices=pontos)
         self.body = pymunk.Body(massa, moment)
@@ -14,6 +14,8 @@ class Poligono():
             shape.elasticity = elasticity
             shape.friction = friction
             if color:
+                
+                self.color = color
                 shape.color = color
                 # shape.color = (random.randint(50,255), random.randint(50,255), random.randint(50,255), 1)
             shape.filter = pymunk.ShapeFilter(categories=categoria, mask= categoria)
