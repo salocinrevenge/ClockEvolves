@@ -10,7 +10,7 @@ class Menu():
         self.sala = None
 
         # remova para voltar menu
-        self.criarSala()
+        # self.criarSala()
 
 
     def tick(self, dt):

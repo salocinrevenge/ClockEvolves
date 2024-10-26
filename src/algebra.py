@@ -194,3 +194,27 @@ def rotaciona(angulo):
 
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
+
+def hsl_to_rgb(h, s, l):
+    h = h/360
+    s = s/100
+    l = l/100
+    c = (1 - abs(2*l - 1)) * s
+    x = c * (1 - abs((h * 6) % 2 - 1))
+    m = l - c/2
+    if 0 <= h < 1/6:
+        r, g, b = c, x, 0
+    elif 1/6 <= h < 2/6:
+        r, g, b = x, c, 0
+    elif 2/6 <= h < 3/6:
+        r, g, b = 0, c, x
+    elif 3/6 <= h < 4/6:
+        r, g, b = 0, x, c
+    elif 4/6 <= h < 5/6:
+        r, g, b = x, 0, c
+    elif 5/6 <= h < 1:
+        r, g, b = c, 0, x
+    r = (r + m) * 255
+    g = (g + m) * 255
+    b = (b + m) * 255
+    return (int(r), int(g), int(b), 1)
