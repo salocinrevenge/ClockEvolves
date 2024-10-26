@@ -9,7 +9,7 @@ class Engrenagem(Poligono):
         if dentes is None:
             dentes = int(raio/4)
         pontos = self.get_points(raio, dentes, angulo)
-        super().__init__(pontos, pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space, categoria = categoria)
+        super().__init__(pontos, pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space, categoria = categoria, tipo="engrenagem")
 
     def get_points(self, raio, dentes, angulo):
         # um poligono com 20 pontos é equivalente a uma circunferencia

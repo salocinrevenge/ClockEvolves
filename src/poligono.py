@@ -3,7 +3,7 @@ import pymunk
 import random
 
 class Poligono():
-    def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1) -> None:
+    def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1, tipo = None) -> None:
         self.pontosColisao, self.pontos_externos = algebra.triangulariza(pontos)
         moment = pymunk.moment_for_poly(mass = massa, vertices=pontos)
         self.body = pymunk.Body(massa, moment)
