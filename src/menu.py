@@ -9,6 +9,9 @@ class Menu():
         self.STATE = "Menu"
         self.sala = None
 
+        # remova para voltar menu
+        self.criarSala()
+
 
     def tick(self, dt):
         if self.STATE == "Sala":
@@ -25,6 +28,7 @@ class Menu():
             self.sala.render(screen)
         
     def criarSala(self, config = "Aleatorizar"):
+        self.STATE = "Sala"
         if config == "Aleatorizar":
             self.sala = Sala()
         else:
@@ -56,7 +60,6 @@ class Menu():
                     clique = botao.identificaClique(evento.pos)
                     if clique:
                         print(clique)
-                        self.STATE = "Sala"
                         self.criarSala(config = clique)
                         return
         if self.STATE == "Sala":

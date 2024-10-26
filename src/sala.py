@@ -24,7 +24,7 @@ class Sala():
             # Ancora(pos = (392.0, 211.0), space = self.space, massa=4, escala=0.75, color = (255,255,0,1))
             # Ancora(pos = (392.0, 311.0), space = self.space, massa=4, color = (255,100,0,1))
 
-            b = Viga(pos = (192.0, 521.0), space = self.space, massa=2, escala=2)
+            b = Viga(pos = (192.0, 521.0), space = self.space, massa=2)
             b.set_group(1)
             Pino(body1= a.body, body2= b.body, pos = (192.0, 521.0), space = self.space)
             Pino(body1= a.body, body2= b.body, pos = (195.0, 524.0), space = self.space)
@@ -68,6 +68,12 @@ class Sala():
     def tick(self, dt):
         if self.STATE == "simulacao":
             self.space.step(dt)
+            # mostra todos os filtros de colisao
+            i = 0
+            for shape in self.space.shapes:
+                print(shape.filter, i)
+                i += 1
+
         elif self.STATE == "edicao":
             pass
 
@@ -144,7 +150,6 @@ class Sala():
         if self.peca_selecionada:
             # remove a peca selecionada do espaco
             self.space.remove(self.peca_selecionada.body, *self.peca_selecionada.shapes)
-            print(self.space._bodies)
             if rebuild:
                 # obtem a classe da peca selecionada para criar uma nova
                 classe = self.peca_selecionada.__class__
