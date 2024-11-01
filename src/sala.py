@@ -165,6 +165,7 @@ class Sala():
         if self.draw_options is None:
             self.draw_options = pymunk.pygame_util.DrawOptions(screen)
         self.space.debug_draw(self.draw_options)
+        
         if self.STATE == "edicao":
             self.desenha_editor(screen)
 

@@ -34,17 +34,15 @@ class Poligono():
 
     def get_color(self, meta_info):
         if meta_info["tipo"] == "viga":
-            h= (360 + random.randint(0, 60))%360
+            h= (360 + random.randint(-15, 15))%360
             s = 30 + random.randint(0, 70)
             l = 33+ random.randint(-5, 5) if self.categoria == 1 else 66 + random.randint(-5, 5)
-            return (255,0,0,1)
         elif meta_info["tipo"] == "engrenagem":
-            h= 120 + random.randint(0, 60)
+            h= 120 + random.randint(-30, 30)
             s = 30 + random.randint(0, 70)
             l = 33+ random.randint(-5, 5) if self.categoria == 1 else 66 + random.randint(-5, 5)
         elif meta_info["tipo"] == "ancora":
-            h= 240 + random.randint(0, 60)
+            h= 240 + random.randint(-60, 60)
             s = 30 + random.randint(0, 70)
             l = 33+ random.randint(-5, 5) if self.categoria == 1 else 66 + random.randint(-5, 5)
-        # converte pra RGB
         return algebra.hsl_to_rgb(h,s,l)
