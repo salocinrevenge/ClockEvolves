@@ -218,3 +218,6 @@ def hsl_to_rgb(h, s, l):
     g = (g + m) * 255
     b = (b + m) * 255
     return (int(r), int(g), int(b), 1)
+
+def rotaciona_ponto(ponto, angulo):
+    return np.dot(rotaciona(angulo), ponto)

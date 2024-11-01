@@ -1,15 +1,16 @@
 import pymunk
 from pymunk import PivotJoint
 import random
+import pygame
 
 class Pino:
-    def __init__(self, pos, space, body1 = None, body2 = None, parede = False, grupo = None):
-        # mostra todos os parametros
-        if grupo is None:
-            grupo = random.randint(1, 100000000)
+    def __init__(self, pos, space, body1 = None, body2 = None, parede = False):
+        self.parede = parede
+        self.joint = None
         if body1:
             if type(body2) == tuple:
                 body2 = space.static_body
+                self.parede = True
             else:
                 # garante que o plano do corpo 1 é diferente do corpo 2
                 # shapes não é subscritivel
@@ -19,6 +20,7 @@ class Pino:
                             return
             joint = PivotJoint(body1, body2, pos)
             space.add(joint)
+            self.joint = joint
         else:
             # busca todos os corpos no espaco para conectar nesse ponto
             conectados = []
@@ -41,17 +43,16 @@ class Pino:
                         if parede:
                             joint = PivotJoint(body, space.static_body, pos)
                             space.add(joint)
-            
-            # procura grupo nao nulo
-            for body in conectados:
-                for shape in body.shapes:
-                    if shape.filter.group != 0:
-                        grupo = shape.filter.group
-                        break
+                            self.joint = joint
             
             for i in range(len(conectados)-1):
                 joint = PivotJoint(conectados[i], conectados[i+1], pos)
                 space.add(joint)
+                self.joint = joint
+
+
+    def render(self, screen):
+        pygame.draw.circle(screen, (255,0,0,1) if self.parede else (0,255,255,1), self.joint.a.position + self.joint.anchor_a.rotated(self.joint.a.angle), 5)
 
 class Pseudo_Pino:
     def __init__(self, pos, space, parede = False):
@@ -69,6 +70,9 @@ class Pseudo_Pino:
     def remove(self):
         self.space.remove(self.body, *self.body.shapes)
         del self
+
+    def render(self, screen):
+        pygame.draw.circle(screen, self.shapes[0].color, self.body.position, 5)
 
     def update_parametros(self, param: dict):
         self.body.position = param["x"], param["y"]

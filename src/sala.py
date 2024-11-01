@@ -15,46 +15,56 @@ class Sala():
         self.space.gravity = 0.0, 1000.0
 
         self.STATE = "edicao"
+        self.objetos = []
         if not editor:
             self.STATE = "simulacao"
             
-            Engrenagem(pos = (301.0, 311.0), space = self.space, raio = 20, massa=10, categoria=1)
-            a = Engrenagem(pos = (192.0, 511.0), space = self.space,categoria=2)
 
-            Ancora(pos = (92.0, 211.0), space = self.space, massa=4, escala=0.75)
-            Ancora(pos = (92.0, 311.0), space = self.space, massa=4)
+            self.objetos.append(Engrenagem(pos = (301.0, 311.0), space = self.space, raio = 20, massa=10, categoria=1))
+            a = Engrenagem(pos = (192.0, 511.0), space = self.space,categoria=2)
+            self.objetos.append(a)
+
+            self.objetos.append(Ancora(pos = (92.0, 211.0), space = self.space, massa=4, escala=0.75, categoria=2))
+            self.objetos.append(Ancora(pos = (92.0, 311.0), space = self.space, massa=4, categoria=2))
 
             b = Viga(pos = (192.0, 521.0), space = self.space, massa=2, categoria=1)
+            self.objetos.append(b)
 
-            Pino(body1= a.body, body2= b.body, pos = (192.0, 521.0), space = self.space)
-            Pino(body1= a.body, body2= b.body, pos = (195.0, 524.0), space = self.space)
+            self.objetos.append(Pino(body1= a.body, body2= b.body, pos = (192.0, 521.0), space = self.space))
+            self.objetos.append(Pino(body1= a.body, body2= b.body, pos = (195.0, 524.0), space = self.space))
             
             engre = Engrenagem(pos = (392.0, 521.0), space = self.space, raio = 50, friction=0, elasticity=0, categoria=1)
-            Pino(body1= engre.body, body2= (392.0, 521.0), pos = (392.0, 521.0), space = self.space)
+            self.objetos.append(engre)
+            self.objetos.append(Pino(body1= engre.body, body2= (392.0, 521.0), pos = (392.0, 521.0), space = self.space))
 
             roda = Engrenagem(pos = (535.0, 531.0), space = self.space, raio = 50, friction=0, elasticity=0, categoria=1)
-            Pino(body1= roda.body, body2= (535.0, 531.0), pos = (535.0, 531.0), space = self.space)
+            self.objetos.append(roda)
+            self.objetos.append(Pino(body1= roda.body, body2= (535.0, 531.0), pos = (535.0, 531.0), space = self.space))
 
             
 
             # # vigas conectadas
-            Viga(pos = (100.0, 171.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=2)
-            Viga(pos = (120.0, 181.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=1)
-            Viga(pos = (100.0, 201.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=2)
-            Viga(pos = (80.0, 191.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=2)
-            Pino(pos = (100.0, 181.0), space = self.space, parede=True)
+            self.objetos.append(Viga(pos = (100.0, 171.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            self.objetos.append(Viga(pos = (120.0, 181.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
+            self.objetos.append(Viga(pos = (100.0, 201.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            self.objetos.append(Viga(pos = (80.0, 191.0), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            self.objetos.append(Pino(pos = (100.0, 181.0), space = self.space, parede=True))
 
             
-            Viga(pos = (100.0, 171.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=2)
-            Viga(pos = (120.0, 181.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=1)
-            Viga(pos = (100.0, 201.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=1)
-            Viga(pos = (80.0, 191.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=2)
-            Pino(pos = (100.0, 181.0+200), space = self.space, parede=False)
+            self.objetos.append(Viga(pos = (100.0, 171.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            self.objetos.append(Viga(pos = (120.0, 181.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
+            self.objetos.append(Viga(pos = (100.0, 201.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
+            self.objetos.append(Viga(pos = (80.0, 191.0+200), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            self.objetos.append(Pino(pos = (100.0, 181.0+200), space = self.space, parede=False))
             
         else:
             self.cria_editor()
 
         self.build_border()
+
+        # ordena os objetos com base nas categorias se ele possuir categoria, se não, ele vai por ultimo
+
+        self.objetos.sort(key = lambda x: x.categoria if hasattr(x, "categoria") else 3)
 
     def build_border(self):
         positions = [((0,800), (800,800)), ((0,0), (0,800)), ((800,0), (800,800)), ((0,0), (800,0))]
@@ -68,6 +78,7 @@ class Sala():
             segment_shape.friction = friction[i]
             # todas categorias
             segment_shape.filter = pymunk.ShapeFilter(categories = pymunk.ShapeFilter.ALL_CATEGORIES(), mask = pymunk.ShapeFilter.ALL_MASKS())
+            self.objetos.append(segment_shape)
             self.space.add(segment_shape)
 
     def tick(self, dt):
@@ -87,7 +98,11 @@ class Sala():
                             position = self.peca_selecionada.body.position
                             parede = self.peca_selecionada.parede
                             self.peca_selecionada.remove()
-                            Pino(pos = position, space = self.space, parede=parede)
+                            self.peca_selecionada = Pino(pos = position, space = self.space, parede=parede)
+                            if self.peca_selecionada.joint is None:
+                                self.peca_selecionada = None
+                        if self.peca_selecionada:
+                            self.objetos.append(self.peca_selecionada)
                         self.peca_selecionada = None
                         self.parametros_editaveis = self.parametros_editaveis_padrao.copy()
                         return
@@ -162,9 +177,15 @@ class Sala():
 
 
     def render(self, screen):
-        if self.draw_options is None:
-            self.draw_options = pymunk.pygame_util.DrawOptions(screen)
-        self.space.debug_draw(self.draw_options)
+        # if self.draw_options is None:
+        #     self.draw_options = pymunk.pygame_util.DrawOptions(screen)
+        # self.space.debug_draw(self.draw_options)
+        for objeto in self.objetos:
+            if isinstance(objeto, pymunk.Segment):
+                pygame.draw.lines(screen, objeto.color, False, [objeto.a, objeto.b], 10)
+            else:
+                objeto.render(screen)
+        # nova adicao
         
         if self.STATE == "edicao":
             self.desenha_editor(screen)
@@ -190,3 +211,6 @@ class Sala():
         pygame.draw.rect(screen, (100,100,100), (0,0,self.largura_botoes+20,(self.altura_botoes+10)*(len(self.interface_editor)-1)+10), 2)
         for interface in self.interface_editor:
             interface.render(screen)
+
+        if self.peca_selecionada:
+            self.peca_selecionada.render(screen)

@@ -1,9 +1,11 @@
 import algebra
 import pymunk
 import random
+import pygame
 
 class Poligono():
     def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1, meta_info = None) -> None:
+        self.pontos_originais = pontos
         self.pontosColisao, self.pontos_externos = algebra.triangulariza(pontos)
         moment = pymunk.moment_for_poly(mass = massa, vertices=pontos)
         self.body = pymunk.Body(massa, moment)
@@ -14,7 +16,6 @@ class Poligono():
         if meta_info:
             self.color = self.get_color(meta_info)
         if color:
-            print("color: ", color)
             self.color = color
         for triangulo in self.pontosColisao:
             shape = pymunk.Poly(self.body,vertices=triangulo.tolist())
@@ -27,6 +28,13 @@ class Poligono():
         self.space = space
         if self.space:
             self.space.add(self.body, *self.shapes)
+
+    def render(self, screen):
+        # usa os pontos originais e a rotacao do corpo para desenhar ele na posicao correta
+        pontos = [algebra.rotaciona_ponto(ponto, self.body.angle) for ponto in self.pontos_originais] # rotaciona os pontos
+        pontos = [(int(ponto[0] + self.body.position.x), int(ponto[1] + self.body.position.y)) for ponto in pontos] # translada os pontos
+        pygame.draw.polygon(screen, self.color, pontos)
+
 
     def update_parametros(self, param: dict):
         self.body.position = param["x"], param["y"]
@@ -44,5 +52,5 @@ class Poligono():
         elif meta_info["tipo"] == "ancora":
             h= 240 + random.randint(-60, 60)
             s = 30 + random.randint(0, 70)
-            l = 33+ random.randint(-5, 5) if self.categoria == 1 else 66 + random.randint(-5, 5)
+            l = 33+ random.randint(-5, 5) if self.categoria == 1 else 50 + random.randint(-5, 5)
         return algebra.hsl_to_rgb(h,s,l)
