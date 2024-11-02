@@ -135,11 +135,6 @@ class Sala():
                     self.update_selected()
                     return
                 
-                if evento.button == 3:
-                    if self.peca_selecionada:
-                        if isinstance(self.peca_selecionada, Pino):
-                            return
-                        self.peca_selecionada.toggle_categoria()
                         
 
             if evento.type == pygame.MOUSEMOTION:
@@ -155,6 +150,12 @@ class Sala():
                     del self.peca_selecionada
                     self.peca_selecionada = None
                     return
+                
+                if evento.key == pygame.K_SPACE:
+                    if self.peca_selecionada:
+                        if isinstance(self.peca_selecionada, Pino):
+                            return
+                        self.peca_selecionada.toggle_categoria()
 
                 # se +
                 if evento.key == pygame.K_KP_PLUS:

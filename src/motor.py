@@ -99,7 +99,7 @@ class Coracao():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_p:
                     self.pause = not self.pause
                 if event.key == pygame.K_UP:
                     self.FPS_PADRAO += 19
