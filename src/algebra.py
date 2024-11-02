@@ -219,5 +219,27 @@ def hsl_to_rgb(h, s, l):
     b = (b + m) * 255
     return (int(r), int(g), int(b), 1)
 
+def rgb_to_hsl(r, g, b, a):
+    r = r/255
+    g = g/255
+    b = b/255
+    maxc = max(r, g, b)
+    minc = min(r, g, b)
+    l = (maxc + minc) / 2
+    if maxc == minc:
+        h = 0
+        s = 0
+    else:
+        d = maxc - minc
+        s = d / (2 - maxc - minc) if l > 0.5 else d / (maxc + minc)
+        if maxc == r:
+            h = (g - b) / d + (6 if g < b else 0)
+        elif maxc == g:
+            h = (b - r) / d + 2
+        else:
+            h = (r - g) / d + 4
+        h /= 6
+    return (h*360, s*100, l*100)
+
 def rotaciona_ponto(ponto, angulo):
     return np.dot(rotaciona(angulo), ponto)

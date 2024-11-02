@@ -29,6 +29,16 @@ class Poligono():
         if self.space:
             self.space.add(self.body, *self.shapes)
 
+    def set_categoria(self, categoria):
+        self.categoria = categoria
+        for shape in self.shapes:
+            shape.filter = pymunk.ShapeFilter(categories=categoria, mask= categoria)
+        self.update_color_categoria()
+
+    def toggle_categoria(self):
+        print("toggle")
+        self.set_categoria(3 - self.categoria)
+
     def render(self, screen):
         # usa os pontos originais e a rotacao do corpo para desenhar ele na posicao correta
         pontos = [algebra.rotaciona_ponto(ponto, self.body.angle) for ponto in self.pontos_originais] # rotaciona os pontos
@@ -54,3 +64,14 @@ class Poligono():
             s = 30 + random.randint(0, 70)
             l = 33+ random.randint(-5, 5) if self.categoria == 1 else 50 + random.randint(-5, 5)
         return algebra.hsl_to_rgb(h,s,l)
+    
+    def update_color_categoria(self):
+        h, s, l = algebra.rgb_to_hsl(*self.color)
+        if self.categoria == 1:
+            l = 33+ random.randint(-5, 5)
+        else:
+            l = 66 + random.randint(-5, 5)
+
+        self.color = algebra.hsl_to_rgb(h,s,l)
+        for shape in self.shapes:
+            shape.color = self.color

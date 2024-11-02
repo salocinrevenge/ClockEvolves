@@ -134,6 +134,13 @@ class Sala():
                     self.parametros_editaveis["parede"] = not self.parametros_editaveis["parede"]
                     self.update_selected()
                     return
+                
+                if evento.button == 3:
+                    if self.peca_selecionada:
+                        if isinstance(self.peca_selecionada, Pino):
+                            return
+                        self.peca_selecionada.toggle_categoria()
+                        
 
             if evento.type == pygame.MOUSEMOTION:
                 self.parametros_editaveis["x"], self.parametros_editaveis["y"] = evento.pos
