@@ -153,7 +153,7 @@ class Sala():
                 
                 if evento.key == pygame.K_SPACE:
                     if self.peca_selecionada:
-                        if isinstance(self.peca_selecionada, Pino):
+                        if isinstance(self.peca_selecionada, Pseudo_Pino):
                             return
                         self.peca_selecionada.toggle_categoria()
 
@@ -177,11 +177,10 @@ class Sala():
                 # obtem a classe da peca selecionada para criar uma nova
                 classe = self.peca_selecionada.__class__
                 self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), space = self.space)
+                self.peca_selecionada.update_parametros(self.parametros_editaveis)
             else:
                 self.peca_selecionada.update_parametros(self.parametros_editaveis)
-
-            # recoloca na nova posicao
-            self.space.add(self.peca_selecionada.body, *self.peca_selecionada.shapes)
+                self.space.add(self.peca_selecionada.body, *self.peca_selecionada.shapes)
 
 
     def render(self, screen):
