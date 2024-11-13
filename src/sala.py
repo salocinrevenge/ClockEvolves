@@ -6,6 +6,8 @@ from pino import Pino, Pseudo_Pino
 import pygame
 from botao import Botao
 from random import randint
+from poligono import Poligono
+from algebra import clamp
 
 class Sala():
     def __init__(self, editor = False) -> None:
@@ -138,6 +140,7 @@ class Sala():
                         
 
             if evento.type == pygame.MOUSEMOTION:
+                self.posMouse = evento.pos
                 self.parametros_editaveis["x"], self.parametros_editaveis["y"] = evento.pos
                 self.update_selected()
                 return
@@ -159,12 +162,12 @@ class Sala():
 
                 # se +
                 if evento.key == pygame.K_KP_PLUS:
-                    self.parametros_editaveis["comprimento"] += 10
+                    self.parametros_editaveis["escala"] = clamp(self.parametros_editaveis["escala"] + 10, *self.limites_parametros["escala"])
                     self.update_selected(rebuild = True)
                     return
                 # se -
                 if evento.key == pygame.K_KP_MINUS:
-                    self.parametros_editaveis["comprimento"] -= 10
+                    self.parametros_editaveis["escala"] = clamp(self.parametros_editaveis["escala"] - 10, *self.limites_parametros["escala"])
                     self.update_selected(rebuild = True)
                     return
                 
@@ -176,7 +179,11 @@ class Sala():
             if rebuild:
                 # obtem a classe da peca selecionada para criar uma nova
                 classe = self.peca_selecionada.__class__
-                self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), space = self.space)
+                # se ele for instancia de Poligono:
+                if isinstance(self.peca_selecionada, Poligono):
+                    self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), space = self.space, escala= self.parametros_editaveis["escala"]/100)
+                else:
+                    self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), space = self.space)
                 self.peca_selecionada.update_parametros(self.parametros_editaveis)
             else:
                 self.peca_selecionada.update_parametros(self.parametros_editaveis)
@@ -207,11 +214,13 @@ class Sala():
         self.interface_editor.append(Botao(10, 10 + (self.altura_botoes+10)*3, self.largura_botoes, self.altura_botoes, "Pino", textSize = 32))
 
         self.peca_selecionada = None
-        self.parametros_editaveis_padrao = {"x": 100, "y": 100,"comprimento": 100, "largura": 10, "parede": False, "angulo": 0}
+        self.parametros_editaveis_padrao = {"x": 100, "y": 100,"escala": 100, "largura": 10, "parede": False, "angulo": 0}
         self.parametros_editaveis = self.parametros_editaveis_padrao.copy()
-        self.limites_parametros = {"x": (10,790), "y": (10,790), "comprimento": (10, 500), "largura": (10,500) ,"parede": (False, True), "angulo": (0, 360)}
+        self.limites_parametros = {"x": (10,790), "y": (10,790), "escala": (50, 200), "largura": (10,500) ,"parede": (False, True), "angulo": (0, 360)}
 
         self.interface_editor.append(Botao(800-10-self.largura_botoes, 800-self.altura_botoes-10, self.largura_botoes, self.altura_botoes, "Executar", textSize = 32))
+
+        self.posMouse = (0,0)
 
     def desenha_editor(self, screen):
         # desenha retangulo cinza e largura 2
@@ -221,3 +230,8 @@ class Sala():
 
         if self.peca_selecionada:
             self.peca_selecionada.render(screen)
+
+        # escreve a posicao do mouse no canto inferior direito na cor branca
+        font = pygame.font.Font(None, 24)
+        text = font.render(f"({self.posMouse[0]}, {self.posMouse[1]})", True, (255,255,255))
+        screen.blit(text, (800-10-text.get_width(), 10))

@@ -2,9 +2,16 @@ import algebra
 import pymunk
 import random
 import pygame
+import numpy as np
 
 class Poligono():
-    def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1, meta_info = None) -> None:
+    def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1, meta_info = None, escala = 1) -> None:
+        if escala < 0.01:
+            escala = 0.01
+        if escala != 1:
+            pontos = np.array(pontos, dtype = np.float64)
+            pontos *= escala
+            pontos = pontos.tolist()
         self.pontos_originais = pontos
         self.pontosColisao, self.pontos_externos = algebra.triangulariza(pontos)
         moment = pymunk.moment_for_poly(mass = massa, vertices=pontos)

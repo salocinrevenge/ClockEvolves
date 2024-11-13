@@ -243,3 +243,6 @@ def rgb_to_hsl(r, g, b, a):
 
 def rotaciona_ponto(ponto, angulo):
     return np.dot(rotaciona(angulo), ponto)
+
+def clamp(n, minn, maxn):
+    return max(min(maxn, n), minn)
