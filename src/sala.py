@@ -162,6 +162,8 @@ class Sala():
                     # remove do espaco
                     if self.peca_selecionada:
                         self.space.remove(self.peca_selecionada.body, *self.peca_selecionada.shapes)
+                    if self.peca_selecionada in self.objetos:
+                        self.objetos.remove(self.peca_selecionada)
                     del self.peca_selecionada
                     self.peca_selecionada = None
                     return
