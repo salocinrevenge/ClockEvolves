@@ -140,8 +140,10 @@ class Sala():
                         
 
             if evento.type == pygame.MOUSEMOTION:
-                self.posMouse = evento.pos
-                self.parametros_editaveis["x"], self.parametros_editaveis["y"] = evento.pos
+                pos = evento.pos
+                pos = (((pos[0]+self.grade[self.grade_selecionada]//2)//self.grade[self.grade_selecionada])*self.grade[self.grade_selecionada], ((pos[1]+ self.grade[self.grade_selecionada]//2)//self.grade[self.grade_selecionada])*self.grade[self.grade_selecionada])
+                self.posMouse = pos
+                self.parametros_editaveis["x"], self.parametros_editaveis["y"] = pos
                 self.update_selected()
                 return
 
@@ -171,6 +173,12 @@ class Sala():
                     self.update_selected(rebuild = True)
                     return
                 
+                # g
+                if evento.key == pygame.K_g:
+                    self.grade_selecionada = (self.grade_selecionada + 1) % len(self.grade)
+                    return
+
+                
 
     def update_selected(self, rebuild = False):
         if self.peca_selecionada:
@@ -194,6 +202,16 @@ class Sala():
         # if self.draw_options is None:
         #     self.draw_options = pymunk.pygame_util.DrawOptions(screen)
         # self.space.debug_draw(self.draw_options)
+        
+        # desenha grade
+        if self.STATE == "edicao":
+            if self.grade_selecionada > 0:
+                for i in range(0, 800, self.grade[self.grade_selecionada]):
+                    pygame.draw.line(screen, (50,50,50), (i,0), (i,800), 1)
+                    pygame.draw.line(screen, (50,50,50), (0,i), (800,i), 1)
+
+
+
         for objeto in self.objetos:
             if isinstance(objeto, pymunk.Segment):
                 pygame.draw.lines(screen, objeto.color, False, [objeto.a, objeto.b], 10)
@@ -221,6 +239,8 @@ class Sala():
         self.interface_editor.append(Botao(800-10-self.largura_botoes, 800-self.altura_botoes-10, self.largura_botoes, self.altura_botoes, "Executar", textSize = 32))
 
         self.posMouse = (0,0)
+        self.grade = [1,10,50,100]
+        self.grade_selecionada = 0
 
     def desenha_editor(self, screen):
         # desenha retangulo cinza e largura 2

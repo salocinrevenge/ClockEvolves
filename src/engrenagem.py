@@ -3,12 +3,12 @@ from poligono import Poligono
 from algebra import rotaciona
 
 class Engrenagem(Poligono):
-    def __init__(self, pos: tuple, raio = 32, dentes = None, massa = 1, space = None, elasticity = 0.3, friction = 1.0, color = None, angulo = 0, categoria = 1, escala = 1) -> None:
+    def __init__(self, pos: tuple, raio = 32, dentes = None, massa = 1, space = None, elasticity = 0.3, friction = 0.0, color = None, angulo = 0, categoria = 1, escala = 1) -> None:
         raio = int(raio*escala)
         if raio < 16:
             raise ValueError("raio de engrenagem deve ser no mínimo 16")
         if dentes is None:
-            dentes = int(raio/3.5)
+            dentes = int(raio/4)
         pontos = self.get_points(raio, dentes, angulo)
         super().__init__(pontos, pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space, categoria = categoria, meta_info = {"tipo":"engrenagem"}, escala=escala)
 
