@@ -6,6 +6,7 @@ import numpy as np
 
 class Poligono():
     def __init__(self, pontos, pos, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1, meta_info = None, escala = 1) -> None:
+        self.escala = escala
         if escala < 0.01:
             escala = 0.01
         if escala != 1:
@@ -71,6 +72,12 @@ class Poligono():
             l = 33+ random.randint(-5, 5) if self.categoria == 1 else 50 + random.randint(-5, 5)
         return algebra.hsl_to_rgb(h,s,l)
     
+    def identificaClique(self, pos):
+        for shape in self.shapes:
+            if shape.point_query(pos).distance <= 0:
+                return True
+        return False
+
     def update_color_categoria(self, toggle = False):
         h, s, l = algebra.rgb_to_hsl(*self.color)
         if toggle:

@@ -108,6 +108,16 @@ class Sala():
                         self.peca_selecionada = None
                         self.parametros_editaveis = self.parametros_editaveis_padrao.copy()
                         return
+                    # detecta se ele clicou sobre o corpo de uma peca ja existente
+                    for objeto in self.objetos:
+                        if isinstance(objeto, Poligono):
+                            if objeto.identificaClique(evento.pos):
+                                self.peca_selecionada = objeto
+                                self.parametros_editaveis = {"x": objeto.body.position.x, "y": objeto.body.position.y, "escala": objeto.escala*100, "angulo": objeto.body.angle, "parede": False}
+                                self.update_selected()
+                                return
+
+
                     for interface in self.interface_editor:
                         clique = interface.identificaClique(evento.pos)
                         if clique:
@@ -185,6 +195,7 @@ class Sala():
             # remove a peca selecionada do espaco
             self.space.remove(self.peca_selecionada.body, *self.peca_selecionada.shapes)
             if rebuild:
+                peca_antiga = self.peca_selecionada
                 # obtem a classe da peca selecionada para criar uma nova
                 classe = self.peca_selecionada.__class__
                 # se ele for instancia de Poligono:
@@ -193,6 +204,8 @@ class Sala():
                 else:
                     self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), space = self.space)
                 self.peca_selecionada.update_parametros(self.parametros_editaveis)
+                if peca_antiga in self.objetos:
+                    self.objetos.remove(peca_antiga)
             else:
                 self.peca_selecionada.update_parametros(self.parametros_editaveis)
                 self.space.add(self.peca_selecionada.body, *self.peca_selecionada.shapes)
