@@ -31,8 +31,10 @@ class Menu():
         self.STATE = "Sala"
         if config == "Aleatorizar":
             self.sala = Sala()
-        else:
+        elif config == "Criar":
             self.sala = Sala(editor=True)
+        elif config == "Carregar":
+            self.sala = Sala(carregar = "salvo.txt")
 
     def criaBotoesMenuPrincipal(self):
         self.botoesMenuPrincipal = []
@@ -42,6 +44,7 @@ class Menu():
 
     def criaBotoesMenuCriar(self):
         self.botoesMenuCriar = []
+        self.botoesMenuCriar.append(Botao(250, 350, 300, 100, "Carregar", textSize = 72))
         self.botoesMenuCriar.append(Botao(250, 500, 300, 100, "Aleatorizar", textSize = 72))
         self.botoesMenuCriar.append(Botao(250, 650, 300, 100, "Criar", textSize = 72))
 

@@ -3,7 +3,10 @@ from poligono import Poligono
 from algebra import rotaciona
 
 class Engrenagem(Poligono):
-    def __init__(self, pos: tuple, raio = 64, dentes = None, massa = 1, space = None, elasticity = 0.6, friction = 0.0, color = None, angulo = 0, categoria = 1, escala = 1, tamanho_dente = 10) -> None:
+    def __init__(self, ID, pos: tuple, raio = 64, dentes = None, massa = 1, space = None, elasticity = 0.6, friction = 0.0, color = None, angulo = 0, categoria = 1, escala = 1, tamanho_dente = 10) -> None:
+        # salva todos os parametros em um dicionario
+        self.all_param = {k: v for k, v in locals().items() if k != 'self'}
+
         raio = int(raio*escala)
 
         circunferencia = 2*np.pi*raio
@@ -19,7 +22,7 @@ class Engrenagem(Poligono):
             dentes = ndentes
             raio = novo_raio
         pontos = self.get_points(raio, dentes, angulo, tamanho_dente*1.5)
-        super().__init__(pontos, pos = pos, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space, categoria = categoria, meta_info = {"tipo":"engrenagem"}, escala=1)
+        super().__init__(pontos, pos = pos, ID = ID, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space, categoria = categoria, meta_info = {"tipo":"engrenagem"}, escala=1)
 
     def get_points(self, raio, dentes, angulo, altura_dente):
         # um poligono com 20 pontos é equivalente a uma circunferencia

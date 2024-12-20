@@ -1,10 +1,11 @@
 import pymunk
 from pymunk import PivotJoint
-import random
 import pygame
 
 class Pino:
-    def __init__(self, pos, space, body1 = None, body2 = None, parede = False):
+    def __init__(self, pos, space, ID, body1 = None, body2 = None, parede = False):
+        self.all_param = {k: v for k, v in locals().items() if k != 'self'}
+        self.ID = ID
         self.parede = parede
         self.joint = None
         if body1:
