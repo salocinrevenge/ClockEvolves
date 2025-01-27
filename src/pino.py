@@ -23,6 +23,8 @@ class Pino:
             space.add(joint)
             self.joint = joint
         else:
+            print("conectando todos os corpos no ponto")
+            print(f"procurando pode objetos na posicao pos: {pos} dentre os objetos no espaco: {space.bodies} cujas posicoes sao {[body.position for body in space.bodies]}")
             # busca todos os corpos no espaco para conectar nesse ponto
             conectados = []
             for body in space.bodies:
@@ -45,6 +47,7 @@ class Pino:
                             joint = PivotJoint(body, space.static_body, pos)
                             space.add(joint)
                             self.joint = joint
+            print(f"conectados: {conectados}")
             
             for i in range(len(conectados)-1):
                 joint = PivotJoint(conectados[i], conectados[i+1], pos)
@@ -56,9 +59,11 @@ class Pino:
         pygame.draw.circle(screen, (255,0,0,1) if self.parede else (0,255,255,1), self.joint.a.position + self.joint.anchor_a.rotated(self.joint.a.angle), 5)
 
 class Pseudo_Pino:
-    def __init__(self, pos, space, parede = False):
+    def __init__(self, pos, space, ID, parede = False):
+        self.all_param = {k: v for k, v in locals().items() if k != 'self'}
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
         self.body.position = pos
+        self.ID = ID
         self.shapes = [pymunk.Circle(self.body, 5)]
         if parede:
             self.shapes[0].color = (255,0,0,1)

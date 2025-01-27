@@ -8,6 +8,7 @@ from botao import Botao
 from random import randint
 from poligono import Poligono
 from algebra import clamp
+import re
 
 class Sala():
     def __init__(self, editor = False, carregar = None) -> None:
@@ -233,14 +234,37 @@ class Sala():
             for objeto in self.objetos:
                 if isinstance(objeto, pymunk.Segment):
                     continue
-                f.write(str(objeto) + " dict:" + str(objeto.all_param)+"\n")
+                
+                for key, value in objeto.all_param.items():
+                    if isinstance(value, pymunk.Vec2d):
+                        objeto.all_param[key] = (value.x, value.y)
+                f.write(f"{objeto.__class__.__module__}.{objeto.__class__.__name__} dict:" + str(objeto.all_param) + "\n")
 
     def carregar_sala(self, caminho):
         with open(caminho, "r") as f:
                 for line in f:
                     line = line.strip()
+                    print(line)
                     if line == "":
                         continue
+
+                    """
+                    <ancora.Ancora object at 0x796d7a358470> dict:{'pos': (61, 157), 'ID': 0, 'escala': 1, 'angulo': 0, 'massa': 1, 'space': <pymunk.space.Space object at 0x796d7a3584d0>, 'elasticity': 0.3, 'friction': 1.0, 'color': (215, 111, 126, 1), 'categoria': 1, '__class__': <class 'ancora.Ancora'>}
+                    <ancora.Ancora object at 0x796d7a3594f0> dict:{'pos': (47, 173), 'ID': 1, 'escala': 1, 'angulo': 0, 'massa': 1, 'space': <pymunk.space.Space object at 0x796d7a3584d0>, 'elasticity': 0.3, 'friction': 1.0, 'color': (226, 76, 153, 1), 'categoria': 1, '__class__': <class 'ancora.Ancora'>}
+                    <pino.Pino object at 0x796d7acfdac0> dict:{'pos': Vec2d(289.0, 281.0), 'space': <pymunk.space.Space object at 0x796d7a3584d0>, 'ID': 3, 'body1': None, 'body2': None, 'parede': False}
+                    
+                    """
+                    params_str = line.split("dict:")[1]
+                    params_str = re.sub(r'<pymunk[^>]*>', '\'criar\'', params_str)
+                    params = eval(params_str)
+                    class_name = line.split(" ")[0]
+                    module_name, class_name = class_name.split('.')
+                    module = __import__(module_name)
+                    class_ = getattr(module, class_name)
+                    params["space"] = self.space
+                    obj = class_(**params)
+                    self.objetos.append(obj)
+                    print("todos objetos no espaco: ", self.space.bodies)
                     
 
         

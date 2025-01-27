@@ -5,8 +5,7 @@ from algebra import rotaciona
 class Engrenagem(Poligono):
     def __init__(self, ID, pos: tuple, raio = 64, dentes = None, massa = 1, space = None, elasticity = 0.6, friction = 0.0, color = None, angulo = 0, categoria = 1, escala = 1, tamanho_dente = 10) -> None:
         # salva todos os parametros em um dicionario
-        self.all_param = {k: v for k, v in locals().items() if k != 'self'}
-
+        self.all_param = {k: v for k, v in locals().items() if k not in ('self', '__class__')}
         raio = int(raio*escala)
 
         circunferencia = 2*np.pi*raio
