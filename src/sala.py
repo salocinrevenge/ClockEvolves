@@ -120,6 +120,7 @@ class Sala():
                     for objeto in self.objetos:
                         if isinstance(objeto, Poligono):
                             if objeto.identificaClique(evento.pos):
+                                self.objetos.remove(objeto)
                                 self.peca_selecionada = objeto
                                 self.parametros_editaveis = {"x": objeto.body.position.x, "y": objeto.body.position.y, "escala": objeto.escala*100, "angulo": objeto.body.angle, "parede": False}
                                 self.update_selected()
@@ -243,7 +244,6 @@ class Sala():
         with open(caminho, "r") as f:
                 for line in f:
                     line = line.strip()
-                    print(line)
                     if line == "":
                         continue
 
@@ -263,8 +263,7 @@ class Sala():
                     params["space"] = self.space
                     obj = class_(**params)
                     self.objetos.append(obj)
-                    print("todos objetos no espaco: ", self.space.bodies)
-                    
+                
 
         
         self.STATE = "simulacao"

@@ -61,7 +61,6 @@ class Poligono():
         self.body.angle = param["angulo"]
         self.all_param["pos"] = self.body.position
         self.all_param["angulo"] = self.body.angle
-        print(f"atualizando parametros do poligono {self.ID} para {self.all_param}")
 
     def get_color(self, meta_info):
         if meta_info["tipo"] == "viga":

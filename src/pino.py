@@ -23,8 +23,6 @@ class Pino:
             space.add(joint)
             self.joint = joint
         else:
-            print("conectando todos os corpos no ponto")
-            print(f"procurando pode objetos na posicao pos: {pos} dentre os objetos no espaco: {space.bodies} cujas posicoes sao {[body.position for body in space.bodies]}")
             # busca todos os corpos no espaco para conectar nesse ponto
             conectados = []
             for body in space.bodies:
@@ -47,8 +45,6 @@ class Pino:
                             joint = PivotJoint(body, space.static_body, pos)
                             space.add(joint)
                             self.joint = joint
-            print(f"conectados: {conectados}")
-            
             for i in range(len(conectados)-1):
                 joint = PivotJoint(conectados[i], conectados[i+1], pos)
                 space.add(joint)
