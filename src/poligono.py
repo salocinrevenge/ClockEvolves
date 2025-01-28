@@ -43,6 +43,8 @@ class Poligono():
         for shape in self.shapes:
             shape.filter = pymunk.ShapeFilter(categories=categoria, mask= categoria)
         self.update_color_categoria(toggle=toggle)
+        self.all_param["categoria"] = self.categoria
+        self.all_param["color"] = self.color
 
     def toggle_categoria(self):
         self.set_categoria(3 - self.categoria, toggle = True)
@@ -57,6 +59,9 @@ class Poligono():
     def update_parametros(self, param: dict):
         self.body.position = param["x"], param["y"]
         self.body.angle = param["angulo"]
+        self.all_param["pos"] = self.body.position
+        self.all_param["angulo"] = self.body.angle
+        print(f"atualizando parametros do poligono {self.ID} para {self.all_param}")
 
     def get_color(self, meta_info):
         if meta_info["tipo"] == "viga":

@@ -34,7 +34,7 @@ class Menu():
         elif config == "Criar":
             self.sala = Sala(editor=True)
         elif config == "Carregar":
-            self.sala = Sala(carregar = "salvo.txt")
+            self.sala = Sala(carregar = "save/salvo.txt")
 
     def criaBotoesMenuPrincipal(self):
         self.botoesMenuPrincipal = []

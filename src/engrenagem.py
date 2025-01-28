@@ -6,6 +6,7 @@ class Engrenagem(Poligono):
     def __init__(self, ID, pos: tuple, raio = 64, dentes = None, massa = 1, space = None, elasticity = 0.6, friction = 0.0, color = None, angulo = 0, categoria = 1, escala = 1, tamanho_dente = 10) -> None:
         # salva todos os parametros em um dicionario
         self.all_param = {k: v for k, v in locals().items() if k not in ('self', '__class__')}
+        print(self.all_param)
         raio = int(raio*escala)
 
         circunferencia = 2*np.pi*raio
@@ -20,25 +21,26 @@ class Engrenagem(Poligono):
             print(f"Dentes não especificados, criando engrenagem com {ndentes} dentes e raio {novo_raio}")
             dentes = ndentes
             raio = novo_raio
-        pontos = self.get_points(raio, dentes, angulo, tamanho_dente*1.5)
+        pontos = self.get_points(raio, dentes, tamanho_dente*1.5)
         super().__init__(pontos, pos = pos, ID = ID, massa = massa, elasticity = elasticity, friction = friction, color = color, space = space, categoria = categoria, meta_info = {"tipo":"engrenagem"}, escala=1)
+        print(f"engrenagem {ID} criada com {len(pontos)} pontos")
+        self.update_parametros({"angulo": angulo, "x": pos[0], "y": pos[1]})
 
-    def get_points(self, raio, dentes, angulo, altura_dente):
+    def get_points(self, raio, dentes, altura_dente):
         # um poligono com 20 pontos é equivalente a uma circunferencia
         pontos = []
         lados = dentes*5
         # lados = dentes*3
 
         for i in range(lados):
-            angulo = 2*np.pi*i/lados
+            angulo_tmp = 2*np.pi*i/lados
             acrecimo = 0
             if i % 5 == 0 or i % 5 == 1:
             # if i % 3 == 0:
                 acrecimo = altura_dente
-            x = float((raio+acrecimo)*np.cos(angulo))
-            y = float((raio+acrecimo)*np.sin(angulo))
+            x = float((raio+acrecimo)*np.cos(angulo_tmp))
+            y = float((raio+acrecimo)*np.sin(angulo_tmp))
             pontos.append((x,y))
         pontos = np.array(pontos)
-        pontos = pontos @ rotaciona(angulo)
         pontos = pontos.tolist()
         return pontos

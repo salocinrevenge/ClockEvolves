@@ -53,6 +53,7 @@ class Pino:
                 joint = PivotJoint(conectados[i], conectados[i+1], pos)
                 space.add(joint)
                 self.joint = joint
+                
 
 
     def render(self, screen):

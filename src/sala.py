@@ -22,8 +22,7 @@ class Sala():
         self.objetos = []
         if carregar:
             self.carregar_sala(carregar)
-            return
-        if not editor:
+        elif not editor:
             self.STATE = "simulacao"
             
 
@@ -228,7 +227,7 @@ class Sala():
                 self.space.add(self.peca_selecionada.body, *self.peca_selecionada.shapes)
 
 
-    def salvar_sala(self, caminho = "salvo.txt"):
+    def salvar_sala(self, caminho = "save/salvo.txt"):
         print("salvando sala")
         with open(caminho, "w") as f:
             for objeto in self.objetos:
