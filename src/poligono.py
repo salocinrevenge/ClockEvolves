@@ -90,6 +90,8 @@ class Poligono():
                 l  = l/2
             elif self.categoria == 1:
                 l = l*2
+                if l > 100:
+                    l = 100
             else:
                 raise ValueError("Categoria invalida")
         else:

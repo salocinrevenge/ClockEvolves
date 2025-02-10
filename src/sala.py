@@ -265,8 +265,8 @@ class Sala():
                     self.objetos.append(obj)
                 
 
-        
-        self.STATE = "simulacao"
+        self.cria_editor()
+        # self.STATE = "simulacao"
 
     def render(self, screen):
         # if self.draw_options is None:
