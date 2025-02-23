@@ -10,7 +10,6 @@ class Engrenagem(Poligono):
         if abs(orientation) < epsilon:
             orientation = 0
             self.all_param["orientation"] = 0
-        print(self.all_param)
         raio = int(raio*escala)
 
         circunferencia = 2*np.pi*raio
