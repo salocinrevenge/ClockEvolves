@@ -1,0 +1,12 @@
+engrenagem.Engrenagem dict:{'ID': 0, 'pos': (300.0, 300.0), 'raio': 64, 'dentes': None, 'massa': 1, 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'elasticity': 0.6, 'friction': 0.0, 'color': (80, 140, 173, 1), 'angulo': 0.0, 'categoria': 1, 'escala': 1, 'tamanho_dente': 10, 'orientation': 0.1}
+pino.Pino dict:{'pos': (300.0, 300.0), 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'ID': 2, 'body1': None, 'body2': None, 'parede': True}
+ancora.Ancora dict:{'pos': (296.0, 171.0), 'ID': 3, 'escala': 1, 'angulo': 0.0, 'massa': 1, 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'elasticity': 0.3, 'friction': 1.0, 'color': (192, 60, 125, 1), 'categoria': 1}
+pino.Pino dict:{'pos': (297.0, 178.0), 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'ID': 5, 'body1': None, 'body2': None, 'parede': True}
+ancora.Ancora dict:{'pos': (287.0, 429.0), 'ID': 6, 'escala': 1, 'angulo': 3.2000000000000015, 'massa': 1, 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'elasticity': 0.3, 'friction': 1.0, 'color': (89, 134, 135, 1), 'categoria': 1}
+pino.Pino dict:{'pos': (288.0, 424.0), 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'ID': 8, 'body1': None, 'body2': None, 'parede': True}
+viga.Viga dict:{'pos': (337.0, 501.0), 'ID': 10, 'comprimento': 200, 'largura': 10, 'massa': 1, 'elasticity': 0.3, 'friction': 1.0, 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'color': (52, 36, 29, 1), 'angulo': 0.9999999999999999, 'categoria': 2, 'escala': 1}
+pino.Pino dict:{'pos': (287.0, 425.0), 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'ID': 14, 'body1': None, 'body2': None, 'parede': False}
+pino.Pino dict:{'pos': (282.0, 421.0), 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'ID': 16, 'body1': None, 'body2': None, 'parede': False}
+engrenagem.Engrenagem dict:{'ID': 17, 'pos': (378.0, 559.0), 'raio': 64, 'dentes': None, 'massa': 1, 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'elasticity': 0.6, 'friction': 0.0, 'color': (65, 126, 159, 1), 'angulo': 0.0, 'categoria': 1, 'escala': 1, 'tamanho_dente': 10, 'orientation': 0.1}
+pino.Pino dict:{'pos': (347.0, 514.0), 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'ID': 21, 'body1': None, 'body2': None, 'parede': False}
+pino.Pino dict:{'pos': (382.0, 576.0), 'space': <pymunk.space.Space object at 0x00000214E42772D0>, 'ID': 23, 'body1': None, 'body2': None, 'parede': False}

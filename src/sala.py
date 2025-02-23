@@ -194,6 +194,21 @@ class Sala():
                     self.update_selected(rebuild = True)
                     return
                 
+                # se o
+                if evento.key == pygame.K_o:
+                    print("o: ", self.parametros_editaveis["orientation"])
+                    self.parametros_editaveis["orientation"] = clamp(self.parametros_editaveis["orientation"] + 0.05, *self.limites_parametros["orientation"])
+                    print("o depois: ", self.parametros_editaveis["orientation"])
+                    self.update_selected(rebuild = True)
+                    return
+                # se i
+                if evento.key == pygame.K_i:
+                    print("o: ", self.parametros_editaveis["orientation"])
+                    self.parametros_editaveis["orientation"] = clamp(self.parametros_editaveis["orientation"] - 0.05, *self.limites_parametros["orientation"])
+                    print("o depois: ", self.parametros_editaveis["orientation"])
+                    self.update_selected(rebuild = True)
+                    return 
+
                 # g
                 if evento.key == pygame.K_g:
                     self.grade_selecionada = (self.grade_selecionada + 1) % len(self.grade)
@@ -217,7 +232,10 @@ class Sala():
                 classe = self.peca_selecionada.__class__
                 # se ele for instancia de Poligono:
                 if isinstance(self.peca_selecionada, Poligono):
-                    self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), ID = self.get_ID(), space = self.space, escala= self.parametros_editaveis["escala"]/100)
+                    if isinstance(self.peca_selecionada, Engrenagem):
+                        self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), ID = self.get_ID(), space = self.space, escala= self.parametros_editaveis["escala"]/100, orientation = self.parametros_editaveis["orientation"])
+                    else:
+                        self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), ID = self.get_ID(), space = self.space, escala= self.parametros_editaveis["escala"]/100)
                 else:
                     self.peca_selecionada = classe(pos = (self.parametros_editaveis["x"], self.parametros_editaveis["y"]), ID = self.get_ID(), space = self.space)
                 self.peca_selecionada.update_parametros(self.parametros_editaveis)
@@ -302,9 +320,9 @@ class Sala():
         self.interface_editor.append(Botao(10, 10 + (self.altura_botoes+10)*3, self.largura_botoes, self.altura_botoes, "Pino", textSize = 32))
 
         self.peca_selecionada = None
-        self.parametros_editaveis_padrao = {"x": 100, "y": 100,"escala": 100, "largura": 10, "parede": False, "angulo": 0}
+        self.parametros_editaveis_padrao = {"x": 100, "y": 100,"escala": 100, "largura": 10, "parede": False, "angulo": 0, "orientation": 0}
         self.parametros_editaveis = self.parametros_editaveis_padrao.copy()
-        self.limites_parametros = {"x": (10,790), "y": (10,790), "escala": (50, 200), "largura": (10,500) ,"parede": (False, True), "angulo": (0, 360)}
+        self.limites_parametros = {"x": (10,790), "y": (10,790), "escala": (50, 200), "largura": (10,500) ,"parede": (False, True), "angulo": (0, 360), "orientation": (-0.3, 0.3)}
 
         self.interface_editor.append(Botao(800-10-self.largura_botoes, 800-self.altura_botoes-10, self.largura_botoes, self.altura_botoes, "Executar", textSize = 32))
 
