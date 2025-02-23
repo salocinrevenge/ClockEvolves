@@ -220,6 +220,10 @@ class Sala():
                     self.salvar_sala()
                     return
 
+                if evento.key == pygame.K_c:
+                    print(self.get_current_objects())
+                    return
+
                 
 
     def update_selected(self, rebuild = False):
@@ -329,6 +333,20 @@ class Sala():
         self.posMouse = (0,0)
         self.grade = [1,10,50,100]
         self.grade_selecionada = 0
+
+    def get_current_objects(self):
+        objects_info = []
+        for obj in self.objetos:
+            if hasattr(obj, 'body'):
+                info = {
+                    'name': obj.__class__.__name__,
+                    'position': obj.body.position,
+                    'rotation': obj.body.angle,
+                    'linear_velocity': obj.body.velocity,
+                    'angular_velocity': obj.body.angular_velocity
+                }
+                objects_info.append(info)
+        return objects_info
 
     def desenha_editor(self, screen):
         # desenha retangulo cinza e largura 2
