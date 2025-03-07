@@ -338,16 +338,17 @@ class Sala():
     def get_current_objects(self):
         objects_info = []
         for obj in self.objetos:
+            if obj.__class__.__name__ == "Segment":
+                continue
             if hasattr(obj, 'body'):
                 info = {
                     'name': obj.__class__.__name__,
                     'position': obj.body.position,
-                    'rotation': obj.body.angle,
+                    'rotation': obj.shapes[0].body.angle,
                     'linear_velocity': obj.body.velocity,
                     'angular_velocity': obj.body.angular_velocity
                 }
-                if info["name"] == "Segment":
-                    continue
+
                 objects_info.append(info)
         return objects_info
 
