@@ -1,0 +1,4 @@
+engrenagem.Engrenagem dict:{'ID': 0, 'pos': (250.0, 250.0), 'raio': 64, 'dentes': None, 'massa': 1, 'space': <pymunk.space.Space object at 0x7bd866abc440>, 'elasticity': 0.6, 'friction': 0.0, 'color': (136, 60, 173, 1), 'angulo': 0.0, 'categoria': 1, 'escala': 1, 'tamanho_dente': 10}
+ancora.Ancora dict:{'pos': (240.0, 380.0), 'ID': 2, 'escala': 1, 'angulo': 3.2000000000000015, 'massa': 1, 'space': <pymunk.space.Space object at 0x7bd866abc440>, 'elasticity': 0.3, 'friction': 1.0, 'color': (50, 160, 236, 1), 'categoria': 1}
+pino.Pino dict:{'pos': (250.0, 250.0), 'space': <pymunk.space.Space object at 0x7bd866abc440>, 'ID': 21, 'body1': None, 'body2': None, 'parede': True}
+engrenagem.Engrenagem dict:{'ID': 24, 'pos': (172.0, 673.0), 'raio': 64, 'dentes': None, 'massa': 1, 'space': <pymunk.space.Space object at 0x7bd866abc440>, 'elasticity': 0.6, 'friction': 0.0, 'color': (241, 166, 119, 1), 'angulo': 0.2, 'categoria': 1, 'escala': 1, 'tamanho_dente': 10}

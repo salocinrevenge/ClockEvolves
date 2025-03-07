@@ -9,6 +9,7 @@ from random import randint
 from poligono import Poligono
 from algebra import clamp
 import re
+from utils import hash
 
 class Sala():
     def __init__(self, editor = False, carregar = None) -> None:
@@ -221,7 +222,7 @@ class Sala():
                     return
 
                 if evento.key == pygame.K_c:
-                    print(self.get_current_objects())
+                    print(hash(self.get_current_objects()))
                     return
 
                 
@@ -345,6 +346,8 @@ class Sala():
                     'linear_velocity': obj.body.velocity,
                     'angular_velocity': obj.body.angular_velocity
                 }
+                if info["name"] == "Segment":
+                    continue
                 objects_info.append(info)
         return objects_info
 
