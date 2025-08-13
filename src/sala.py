@@ -113,7 +113,7 @@ class Sala():
             self.estados[hash_value] = []
         
         if objetos in self.estados[hash_value]:
-            print("Estado ja existe: ", hash_value)
+            print("Estado ja existe: ", hash_value, "score da simulacao: ", self.numero_estados_sem_repetir)
             self.repetiu = True
             return
         self.estados[hash_value].append(objetos)
