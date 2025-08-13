@@ -3,7 +3,7 @@ from pymunk.vec2d import Vec2d
 
 def aprox(value, key):
     APROXITORS = {"rotation": 0.1, "position": 0.1, "linear_velocity": 1, "angular_velocity": 0.01 }
-    APROXITORS = {"rotation": 0.1, "position": 0.5, "linear_velocity": 2, "angular_velocity": 0.1 }
+    APROXITORS = {"rotation": 0.1, "position": 0.5, "linear_velocity": 5, "angular_velocity": 0.1 }
     if key not in APROXITORS:
         raise ValueError("Key of hash not found")
     if isinstance(value, Vec2d):
@@ -20,6 +20,15 @@ def scale(value, key):
         return Vec2d(value.x * SCALERS[key], value.y * SCALERS[key])
     else:
         return value * SCALERS[key]
+    
+def limitar(value, key):
+    LIMITER = {"rotation": 360, "position": 1000, "linear_velocity": 6, "angular_velocity": 360 }
+    if key not in LIMITER:
+        raise ValueError("Key of hash not found")
+    if isinstance(value, Vec2d):
+        return Vec2d(max(min(value.x, LIMITER[key]), -LIMITER[key]), max(min(value.y, LIMITER[key]), -LIMITER[key]))
+    else:
+        return max(min(value, LIMITER[key]), -LIMITER[key])
 
 def hash(objects):
     # aprox
@@ -29,7 +38,12 @@ def hash(objects):
             if key == "name":
                 continue
             object[key] = aprox(object[key], key)
+
+            object[key] = limitar(object[key], key)
+
             object[key] = scale(object[key], key)
+
+    
 
     for object in objects:
         for key in object:

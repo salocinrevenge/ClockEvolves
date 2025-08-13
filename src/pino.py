@@ -53,7 +53,8 @@ class Pino:
 
 
     def render(self, screen):
-        pygame.draw.circle(screen, (255,0,0,1) if self.parede else (0,255,255,1), self.joint.a.position + self.joint.anchor_a.rotated(self.joint.a.angle), 5)
+        if self.joint:
+            pygame.draw.circle(screen, (255,0,0,1) if self.parede else (0,255,255,1), self.joint.a.position + self.joint.anchor_a.rotated(self.joint.a.angle), 5)
 
 class Pseudo_Pino:
     def __init__(self, pos, space, ID, parede = False):

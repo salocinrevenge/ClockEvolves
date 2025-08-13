@@ -10,6 +10,7 @@ from poligono import Poligono
 from algebra import clamp
 import re
 from utils import hash
+import random
 
 class Sala():
     def __init__(self, editor = False, carregar = None) -> None:
@@ -26,44 +27,45 @@ class Sala():
             self.carregar_sala(carregar)
         elif not editor:
             self.STATE = "simulacao"
+
+            self.criar_aleatorio()
+
+            # self.objetos.append(Engrenagem(pos = (301.0, 311.0), ID = self.get_ID(), space = self.space, raio = 20, massa=10, categoria=1))
+            # a = Engrenagem(pos = (192.0, 511.0), ID = self.get_ID(), space = self.space,categoria=2)
+            # self.objetos.append(a)
+
+            # self.objetos.append(Ancora(pos = (92.0, 211.0), ID = self.get_ID(), space = self.space, massa=4, escala=0.75, categoria=2))
+            # self.objetos.append(Ancora(pos = (92.0, 311.0), ID = self.get_ID(), space = self.space, massa=4, categoria=2))
+
+            # b = Viga(pos = (192.0, 521.0), ID = self.get_ID(), space = self.space, massa=2, categoria=1)
+            # self.objetos.append(b)
+
+            # self.objetos.append(Pino(body1= a.body, ID = self.get_ID(), body2= b.body, pos = (192.0, 521.0), space = self.space))
+            # self.objetos.append(Pino(body1= a.body, ID = self.get_ID(), body2= b.body, pos = (195.0, 524.0), space = self.space))
+            
+            # engre = Engrenagem(pos = (392.0, 521.0), ID = self.get_ID(), space = self.space, raio = 50, friction=0, elasticity=0, categoria=1)
+            # self.objetos.append(engre)
+            # self.objetos.append(Pino(body1= engre.body, ID = self.get_ID(), body2= (392.0, 521.0), pos = (392.0, 521.0), space = self.space))
+
+            # roda = Engrenagem(pos = (535.0, 531.0), ID = self.get_ID(), space = self.space, raio = 50, friction=0, elasticity=0, categoria=1)
+            # self.objetos.append(roda)
+            # self.objetos.append(Pino(body1= roda.body, ID = self.get_ID(), body2= (535.0, 531.0), pos = (535.0, 531.0), space = self.space))
+
             
 
-            self.objetos.append(Engrenagem(pos = (301.0, 311.0), ID = self.get_ID(), space = self.space, raio = 20, massa=10, categoria=1))
-            a = Engrenagem(pos = (192.0, 511.0), ID = self.get_ID(), space = self.space,categoria=2)
-            self.objetos.append(a)
-
-            self.objetos.append(Ancora(pos = (92.0, 211.0), ID = self.get_ID(), space = self.space, massa=4, escala=0.75, categoria=2))
-            self.objetos.append(Ancora(pos = (92.0, 311.0), ID = self.get_ID(), space = self.space, massa=4, categoria=2))
-
-            b = Viga(pos = (192.0, 521.0), ID = self.get_ID(), space = self.space, massa=2, categoria=1)
-            self.objetos.append(b)
-
-            self.objetos.append(Pino(body1= a.body, ID = self.get_ID(), body2= b.body, pos = (192.0, 521.0), space = self.space))
-            self.objetos.append(Pino(body1= a.body, ID = self.get_ID(), body2= b.body, pos = (195.0, 524.0), space = self.space))
-            
-            engre = Engrenagem(pos = (392.0, 521.0), ID = self.get_ID(), space = self.space, raio = 50, friction=0, elasticity=0, categoria=1)
-            self.objetos.append(engre)
-            self.objetos.append(Pino(body1= engre.body, ID = self.get_ID(), body2= (392.0, 521.0), pos = (392.0, 521.0), space = self.space))
-
-            roda = Engrenagem(pos = (535.0, 531.0), ID = self.get_ID(), space = self.space, raio = 50, friction=0, elasticity=0, categoria=1)
-            self.objetos.append(roda)
-            self.objetos.append(Pino(body1= roda.body, ID = self.get_ID(), body2= (535.0, 531.0), pos = (535.0, 531.0), space = self.space))
+            # # # vigas conectadas
+            # self.objetos.append(Viga(pos = (100.0, 171.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            # self.objetos.append(Viga(pos = (120.0, 181.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
+            # self.objetos.append(Viga(pos = (100.0, 201.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            # self.objetos.append(Viga(pos = (80.0, 191.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            # self.objetos.append(Pino(pos = (100.0, 181.0), ID = self.get_ID(), space = self.space, parede=True))
 
             
-
-            # # vigas conectadas
-            self.objetos.append(Viga(pos = (100.0, 171.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
-            self.objetos.append(Viga(pos = (120.0, 181.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
-            self.objetos.append(Viga(pos = (100.0, 201.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
-            self.objetos.append(Viga(pos = (80.0, 191.0), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
-            self.objetos.append(Pino(pos = (100.0, 181.0), ID = self.get_ID(), space = self.space, parede=True))
-
-            
-            self.objetos.append(Viga(pos = (100.0, 171.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
-            self.objetos.append(Viga(pos = (120.0, 181.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
-            self.objetos.append(Viga(pos = (100.0, 201.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
-            self.objetos.append(Viga(pos = (80.0, 191.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
-            self.objetos.append(Pino(pos = (100.0, 181.0+200), ID = self.get_ID(), space = self.space, parede=False))
+            # self.objetos.append(Viga(pos = (100.0, 171.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            # self.objetos.append(Viga(pos = (120.0, 181.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
+            # self.objetos.append(Viga(pos = (100.0, 201.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
+            # self.objetos.append(Viga(pos = (80.0, 191.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
+            # self.objetos.append(Pino(pos = (100.0, 181.0+200), ID = self.get_ID(), space = self.space, parede=False))
             
         else:
             self.cria_editor()
@@ -77,6 +79,32 @@ class Sala():
         self.numero_estados_sem_repetir = 0
         self.repetiu = False
 
+    def criar_aleatorio(self):
+
+        need_create = {"engrenagem": 9, "ancora": 3, "viga": 6, "pino": 30}
+        for tipo, quantidade in need_create.items():
+            for _ in range(quantidade):
+                x = random.uniform(0+50, 800-50)
+                y = random.uniform(0+50, 800-50)
+                if tipo == "pino":
+                    if random.random() < 0.3:
+                        parede = True
+                    else:
+                        parede = False
+                    self.objetos.append(Pino(pos=(x, y), ID=self.get_ID(), space=self.space, parede=parede))
+                else:
+                    rotacao = random.uniform(0, 360)
+                    escala = random.triangular(0.50, 2.00, 0.50)
+                    categoria = random.randint(1, 2)
+                    if tipo == "engrenagem":
+                        orientation = random.triangular(-0.3, 0.3, 0)
+                        orientation = round(orientation, 1)
+                        self.objetos.append(Engrenagem(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, orientation=orientation, escala=escala, categoria=categoria))
+                    elif tipo == "ancora":
+                        self.objetos.append(Ancora(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria))
+                    elif tipo == "viga":
+                        self.objetos.append(Viga(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria))
+
     def get_ID(self):
         self.ID+=1
         return self.ID-1
@@ -84,6 +112,7 @@ class Sala():
     def build_border(self):
         positions = [((0,800), (800,800)), ((0,0), (0,800)), ((800,0), (800,800)), ((0,0), (800,0))]
         elasticity = [0.3, 0.95, 0.95, 0.95]
+        elasticity = [0, 0.95, 0.95, 0.95]
         friction = [1.8, 0.95, 0.95, 0.95]
         friction = [100,100,100,100]
         cor = (100, 100, 100, 1)
