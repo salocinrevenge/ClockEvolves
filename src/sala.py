@@ -18,6 +18,7 @@ class Sala():
 
         self.space = pymunk.Space()
         self.space.gravity = 0.0, 1000.0
+        self.dim = (800, 800)
 
         self.STATE = "edicao"
         self.objetos = []
@@ -72,6 +73,9 @@ class Sala():
         # ordena os objetos com base nas categorias se ele possuir categoria, se não, ele vai por ultimo
 
         self.objetos.sort(key = lambda x: x.categoria if hasattr(x, "categoria") else 3)
+        self.estados = dict()
+        self.numero_estados_sem_repetir = 0
+        self.repetiu = False
 
     def get_ID(self):
         self.ID+=1
@@ -81,6 +85,7 @@ class Sala():
         positions = [((0,800), (800,800)), ((0,0), (0,800)), ((800,0), (800,800)), ((0,0), (800,0))]
         elasticity = [0.3, 0.95, 0.95, 0.95]
         friction = [1.8, 0.95, 0.95, 0.95]
+        friction = [100,100,100,100]
         cor = (100, 100, 100, 1)
         for i in range(4):
             segment_shape = pymunk.Segment(self.space.static_body, positions[i][0], positions[i][1], 10)
@@ -93,11 +98,26 @@ class Sala():
             self.space.add(segment_shape)
 
     def tick(self, dt):
-        if self.STATE == "simulacao":
+        if self.STATE == "simulacao" and not self.repetiu:
+            self.numero_estados_sem_repetir += 1
             self.space.step(dt)
+            self.atualiza_estados()
 
         elif self.STATE == "edicao":
             pass
+
+    def atualiza_estados(self):
+        objetos, hash_value = hash(self.get_current_objects())
+
+        if hash_value not in self.estados:
+            self.estados[hash_value] = []
+        
+        if objetos in self.estados[hash_value]:
+            print("Estado ja existe: ", hash_value)
+            self.repetiu = True
+            return
+        self.estados[hash_value].append(objetos)
+
 
     def input(self, evento):
         if self.STATE == "edicao":
@@ -225,7 +245,9 @@ class Sala():
                     print(hash(self.get_current_objects()))
                     return
 
-                
+                if evento.key == pygame.K_v:
+                    print("Estados: ", self.estados)
+                    return
 
     def update_selected(self, rebuild = False):
         if self.peca_selecionada:

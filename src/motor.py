@@ -21,6 +21,7 @@ class Coracao():
         self.WINDOW_HEIGHT = 800
         self.FPS_PADRAO = 120.0
         self.UPDATE_CAP = 1.0/self.FPS_PADRAO
+        self.tick_time = 1.0/120.0
         self.menu = Menu()
         self.pause = False
         # Criar a janela
@@ -59,13 +60,13 @@ class Coracao():
                     unprocessedTime -= self.UPDATE_CAP  # Tempo comido
                     render = True
 
-                    self.tick(self.UPDATE_CAP)
+                    self.tick(self.tick_time)
 
                     if frameTime >= 1.0:
                             frameTime = 0
                             fps = frames
                             frames = 0
-                            print("FPS: " + str(fps))
+                            # print("FPS: " + str(fps))
 
                 # Depois de processar o tempo, renderiza
                 if render:
