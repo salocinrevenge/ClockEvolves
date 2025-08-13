@@ -3,7 +3,7 @@ from pymunk.vec2d import Vec2d
 
 def aprox(value, key):
     APROXITORS = {"rotation": 0.1, "position": 0.1, "linear_velocity": 1, "angular_velocity": 0.01 }
-    APROXITORS = {"rotation": 0.1, "position": 0.5, "linear_velocity": 5, "angular_velocity": 0.1 }
+    APROXITORS = {"rotation": 0.1, "position": 0.1, "linear_velocity": 5, "angular_velocity": 0.1 }
     if key not in APROXITORS:
         raise ValueError("Key of hash not found")
     if isinstance(value, Vec2d):
