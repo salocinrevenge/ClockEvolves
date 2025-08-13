@@ -19,7 +19,7 @@ class Coracao():
         self.WINDOW_WIDTH = 800
         self.WINDOW_HEIGHT = dimensoes[1] * 0.7
         self.WINDOW_HEIGHT = 800
-        self.FPS_PADRAO = 1200.0
+        self.FPS_PADRAO = 120.0
         self.UPDATE_CAP = 1.0/self.FPS_PADRAO
         self.tick_time = 1.0/120.0
         self.menu = Menu()

@@ -94,10 +94,10 @@ class Sala():
                     self.objetos.append(Pino(pos=(x, y), ID=self.get_ID(), space=self.space, parede=parede))
                 else:
                     rotacao = random.uniform(0, 360)
-                    escala = random.triangular(0.50, 2.00, 0.50)
+                    escala = random.triangular(0.50, 1.50, 0.50)
                     categoria = random.randint(1, 2)
                     if tipo == "engrenagem":
-                        orientation = random.triangular(-0.3, 0.3, 0)
+                        orientation = random.triangular(-0.6, 0.6, 0)/2
                         orientation = round(orientation, 1)
                         self.objetos.append(Engrenagem(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, orientation=orientation, escala=escala, categoria=categoria))
                     elif tipo == "ancora":
