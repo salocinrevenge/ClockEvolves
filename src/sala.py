@@ -21,6 +21,9 @@ class Sala():
         self.space.gravity = 0.0, 1000.0
         self.dim = (800, 800)
 
+        self.parametros_editaveis_padrao = {"x": 100, "y": 100,"escala": 100, "largura": 10, "parede": False, "angulo": 0, "orientation": 0}
+        self.limites_parametros = {"x": (10,790), "y": (10,790), "escala": (50, 200), "largura": (10,500) ,"parede": (False, True), "angulo": (0, 360), "orientation": (-0.3, 0.3)}
+
         self.STATE = "edicao"
         self.objetos = []
         if carregar:
@@ -108,6 +111,7 @@ class Sala():
                         self.objetos.append(Viga(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria))
 
     def cruzar(self, pais, percents = None, n_mut = None, taxa_mut = None):
+        print("Cruzando salas")
         if percents is None:
             percents = [1]
         if n_mut is None:
@@ -124,7 +128,7 @@ class Sala():
                     break
                 j += 1
             if hasattr(pais[j].objetos[i], "all_param"):
-                novos_parametros_objetos.append(pais[j].objetos[i].all_param)
+                novos_parametros_objetos.append(pais[j].objetos[i].all_param.copy())
                 # define tipo como nome da classe
                 novos_parametros_objetos[-1]["tipo"] = pais[j].objetos[i].__class__.__name__
 
@@ -167,7 +171,8 @@ class Sala():
         match param:
             case "escala":
                 objeto[param] *= random.uniform(1-taxa, 1+taxa)
-                objeto[param] = clamp(objeto[param], 0.1, 2)
+                mini, maxi = self.limites_parametros["escala"]
+                objeto[param] = clamp(objeto[param], mini/100, maxi/100)
             case "pos":
                 a = [0, 0]
                 for i in range(2):
@@ -462,9 +467,7 @@ class Sala():
         self.interface_editor.append(Botao(10, 10 + (self.altura_botoes+10)*3, self.largura_botoes, self.altura_botoes, "Pino", textSize = 32))
 
         self.peca_selecionada = None
-        self.parametros_editaveis_padrao = {"x": 100, "y": 100,"escala": 100, "largura": 10, "parede": False, "angulo": 0, "orientation": 0}
         self.parametros_editaveis = self.parametros_editaveis_padrao.copy()
-        self.limites_parametros = {"x": (10,790), "y": (10,790), "escala": (50, 200), "largura": (10,500) ,"parede": (False, True), "angulo": (0, 360), "orientation": (-0.3, 0.3)}
 
         self.interface_editor.append(Botao(800-10-self.largura_botoes, 800-self.altura_botoes-10, self.largura_botoes, self.altura_botoes, "Executar", textSize = 32))
 

@@ -19,6 +19,11 @@ class Botao():
         else:
             return False
         
+
+    def update_y(self, y):
+        self.y =y
+        self.rect.y = self.y
+
     def render(self, screen):
 
         if self.rect.collidepoint(pygame.mouse.get_pos()):
