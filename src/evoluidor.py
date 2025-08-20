@@ -23,8 +23,9 @@ class Evoluidor():
             self.salas.append(Sala())
 
     def reproduzir(self):
-        novas_salas = [Sala(pais = [self.salas[0]], percents = [1], n_mut = 10, taxa_mut = 0.1)]
+        novas_salas = [Sala(pais = [self.salas[0]], percents = [1], n_mut = 0, taxa_mut = 0)]
         self.salas = novas_salas
+        self.geracao += 1
 
     def avaliar_resultados(self):
         # ordena as salas com base no valor numero_estados_sem_repetir
