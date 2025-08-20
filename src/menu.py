@@ -1,6 +1,7 @@
 import pygame
 from botao import Botao
 from sala import Sala
+from evoluidor import Evoluidor
 
 class Menu():
     def __init__(self) -> None:
@@ -16,6 +17,8 @@ class Menu():
     def tick(self, dt):
         if self.STATE == "Sala":
             self.sala.tick(dt)
+        if self.STATE == "Evoluir":
+            self.evoluidor.tick(dt)
 
     def render(self, screen):
         if self.STATE == "Menu":
@@ -26,6 +29,8 @@ class Menu():
                 botao.render(screen)
         if self.STATE == "Sala":
             self.sala.render(screen)
+        if self.STATE == "Evoluir":
+            self.evoluidor.render(screen)
         
     def criarSala(self, config = "Aleatorizar"):
         self.STATE = "Sala"
@@ -36,10 +41,14 @@ class Menu():
         elif config == "Carregar":
             self.sala = Sala(carregar = "save/salvo.txt")
 
+    def criarEvoluir(self):
+        self.evoluidor = Evoluidor()
+
+
     def criaBotoesMenuPrincipal(self):
         self.botoesMenuPrincipal = []
         self.botoesMenuPrincipal.append(Botao(100, 100, 600, 150, "Criar Sala", textSize = 72))
-        self.botoesMenuPrincipal.append(Botao(100, 300, 600, 150, "Carregar Sala", textSize = 72))
+        self.botoesMenuPrincipal.append(Botao(100, 300, 600, 150, "Evoluir", textSize = 72))
         self.botoesMenuPrincipal.append(Botao(100, 500, 600, 150, "Configurações", textSize = 72))
 
     def criaBotoesMenuCriar(self):
@@ -57,6 +66,10 @@ class Menu():
                         print(clique)
                         if clique == "Criar Sala":
                             self.STATE = clique
+                            return
+                        if clique == "Evoluir":
+                            self.STATE = clique
+                            self.criarEvoluir()
                             return
             if self.STATE == "Criar Sala":
                 for botao in self.botoesMenuCriar:

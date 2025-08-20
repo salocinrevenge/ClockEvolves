@@ -1,6 +1,7 @@
 import numpy as np
 from poligono import Poligono
 from algebra import rotaciona
+import random
 
 class Engrenagem(Poligono):
     def __init__(self, ID, pos: tuple, raio = 64, dentes = None, massa = 1, space = None, elasticity = 0.6, friction = 0.1, color = None, angulo = 0, categoria = 1, escala = 1, tamanho_dente = 10, orientation = 0) -> None:

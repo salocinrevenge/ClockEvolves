@@ -13,7 +13,7 @@ from utils import hash
 import random
 
 class Sala():
-    def __init__(self, editor = False, carregar = None) -> None:
+    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None) -> None:
 
         self.ID = 0
 
@@ -25,7 +25,12 @@ class Sala():
         self.objetos = []
         if carregar:
             self.carregar_sala(carregar)
-        elif not editor:
+        elif editor:
+            self.cria_editor()
+        elif pais:
+            self.cruzar(pais, percents, n_mut, taxa_mut)
+            self.STATE = "simulacao"
+        else:
             self.STATE = "simulacao"
 
             self.criar_aleatorio()
@@ -66,9 +71,6 @@ class Sala():
             # self.objetos.append(Viga(pos = (100.0, 201.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=1))
             # self.objetos.append(Viga(pos = (80.0, 191.0+200), ID = self.get_ID(), space = self.space, massa=2, largura=100, comprimento=100, categoria=2))
             # self.objetos.append(Pino(pos = (100.0, 181.0+200), ID = self.get_ID(), space = self.space, parede=False))
-            
-        else:
-            self.cria_editor()
 
         self.build_border()
 
@@ -104,6 +106,84 @@ class Sala():
                         self.objetos.append(Ancora(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria))
                     elif tipo == "viga":
                         self.objetos.append(Viga(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria))
+
+    def cruzar(self, pais, percents = None, n_mut = None, taxa_mut = None):
+        if percents is None:
+            percents = [1]
+        if n_mut is None:
+            n_mut = 1
+        if taxa_mut is None:
+            taxa_mut = 0.1
+        novos_parametros_objetos = []
+        for i in range(len(pais[0].objetos)):
+            valor_prob = random.random() # gera um numero entre 0 e 1
+            j = 0
+            for p in percents:
+                valor_prob -= p
+                if valor_prob <= 0:
+                    break
+                j += 1
+            if hasattr(pais[j].objetos[i], "all_param"):
+                novos_parametros_objetos.append(pais[j].objetos[i].all_param)
+                # define tipo como nome da classe
+                novos_parametros_objetos[-1]["tipo"] = pais[j].objetos[i].__class__.__name__
+
+        # gera um vetor de 0 a len(novo_objetos)
+        indices = list(range(len(novos_parametros_objetos)))
+        random.shuffle(indices)
+        for i in range(n_mut):
+            print("mutando objeto: ", novos_parametros_objetos[indices[i]]["tipo"])
+            self.mutar(novos_parametros_objetos[indices[i]], taxa_mut)
+
+        novos_objetos = []
+        # recriar todos os objetos com base nos novos parametros e adicionar eles ao space atual
+        for objeto in novos_parametros_objetos:
+            objeto["space"] = self.space
+            # cria o objeto com esses parametros e o adiciona ao space
+            if objeto["tipo"] == "Pino":
+                del objeto["tipo"]
+                novos_objetos.append(Pino(**objeto))
+            elif objeto["tipo"] == "Engrenagem":
+                # remove "tipo" de objeto
+                del objeto["tipo"]
+                novos_objetos.append(Engrenagem(**objeto))
+            elif objeto["tipo"] == "Ancora":
+                del objeto["tipo"]
+                novos_objetos.append(Ancora(**objeto))
+            elif objeto["tipo"] == "Viga":
+                del objeto["tipo"]
+                novos_objetos.append(Viga(**objeto))
+
+        self.objetos = novos_objetos
+
+    def mutar(self, objeto, taxa):
+        # escolhe um parametro pra alterar
+        parametros_a_alterar = ("pos", "angulo", "escala", "orientation", "parede", "categoria")
+        while True:
+            param = random.choice(list(objeto.keys()))
+            if param in parametros_a_alterar:
+                break
+        print("param: ", param)
+        match param:
+            case "escala":
+                objeto[param] *= random.uniform(1-taxa, 1+taxa)
+                objeto[param] = clamp(objeto[param], 0.1, 2)
+            case "pos":
+                a = [0, 0]
+                for i in range(2):
+                    a[i] = objeto[param][i] * random.uniform(1-taxa, 1+taxa)
+                    a[i] = clamp(a[i], 0+50, 800-50)
+                objeto[param] = tuple(a)
+            case "orientation":
+                objeto[param] *= random.uniform(1-taxa, 1+taxa)
+                objeto[param] = clamp(objeto[param], -0.6, 0.6)
+            case "parede":
+                objeto[param] = not objeto[param]
+            case "categoria":
+                objeto[param] = 3-objeto[param]
+            case "angulo":
+                objeto[param] *= random.uniform(1-taxa, 1+taxa)
+                objeto[param] = clamp(objeto[param], 0, 360)
 
     def get_ID(self):
         self.ID+=1
@@ -276,6 +356,12 @@ class Sala():
 
                 if evento.key == pygame.K_v:
                     print("Estados: ", self.estados)
+                    return
+                
+                if evento.key == pygame.K_o:
+                    for objeto in self.objetos:
+                        if hasattr(objeto, "all_param"):
+                            print(type(objeto), objeto.all_param)
                     return
 
     def update_selected(self, rebuild = False):
