@@ -1,6 +1,8 @@
 from sala import Sala
 import os
 import threading
+import time
+import pygame
 
 class Evoluidor():
     def __init__(self):
@@ -13,7 +15,7 @@ class Evoluidor():
         self.ultimo_id = self.ultimo_id
         os.makedirs(f"save/evolucao/{self.ultimo_id}", exist_ok=True)
 
-        self.iniciar_salas(n_salas = 1) # 4
+        self.iniciar_salas(n_salas = 3) # 4
         self.geracao = 0
         self.contador = [0]
         self.state = "criando"
@@ -40,7 +42,7 @@ class Evoluidor():
         novas_salas = [Sala(pais = [self.salas[0]], percents = [1], n_mut = 0, taxa_mut = 0)]
 
         for i in range(1, len(self.salas)):
-            novas_salas.append(Sala(pais = [self.salas[0], self.salas[1], self.salas[2]], percents = [0.7, 0.2, 0.1], n_mut = 10, taxa_mut = 1))
+            novas_salas.append(Sala(pais = [self.salas[0], self.salas[1], self.salas[2]], percents = [0.7, 0.2, 0.1], n_mut = 1, taxa_mut = 1)) # n_mut = 10
         self.salas = novas_salas
         self.geracao += 1
 
@@ -70,7 +72,17 @@ class Evoluidor():
                 self.contador[0] = 0
                 self.mostrando = 0
 
-
+    def input(self, evento):
+        # se eu clicar para direita ou esquerda, muda a sala mostrada
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_RIGHT:
+                self.mostrando += 1
+                if self.mostrando >= len(self.salas):
+                    self.mostrando = 0
+            elif evento.key == pygame.K_LEFT:
+                self.mostrando -= 1
+                if self.mostrando < 0:
+                    self.mostrando = len(self.salas) - 1
 
     def render(self, screen):
         if self.salas[self.mostrando].repetiu:
@@ -87,5 +99,6 @@ def submotor(sala, finalizado, dt):
     # sala é a sala a executar e "finalizado é uma lista com 1 unico numero representando quantos individuos terminaram"
     while not sala.repetiu:
         sala.tick(dt)
+        time.sleep(0.01)
     finalizado[0] += 1
     

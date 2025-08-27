@@ -5,7 +5,7 @@ import pygame
 import numpy as np
 
 class Poligono():
-    def __init__(self, pontos, pos, ID, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1, meta_info = None, escala = 1) -> None:
+    def __init__(self, pontos, pos, ID, massa = 1, elasticity = 0, friction = 0, color = None, space = None, categoria = 1, meta_info = None, escala = 1, vel_ang = None, vel = None) -> None:
         self.ID = ID
         self.escala = escala
         if escala < 0.01:
@@ -37,6 +37,11 @@ class Poligono():
         self.space = space
         if self.space:
             self.space.add(self.body, *self.shapes)
+
+        if vel_ang:
+            self.body.angular_velocity = vel_ang
+        if vel:
+            self.body.velocity = vel
 
     def set_categoria(self, categoria, toggle = False):
         self.categoria = categoria

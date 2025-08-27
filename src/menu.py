@@ -169,3 +169,4 @@ class Menu():
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_F3:
                     self.evoluidor.toggle_debug()
+            self.evoluidor.input(evento)

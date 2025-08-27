@@ -137,6 +137,7 @@ class Sala():
                 # define tipo como nome da classe
                 novos_parametros_objetos[-1]["tipo"] = pais[j].objetos[i].__class__.__name__
 
+
         # gera um vetor de 0 a len(novo_objetos)
         indices = list(range(len(novos_parametros_objetos)))
         random.shuffle(indices)
@@ -168,11 +169,15 @@ class Sala():
     def mutar(self, objeto, taxa):
         # escolhe um parametro pra alterar
         parametros_a_alterar = ("pos", "angulo", "escala", "orientation", "parede", "categoria")
+        parametros_a_alterar = ("angulo", "escala", "orientation", "parede", "categoria", "vel", "vel_ang")
+        parametros_a_alterar = ("vel", "vel_ang")
         while True:
-            param = random.choice(list(objeto.keys()))
-            if param in parametros_a_alterar:
-                break
-        # print("param: ", param)
+            param = random.choice(parametros_a_alterar)
+            break
+            # param = random.choice(list(objeto.keys()))
+            # if param in parametros_a_alterar or param in ("vel", "vel_ang"):
+                # break
+        print("param: ", param)
         match param:
             case "escala":
                 objeto[param] *= random.uniform(1-taxa, 1+taxa)
@@ -194,6 +199,11 @@ class Sala():
             case "angulo":
                 objeto[param] *= random.uniform(1-taxa, 1+taxa)
                 objeto[param] = clamp(objeto[param], 0, 360)
+            case "vel":
+                # seta a velocidade do objeto para um vetor aleatorio
+                objeto[param] = (random.uniform(-100, 100), random.uniform(-100, 100))
+            case "vel_ang":
+                objeto[param] = random.uniform(-100, 100)
 
     def get_ID(self):
         self.ID+=1
