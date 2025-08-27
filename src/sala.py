@@ -11,9 +11,10 @@ from algebra import clamp
 import re
 from utils import hash
 import random
+import time
 
 class Sala():
-    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None) -> None:
+    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False) -> None:
 
         self.ID = 0
 
@@ -24,16 +25,18 @@ class Sala():
         self.parametros_editaveis_padrao = {"x": 100, "y": 100,"escala": 100, "largura": 10, "parede": False, "angulo": 0, "orientation": 0}
         self.limites_parametros = {"x": (10,790), "y": (10,790), "escala": (50, 200), "largura": (10,500) ,"parede": (False, True), "angulo": (0, 360), "orientation": (-0.3, 0.3)}
 
+        self.debug = False
         self.STATE = "edicao"
         self.objetos = []
         if carregar:
             self.carregar_sala(carregar)
-        elif editor:
+            self.STATE = "simulacao"
+        if editor:
             self.cria_editor()
         elif pais:
             self.cruzar(pais, percents, n_mut, taxa_mut)
             self.STATE = "simulacao"
-        else:
+        elif aleatorio:
             self.STATE = "simulacao"
 
             self.criar_aleatorio()
@@ -83,6 +86,8 @@ class Sala():
         self.estados = dict()
         self.numero_estados_sem_repetir = 0
         self.repetiu = False
+        self.contador_debug = 0
+        self.times = dict()
 
     def criar_aleatorio(self):
 
@@ -136,7 +141,7 @@ class Sala():
         indices = list(range(len(novos_parametros_objetos)))
         random.shuffle(indices)
         for i in range(n_mut):
-            print("mutando objeto: ", novos_parametros_objetos[indices[i]]["tipo"])
+            # print("mutando objeto: ", novos_parametros_objetos[indices[i]]["tipo"])
             self.mutar(novos_parametros_objetos[indices[i]], taxa_mut)
 
         novos_objetos = []
@@ -167,7 +172,7 @@ class Sala():
             param = random.choice(list(objeto.keys()))
             if param in parametros_a_alterar:
                 break
-        print("param: ", param)
+        # print("param: ", param)
         match param:
             case "escala":
                 objeto[param] *= random.uniform(1-taxa, 1+taxa)
@@ -211,11 +216,34 @@ class Sala():
             self.objetos.append(segment_shape)
             self.space.add(segment_shape)
 
+
     def tick(self, dt):
+        if self.debug:
+            if self.contador_debug == 0:
+                self.times = dict()
+            self.contador_debug += 1
+            if self.contador_debug == 1000:
+                self.contador_debug = 0
+
         if self.STATE == "simulacao" and not self.repetiu:
             self.numero_estados_sem_repetir += 1
+            continuar = False
+            if self.debug:  # marcar tempo
+                if "simulacao" not in self.times:
+                    self.times["simulacao"] = 0
+                tempo = time.perf_counter()
+                continuar = True
             self.space.step(dt)
+            if self.debug and continuar: # marcar tempo
+                self.times["simulacao"] += (time.perf_counter() - tempo)
+                if "atualizar_estados" not in self.times:
+                    self.times["atualizar_estados"] = 0
+                tempo = time.perf_counter()
+
             self.atualiza_estados()
+
+            if self.debug and continuar:
+                self.times["atualizar_estados"] += (time.perf_counter() - tempo)
 
         elif self.STATE == "edicao":
             pass
@@ -302,7 +330,7 @@ class Sala():
                 return
 
             if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_ESCAPE:
+                if evento.key == pygame.K_BACKSPACE:
                     # remove do espaco
                     if self.peca_selecionada:
                         self.space.remove(self.peca_selecionada.body, *self.peca_selecionada.shapes)
@@ -430,8 +458,6 @@ class Sala():
                     self.objetos.append(obj)
                 
 
-        self.cria_editor()
-        # self.STATE = "simulacao"
 
     def render(self, screen):
         # if self.draw_options is None:
@@ -446,14 +472,32 @@ class Sala():
                     pygame.draw.line(screen, (50,50,50), (0,i), (800,i), 1)
 
 
-
+        if self.debug:
+            if "render" not in self.times:
+                self.times["render"] = 0
+            tempo = time.perf_counter()
         for objeto in self.objetos:
             if isinstance(objeto, pymunk.Segment):
                 pygame.draw.lines(screen, objeto.color, False, [objeto.a, objeto.b], 10)
             else:
                 objeto.render(screen)
         # nova adicao
-        
+        if self.debug:
+            try:
+                self.times["render"] += (time.perf_counter() - tempo)
+            except:
+                pass
+
+            # desenha um grafico de pizza no canto inferior direito, mostrando cada tempo gasto
+            total_time = sum(self.times.values())
+            if total_time > 0:
+                for i, (key, value) in enumerate(self.times.items()):
+                    pygame.draw.rect(screen, (255, 0, 0), (800 - 100, 600 - 100 + i * 20, 80, 10))
+                    pygame.draw.rect(screen, (0, 255, 0), (800 - 100, 600 - 100 + i * 20, 80 * (value / total_time), 10))
+                    font = pygame.font.Font(None, 12)
+                    text = font.render(f"{key}: {(value / total_time):.2f}%", True, (255, 255, 255))
+                    screen.blit(text, (800 - 100, 600 - 100 + i * 20))
+
         if self.STATE == "edicao":
             self.desenha_editor(screen)
 

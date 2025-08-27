@@ -41,7 +41,7 @@ class Menu():
     def criarSala(self, config = "Aleatorizar"):
         self.STATE = "Sala"
         if config == "Aleatorizar":
-            self.sala = Sala()
+            self.sala = Sala(aleatorio=True)
         elif config == "Criar":
             self.sala = Sala(editor=True)
         elif config == "Carregar":
@@ -99,51 +99,53 @@ class Menu():
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_ESCAPE:
                 self.STATE = "Menu"
-            return
+                return
         if evento.type == pygame.MOUSEBUTTONDOWN:
-            if self.STATE == "Menu":
-                for botao in self.botoesMenuPrincipal:
-                    clique = botao.identificaClique(evento.pos)
-                    if clique:
-                        print(clique)
-                        if clique == "Criar Sala":
-                            self.STATE = clique
-                            return
-                        if clique == "Evoluir":
-                            self.STATE = clique
-                            self.criarEvoluir()
+            # se for o botao esquerdo
+            if evento.button == 1:
+                if self.STATE == "Menu":
+                    for botao in self.botoesMenuPrincipal:
+                        clique = botao.identificaClique(evento.pos)
+                        if clique:
+                            print(clique)
+                            if clique == "Criar Sala":
+                                self.STATE = clique
+                                return
+                            if clique == "Evoluir":
+                                self.STATE = clique
+                                self.criarEvoluir()
+                                return
+
+                elif self.STATE == "Criar Sala":
+                        for botao in self.botoesMenuCriar:
+                            clique = botao.identificaClique(evento.pos)
+                            if clique:
+                                print(clique)
+                                self.criarSala(config = clique)
+                                return
+
+                elif self.STATE == "Selecionar Arquivo":
+                        if self.botao_voltar.identificaClique(evento.pos):
+                            pai = os.path.dirname(self.caminho_atual)
+                            if pai == "":
+                                pai = "save"
+                            self.abrirSelecaoArquivos(pai)
                             return
 
-            elif self.STATE == "Criar Sala":
-                for botao in self.botoesMenuCriar:
-                    clique = botao.identificaClique(evento.pos)
-                    if clique:
-                        print(clique)
-                        self.criarSala(config = clique)
-                        return
-
-            elif self.STATE == "Selecionar Arquivo":
-                if self.botao_voltar.identificaClique(evento.pos):
-                    pai = os.path.dirname(self.caminho_atual)
-                    if pai == "":
-                        pai = "save"
-                    self.abrirSelecaoArquivos(pai)
-                    return
-
-                for botao in self.arquivosMenu:
-                    clique = botao.identificaClique(evento.pos)
-                    if clique:
-                        print("Selecionado:", clique)
-                        if clique.startswith("[DIR]"):
-                            pasta = clique.replace("[DIR] ", "")
-                            self.abrirSelecaoArquivos(os.path.join(self.caminho_atual, pasta))
-                            return
-                        else:
-                            arquivo = os.path.join(self.caminho_atual, clique)
-                            if arquivo.endswith(".txt"):
-                                self.STATE = "Sala"
-                                self.sala = Sala(carregar=arquivo)
-                            return
+                        for botao in self.arquivosMenu:
+                            clique = botao.identificaClique(evento.pos)
+                            if clique:
+                                print("Selecionado:", clique)
+                                if clique.startswith("[DIR]"):
+                                    pasta = clique.replace("[DIR] ", "")
+                                    self.abrirSelecaoArquivos(os.path.join(self.caminho_atual, pasta))
+                                    return
+                                else:
+                                    arquivo = os.path.join(self.caminho_atual, clique)
+                                    if arquivo.endswith(".txt"):
+                                        self.STATE = "Sala"
+                                        self.sala = Sala(carregar=arquivo, editor=True)
+                                    return
 
         elif evento.type == pygame.MOUSEWHEEL:
             if self.STATE == "Selecionar Arquivo":
@@ -157,4 +159,13 @@ class Menu():
         
 
         if self.STATE == "Sala":
+            # se pressionado F3, habilitar vizualização debug
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_F3:
+                    self.sala.debug = not self.sala.debug
             self.sala.input(evento)
+
+        if self.STATE == "Evoluir":
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_F3:
+                    self.evoluidor.toggle_debug()

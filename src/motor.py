@@ -110,6 +110,7 @@ class Coracao():
                     self.FPS_PADRAO = max(3.0, self.FPS_PADRAO - 19)
                     self.UPDATE_CAP = 1.0/self.FPS_PADRAO
                     print("FPS: " + str(self.FPS_PADRAO))
+            
             self.menu.input(event)
 
     def dispose(self):      # metodo chamado quando o jogo fecha

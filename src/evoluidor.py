@@ -13,17 +13,23 @@ class Evoluidor():
         self.ultimo_id = self.ultimo_id
         os.makedirs(f"save/evolucao/{self.ultimo_id}", exist_ok=True)
 
-        self.iniciar_salas(n_salas = 4)
+        self.iniciar_salas(n_salas = 1) # 4
         self.geracao = 0
         self.contador = [0]
         self.state = "criando"
+        self.mostrando = 0
+        self.debug = False
+
+    def toggle_debug(self):
+        for sala in self.salas:
+            sala.debug = not sala.debug
 
     def iniciar_salas(self, n_salas):
         with open(f"save/evolucao/{self.ultimo_id}/n_estados.txt", "w") as f:
             f.write(f"{n_salas} individuos \n")
         self.salas = []
         for _ in range(n_salas):
-            self.salas.append(Sala())
+            self.salas.append(Sala(carregar="save/salvo.txt"))
 
     def colocar_outras_em_threads(self):
         for sala in self.salas:
@@ -59,14 +65,22 @@ class Evoluidor():
         elif self.state == "rodando":
             if self.contador[0] == len(self.salas):
                 self.state = "criando"
-                print("ta na hora de reproduzir")
                 self.avaliar_resultados()
                 self.reproduzir()
                 self.contador[0] = 0
+                self.mostrando = 0
+
 
 
     def render(self, screen):
-        self.salas[0].render(screen)
+        if self.salas[self.mostrando].repetiu:
+            while self.salas[self.mostrando].repetiu:
+                self.mostrando += 1
+                if self.mostrando >= len(self.salas):
+                    self.mostrando = 0
+                    break
+
+        self.salas[self.mostrando].render(screen)
 
 
 def submotor(sala, finalizado, dt):
