@@ -1,6 +1,7 @@
 from sala import Sala
 import os
 import threading
+import time
 
 class Evoluidor():
     def __init__(self):
@@ -87,5 +88,6 @@ def submotor(sala, finalizado, dt):
     # sala é a sala a executar e "finalizado é uma lista com 1 unico numero representando quantos individuos terminaram"
     while not sala.repetiu:
         sala.tick(dt)
+        time.sleep(0.01)
     finalizado[0] += 1
     

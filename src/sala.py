@@ -181,7 +181,7 @@ class Sala():
             case "pos":
                 a = [0, 0]
                 for i in range(2):
-                    a[i] = objeto[param][i] * random.uniform(1-taxa, 1+taxa)
+                    a[i] = objeto[param][i] * random.uniform(1-taxa*100, 1+taxa*100)
                     a[i] = clamp(a[i], 0+50, 800-50)
                 objeto[param] = tuple(a)
             case "orientation":
