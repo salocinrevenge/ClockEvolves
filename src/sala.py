@@ -284,7 +284,7 @@ class Sala():
                     self.estados[i][hash_value] = []
 
                 if objetos in self.estados[i][hash_value]:
-                    print("Estado ja existe: ", hash_value, "score da peca: ", self.numero_estados_sem_repetir, "tipo da peca: ", obj)
+                    # print("Estado ja existe: ", hash_value, "score da peca: ", self.numero_estados_sem_repetir, "tipo da peca: ", obj)
                     self.pecas_repetiram[i] = True
                     continue
                 todos_repetiram = False
