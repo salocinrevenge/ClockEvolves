@@ -5,7 +5,8 @@ import time
 import pygame
 
 class Evoluidor():
-    def __init__(self):
+    def __init__(self, n_salas = 4, save = None):
+        # save = "save/salvo.txt"
         os.makedirs("save/evolucao", exist_ok=True)
         self.ultimo_id = 0
         while True:
@@ -15,23 +16,27 @@ class Evoluidor():
         self.ultimo_id = self.ultimo_id
         os.makedirs(f"save/evolucao/{self.ultimo_id}", exist_ok=True)
 
-        self.iniciar_salas(n_salas = 3) # 4
+        self.iniciar_salas(n_salas = n_salas, save = save) # 4
         self.geracao = 0
         self.contador = [0]
         self.state = "criando"
         self.mostrando = 0
         self.debug = False
+        self.n_geracoes = 0
 
     def toggle_debug(self):
         for sala in self.salas:
             sala.debug = not sala.debug
 
-    def iniciar_salas(self, n_salas):
+    def iniciar_salas(self, n_salas, save):
         with open(f"save/evolucao/{self.ultimo_id}/n_estados.txt", "w") as f:
             f.write(f"{n_salas} individuos \n")
         self.salas = []
         for _ in range(n_salas):
-            self.salas.append(Sala(carregar="save/salvo.txt"))
+            if save:
+                self.salas.append(Sala(carregar=save))
+            else:
+                self.salas.append(Sala(aleatorio=True))
 
     def colocar_outras_em_threads(self):
         for sala in self.salas:
@@ -102,3 +107,11 @@ def submotor(sala, finalizado, dt):
         time.sleep(0.01)
     finalizado[0] += 1
     
+
+# if main
+if __name__ == "__main__":
+    evoluidor = Evoluidor(n_salas=10, save=None)
+
+    tick_time = 1.0/120.0
+    while evoluidor.geracao < 100:
+        evoluidor.tick(tick_time)
