@@ -14,7 +14,12 @@ import random
 import time
 
 class Sala():
-    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False) -> None:
+    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "local") -> None:
+        """
+        
+        
+        tipo_hash = "local" / "global"
+        """
 
         self.ID = 0
 
@@ -88,6 +93,7 @@ class Sala():
         self.repetiu = False
         self.contador_debug = 0
         self.times = dict()
+        self.tipo_hash = tipo_hash
 
     def criar_aleatorio(self):
 
@@ -249,16 +255,44 @@ class Sala():
             pass
 
     def atualiza_estados(self):
-        objetos, hash_value = hash(self.get_current_objects())
 
-        if hash_value not in self.estados:
-            self.estados[hash_value] = []
-        
-        if objetos in self.estados[hash_value]:
-            print("Estado ja existe: ", hash_value, "score da simulacao: ", self.numero_estados_sem_repetir)
-            self.repetiu = True
-            return
-        self.estados[hash_value].append(objetos)
+        if self.tipo_hash == "global":
+            objetos, hash_value = hash(self.get_current_objects())
+
+            if hash_value not in self.estados:
+                self.estados[hash_value] = []
+            
+            if objetos in self.estados[hash_value]:
+                print("Estado ja existe: ", hash_value, "score da simulacao: ", self.numero_estados_sem_repetir)
+                self.repetiu = True
+                return
+            self.estados[hash_value].append(objetos)
+        elif self.tipo_hash == "local":
+            # se ainda n tem pecas_repetiram criar atributo disso
+            if not hasattr(self, "pecas_repetiram"):
+                self.pecas_repetiram = []
+                for i in range(len(self.get_current_objects())):
+                    self.pecas_repetiram.append(False)
+            todos_repetiram = True
+            for i, obj in enumerate(self.get_current_objects()):
+                if self.pecas_repetiram[i]:
+                    continue
+                objetos, hash_value = hash([obj])
+                if i not in self.estados:
+                    self.estados[i] = dict()
+                if hash_value not in self.estados[i]:
+                    self.estados[i][hash_value] = []
+
+                if objetos in self.estados[i][hash_value]:
+                    print("Estado ja existe: ", hash_value, "score da peca: ", self.numero_estados_sem_repetir, "tipo da peca: ", obj)
+                    self.pecas_repetiram[i] = True
+                    continue
+                todos_repetiram = False
+                self.estados[i][hash_value].append(objetos)
+            if todos_repetiram:
+                self.repetiu = True
+        else:
+            raise ValueError("Tipo de hash invalido")
 
 
     def input(self, evento):
