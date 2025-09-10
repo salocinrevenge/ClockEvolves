@@ -151,7 +151,7 @@ class Sala():
         for i in range(n_mut):
             # print("mutando objeto: ", novos_parametros_objetos[indices[i]]["tipo"])
             self.mutar(novos_parametros_objetos[indices[i]], taxa_mut)
-
+        
         novos_objetos = []
         # recriar todos os objetos com base nos novos parametros e adicionar eles ao space atual
         for objeto in novos_parametros_objetos:
