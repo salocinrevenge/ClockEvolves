@@ -1,4 +1,5 @@
 from pymunk.vec2d import Vec2d
+import copy
 
 
 def aprox(value, key):
@@ -31,6 +32,7 @@ def limitar(value, key):
         return max(min(value, LIMITER[key]), -LIMITER[key])
 
 def hash(objects):
+    objects = copy.deepcopy(objects)
     # aprox
     hash = 0
     for object in objects:

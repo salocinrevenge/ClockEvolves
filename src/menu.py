@@ -48,7 +48,7 @@ class Menu():
             self.abrirSelecaoArquivos("save")
 
     def criarEvoluir(self):
-        self.evoluidor = Evoluidor()
+        self.evoluidor = Evoluidor(save = "save/salvo.txt")
 
 
     def criaBotoesMenuPrincipal(self):

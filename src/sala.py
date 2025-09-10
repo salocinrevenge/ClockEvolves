@@ -14,11 +14,11 @@ import random
 import time
 
 class Sala():
-    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "local") -> None:
+    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "repeat") -> None:
         """
         
         
-        tipo_hash = "local" / "global"
+        tipo_hash = "local" / "global" / "repeat"
         """
 
         self.ID = 0
@@ -94,6 +94,7 @@ class Sala():
         self.contador_debug = 0
         self.times = dict()
         self.tipo_hash = tipo_hash
+        self.pontos = 0
 
     def criar_aleatorio(self):
 
@@ -253,6 +254,9 @@ class Sala():
 
         elif self.STATE == "edicao":
             pass
+ 
+    def pontuar(self, a, b, c): #  atual, anterior, preanterior
+        return max(b-c-abs(a-b-(b-c)), 0)
 
     def atualiza_estados(self):
 
@@ -265,6 +269,7 @@ class Sala():
             if objetos in self.estados[hash_value]:
                 print("Estado ja existe: ", hash_value, "score da simulacao: ", self.numero_estados_sem_repetir)
                 self.repetiu = True
+                self.pontos = self.numero_estados_sem_repetir
                 return
             self.estados[hash_value].append(objetos)
         elif self.tipo_hash == "local":
@@ -291,6 +296,50 @@ class Sala():
                 self.estados[i][hash_value].append(objetos)
             if todos_repetiram:
                 self.repetiu = True
+                self.pontos = self.numero_estados_sem_repetir
+                
+        elif self.tipo_hash == "repeat":
+            # se ainda n tem pecas_repetiram criar atributo disso
+            objetos_atualmente = self.get_current_objects()
+            objetos, hash_value_geral = hash(objetos_atualmente)
+
+            if hash_value_geral not in self.estados:
+                self.estados[hash_value_geral] = []
+            
+            if objetos in self.estados[hash_value_geral]:
+                print("Estado ja existe: ", hash_value_geral, "numero de estados da simulacao: ", self.numero_estados_sem_repetir)
+                self.repetiu = True
+                for i in range(len(objetos_atualmente)):
+                    self.pontos = max(self.pontos, self.tempos_pecas[i][0])
+                self.pontos+= self.numero_estados_sem_repetir
+                print("Pontos: ", self.pontos)
+                return
+            self.estados[hash_value_geral].append(objetos.copy())
+            # print(len(self.estados[hash_value_geral]))
+            # if len(self.estados[hash_value_geral]) > 3:
+                # print(self.estados[hash_value_geral][-4], self.estados[hash_value_geral][-3], self.estados[hash_value_geral][-2], self.estados[hash_value_geral][-1], objetos)
+
+
+            if not hasattr(self, "tempos_pecas"):   # cria um dicionario para cada peça
+                self.tempos_pecas = []
+                for i in range(len(objetos_atualmente)):
+                    self.tempos_pecas.append([0,dict()])    # pontos, dicionario
+            for i, obj in enumerate(objetos_atualmente):    # atualiza o estado atual de cada peça
+                objetos, hash_value = hash([obj])
+                if hash_value not in self.tempos_pecas[i][1]:
+                    self.tempos_pecas[i][1][hash_value] = [[],[]] # objetos 
+                try: # procurar os objetos na lista, se não existir, adicionar
+                    index = self.tempos_pecas[i][1][hash_value][0].index(objetos)
+                except: 
+                    self.tempos_pecas[i][1][hash_value][0].append(objetos)
+                    self.tempos_pecas[i][1][hash_value][1].append([0,0])
+                    index = -1
+                self.tempos_pecas[i][1][hash_value][1][index].append(self.numero_estados_sem_repetir)
+                self.tempos_pecas[i][0] += self.pontuar(self.tempos_pecas[i][1][hash_value][1][index][-1], self.tempos_pecas[i][1][hash_value][1][index][-2], self.tempos_pecas[i][1][hash_value][1][index][-3])
+
+                
+
+                
         else:
             raise ValueError("Tipo de hash invalido")
 
@@ -473,13 +522,6 @@ class Sala():
                     line = line.strip()
                     if line == "":
                         continue
-
-                    """
-                    <ancora.Ancora object at 0x796d7a358470> dict:{'pos': (61, 157), 'ID': 0, 'escala': 1, 'angulo': 0, 'massa': 1, 'space': <pymunk.space.Space object at 0x796d7a3584d0>, 'elasticity': 0.3, 'friction': 1.0, 'color': (215, 111, 126, 1), 'categoria': 1, '__class__': <class 'ancora.Ancora'>}
-                    <ancora.Ancora object at 0x796d7a3594f0> dict:{'pos': (47, 173), 'ID': 1, 'escala': 1, 'angulo': 0, 'massa': 1, 'space': <pymunk.space.Space object at 0x796d7a3584d0>, 'elasticity': 0.3, 'friction': 1.0, 'color': (226, 76, 153, 1), 'categoria': 1, '__class__': <class 'ancora.Ancora'>}
-                    <pino.Pino object at 0x796d7acfdac0> dict:{'pos': Vec2d(289.0, 281.0), 'space': <pymunk.space.Space object at 0x796d7a3584d0>, 'ID': 3, 'body1': None, 'body2': None, 'parede': False}
-                    
-                    """
                     params_str = line.split("dict:")[1]
                     params_str = re.sub(r'<pymunk[^>]*>', '\'criar\'', params_str)
                     params = eval(params_str)

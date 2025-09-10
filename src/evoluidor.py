@@ -4,7 +4,7 @@ import threading
 import time
 
 class Evoluidor():
-    def __init__(self, n_salas = 4, save = None):
+    def __init__(self, n_salas = 3, save = None):
         # save = "save/salvo.txt"
         os.makedirs("save/evolucao", exist_ok=True)
         self.ultimo_id = 0
@@ -22,6 +22,7 @@ class Evoluidor():
         self.mostrando = 0
         self.debug = False
         self.n_geracoes = 0
+        self.vou_recriar = 3
 
     def toggle_debug(self):
         for sala in self.salas:
@@ -69,12 +70,15 @@ class Evoluidor():
             self.colocar_outras_em_threads()
 
         elif self.state == "rodando":
-            if self.contador[0] == len(self.salas):
-                self.state = "criando"
-                self.avaliar_resultados()
-                self.reproduzir()
-                self.contador[0] = 0
-                self.mostrando = 0
+            if self.contador[0] >= len(self.salas)-1:
+                self.vou_recriar -=1
+                if self.vou_recriar == 0:
+                    self.state = "criando"
+                    self.avaliar_resultados()
+                    self.reproduzir()
+                    self.contador[0] = 0
+                    self.mostrando = 0
+                    self.vou_recriar = 3
 
 
 
