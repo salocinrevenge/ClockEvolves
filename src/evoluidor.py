@@ -21,6 +21,8 @@ class Evoluidor():
         self.debug = False
         self.n_geracoes = 0
         self.vou_recriar = 3
+        self.n_mut = 10
+        self.n_mut = 1
 
     def toggle_debug(self):
         for sala in self.salas:
@@ -47,16 +49,16 @@ class Evoluidor():
     def reproduzir(self):
         novas_salas = [Sala(pais = [self.salas[0]], percents = [1], n_mut = 0, taxa_mut = 0)]
         for i in range(1, len(self.salas)):
-            novas_salas.append(Sala(pais = [self.salas[0], self.salas[1], self.salas[2]], percents = [0.7, 0.2, 0.1], n_mut = 10, taxa_mut = 1))
+            novas_salas.append(Sala(pais = [self.salas[0], self.salas[1], self.salas[2]], percents = [0.7, 0.2, 0.1], n_mut = self.n_mut, taxa_mut = 1))
         self.salas = novas_salas
         self.geracao += 1
 
     def avaliar_resultados(self):
-        self.salas.sort(key=lambda sala: sala.numero_estados_sem_repetir, reverse=True)
+        self.salas.sort(key=lambda sala: sala.pontos, reverse=True)
         self.salas[0].salvar_sala(f"save/evolucao/{self.ultimo_id}/{self.geracao}.txt")
         n_estados = []
         for sala in self.salas:
-            n_estados.append(sala.numero_estados_sem_repetir)
+            n_estados.append(sala.pontos)
         with open(f"save/evolucao/{self.ultimo_id}/n_estados.txt", "a") as f:
             f.write(f"\nGeracao {self.geracao}: " + " ".join(map(str, n_estados)))
 
@@ -67,7 +69,7 @@ class Evoluidor():
             self.colocar_outras_em_processos()
 
         elif self.state == "rodando":
-            if self.contador.value >= len(self.salas):
+            if self.contador.value >= len(self.salas)-1:
                 self.vou_recriar -= 1
                 if self.vou_recriar == 0:
                     self.state = "criando"

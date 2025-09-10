@@ -99,6 +99,7 @@ class Sala():
     def criar_aleatorio(self):
 
         need_create = {"engrenagem": 9, "ancora": 3, "viga": 6, "pino": 30}
+        need_create = {"engrenagem": 0, "ancora": 0, "viga": 1, "pino": 0}
         for tipo, quantidade in need_create.items():
             for _ in range(quantidade):
                 x = random.uniform(0+50, 800-50)
