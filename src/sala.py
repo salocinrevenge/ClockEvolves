@@ -99,7 +99,7 @@ class Sala():
     def criar_aleatorio(self):
 
         need_create = {"engrenagem": 9, "ancora": 3, "viga": 6, "pino": 30}
-        need_create = {"engrenagem": 0, "ancora": 0, "viga": 1, "pino": 0}
+        # need_create = {"engrenagem": 0, "ancora": 0, "viga": 1, "pino": 0}
         for tipo, quantidade in need_create.items():
             for _ in range(quantidade):
                 x = random.uniform(0+50, 800-50)
@@ -176,6 +176,7 @@ class Sala():
     def mutar(self, objeto, taxa):
         # escolhe um parametro pra alterar
         parametros_a_alterar = ("pos", "angulo", "escala", "orientation", "parede", "categoria")
+        # parametros_a_alterar = ("pos")
         while True:
             param = random.choice(list(objeto.keys()))
             if param in parametros_a_alterar:

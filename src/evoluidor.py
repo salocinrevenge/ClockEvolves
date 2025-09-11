@@ -1,7 +1,7 @@
 from sala import Sala
 import os
-import multiprocessing
 import time
+from concurrent.futures import ProcessPoolExecutor
 
 class Evoluidor():
     def __init__(self, n_salas = 3, save = None):
@@ -15,14 +15,14 @@ class Evoluidor():
 
         self.iniciar_salas(n_salas = n_salas, save = save)
         self.geracao = 0
-        self.contador = multiprocessing.Value('i', 0)
         self.state = "criando"
         self.mostrando = 0
         self.debug = False
         self.n_geracoes = 0
         self.vou_recriar = 3
         self.n_mut = 10
-        self.n_mut = 1
+        # self.n_mut = 1
+        self.executor = ProcessPoolExecutor()
 
     def toggle_debug(self):
         for sala in self.salas:
@@ -39,11 +39,9 @@ class Evoluidor():
                 self.salas.append(Sala(aleatorio=True))
 
     def colocar_outras_em_processos(self):
-        self.processos = []
-        for sala in self.salas:
-            p = multiprocessing.Process(target=submotor, args=(sala, self.contador, self.dt))
-            p.start()
-            self.processos.append(p)
+        # Agora usamos ProcessPoolExecutor para rodar e receber salas atualizadas
+        futures = [self.executor.submit(submotor, sala, self.dt) for sala in self.salas]
+        self.process_results = futures
         self.state = "rodando"
 
     def reproduzir(self):
@@ -55,6 +53,8 @@ class Evoluidor():
 
     def avaliar_resultados(self):
         self.salas.sort(key=lambda sala: sala.pontos, reverse=True)
+        for i in range(len(self.salas)):
+            print(f"sala {i}: ", self.salas[i].pontos)
         self.salas[0].salvar_sala(f"save/evolucao/{self.ultimo_id}/{self.geracao}.txt")
         n_estados = []
         for sala in self.salas:
@@ -69,20 +69,16 @@ class Evoluidor():
             self.colocar_outras_em_processos()
 
         elif self.state == "rodando":
-            if self.contador.value >= len(self.salas)-1:
+            if all(f.done() for f in self.process_results):
+                # Coletar resultados das salas atualizadas
+                self.salas = [f.result() for f in self.process_results]
                 self.vou_recriar -= 1
                 if self.vou_recriar == 0:
                     self.state = "criando"
                     self.avaliar_resultados()
                     self.reproduzir()
-                    self.contador.value = 0
                     self.mostrando = 0
                     self.vou_recriar = 3
-                    # Finaliza processos antigos
-                    for p in self.processos:
-                        if p.is_alive():
-                            p.terminate()
-                    self.processos = []
 
     def render(self, screen):
         if self.salas[self.mostrando].repetiu:
@@ -94,15 +90,13 @@ class Evoluidor():
 
         self.salas[self.mostrando].render(screen)
 
-def submotor(sala, finalizado, dt):
+def submotor(sala, dt):
     while not sala.repetiu:
         sala.tick(dt)
         time.sleep(0.01)
-    with finalizado.get_lock():
-        finalizado.value += 1
+    return sala  # <- devolve a sala modificada
 
 if __name__ == "__main__":
-    multiprocessing.set_start_method('spawn')  # Importante para compatibilidade cross-platform
     evoluidor = Evoluidor(n_salas=10, save=None)
 
     tick_time = 1.0/120.0
