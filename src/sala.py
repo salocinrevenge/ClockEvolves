@@ -14,7 +14,7 @@ import random
 import time
 
 class Sala():
-    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "repeat") -> None:
+    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "3 tempos") -> None:
         """
         
         
@@ -338,8 +338,36 @@ class Sala():
                     index = -1
                 self.tempos_pecas[i][1][hash_value][1][index].append(self.numero_estados_sem_repetir)
                 self.tempos_pecas[i][0] += self.pontuar(self.tempos_pecas[i][1][hash_value][1][index][-1], self.tempos_pecas[i][1][hash_value][1][index][-2], self.tempos_pecas[i][1][hash_value][1][index][-3])
+        elif self.tipo_hash == "3 tempos":
+            # se ainda n tem pecas_repetiram criar atributo disso
+            if not hasattr(self, "pecas_repetiram"):
+                self.pecas_repetiram = []
+                for i in range(len(self.get_current_objects())):
+                    self.pecas_repetiram.append([])
+            if not hasattr(self, "ultima_repetir"):
+                self.ultima_repetir = None
+            todos_repetiram = True
+            for i, obj in enumerate(self.get_current_objects()):
+                if len(self.pecas_repetiram[i]) >= 3:
+                    continue
+                objetos, hash_value = hash([obj], hard = True)
+                if i not in self.estados:
+                    self.estados[i] = dict()
+                if hash_value not in self.estados[i]:
+                    self.estados[i][hash_value] = []
 
-                
+                if objetos in self.estados[i][hash_value]:
+                    # print("Estado ja existe: ", hash_value, "score da peca: ", self.numero_estados_sem_repetir, "tipo da peca: ", obj)
+                    self.pecas_repetiram[i].append(self.numero_estados_sem_repetir)
+                    self.ultima_repetir = i
+                    todos_repetiram = False
+                    continue
+                todos_repetiram = False
+                self.estados[i][hash_value].append(objetos)
+            if todos_repetiram:
+                self.repetiu = True
+                self.pontos = self.pontuar(self.pecas_repetiram[self.ultima_repetir][2], self.pecas_repetiram[self.ultima_repetir][1], self.pecas_repetiram[self.ultima_repetir][0])
+                print(f"Todas pecas repetiram pelo menos 3 vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.ultima_repetir}, estados: {self.pecas_repetiram[self.ultima_repetir]}")
 
                 
         else:

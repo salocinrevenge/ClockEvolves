@@ -2,9 +2,11 @@ from pymunk.vec2d import Vec2d
 import copy
 
 
-def aprox(value, key):
-    APROXITORS = {"rotation": 0.1, "position": 0.1, "linear_velocity": 1, "angular_velocity": 0.01 }
-    APROXITORS = {"rotation": 0.1, "position": 0.1, "linear_velocity": 5, "angular_velocity": 0.1 }
+def aprox(value, key, hard):
+    if hard:
+        APROXITORS = {"rotation": 0.1, "position": 0.1, "linear_velocity": 1, "angular_velocity": 0.1 }
+    else:
+        APROXITORS = {"rotation": 0.1, "position": 0.1, "linear_velocity": 5, "angular_velocity": 0.1 }
     if key not in APROXITORS:
         raise ValueError("Key of hash not found")
     if isinstance(value, Vec2d):
@@ -12,9 +14,11 @@ def aprox(value, key):
     else:
         return round(value / APROXITORS[key]) * APROXITORS[key]
 
-def scale(value, key):
-    SCALERS = {"rotation": 1*10000, "position": 1*1000000, "linear_velocity": 1*100, "angular_velocity": 1*1 }
-    SCALERS = {"rotation": 10*10000, "position": 10*1000000, "linear_velocity": 1*100, "angular_velocity": 100*1 }
+def scale(value, key, hard):
+    if hard:
+        SCALERS = {"rotation": 1*10000, "position": 1*1000000, "linear_velocity": 1*100, "angular_velocity": 1*1 }
+    else:
+        SCALERS = {"rotation": 10*10000, "position": 10*1000000, "linear_velocity": 1*100, "angular_velocity": 100*1 }
     if key not in SCALERS:
         raise ValueError("Key of hash not found")
     if isinstance(value, Vec2d):
@@ -31,7 +35,7 @@ def limitar(value, key):
     else:
         return max(min(value, LIMITER[key]), -LIMITER[key])
 
-def hash(objects):
+def hash(objects, hard = False):
     objects = copy.deepcopy(objects)
     # aprox
     hash = 0
@@ -39,11 +43,11 @@ def hash(objects):
         for key in object:
             if key == "name":
                 continue
-            object[key] = aprox(object[key], key)
+            object[key] = aprox(object[key], key, hard)
 
             object[key] = limitar(object[key], key)
 
-            object[key] = scale(object[key], key)
+            object[key] = scale(object[key], key, hard)
 
     
 

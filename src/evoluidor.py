@@ -4,7 +4,7 @@ import time
 from concurrent.futures import ProcessPoolExecutor
 
 class Evoluidor():
-    def __init__(self, n_salas = 3, save = None):
+    def __init__(self, n_salas = 3, save = None, n_mut = 1):
         os.makedirs("save/evolucao", exist_ok=True)
         self.ultimo_id = 0
         while True:
@@ -20,7 +20,7 @@ class Evoluidor():
         self.debug = False
         self.n_geracoes = 0
         self.vou_recriar = 3
-        self.n_mut = 10
+        self.n_mut = n_mut
         # self.n_mut = 1
         self.executor = ProcessPoolExecutor()
 
@@ -97,7 +97,7 @@ def submotor(sala, dt):
     return sala  # <- devolve a sala modificada
 
 if __name__ == "__main__":
-    evoluidor = Evoluidor(n_salas=10, save=None)
+    evoluidor = Evoluidor(n_salas=1, save=None)
 
     tick_time = 1.0/120.0
     while evoluidor.geracao < 100:
