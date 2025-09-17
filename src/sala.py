@@ -348,7 +348,7 @@ class Sala():
                 self.ultima_repetir = None
             todos_repetiram = True
             for i, obj in enumerate(self.get_current_objects()):
-                if len(self.pecas_repetiram[i]) >= 3:
+                if len(self.pecas_repetiram[i]) >= 4:
                     continue
                 objetos, hash_value = hash([obj], hard = True)
                 if i not in self.estados:
@@ -366,7 +366,7 @@ class Sala():
                 self.estados[i][hash_value].append(objetos)
             if todos_repetiram:
                 self.repetiu = True
-                self.pontos = self.pontuar(self.pecas_repetiram[self.ultima_repetir][2], self.pecas_repetiram[self.ultima_repetir][1], self.pecas_repetiram[self.ultima_repetir][0])
+                self.pontos = self.pontuar(self.pecas_repetiram[self.ultima_repetir][-1], self.pecas_repetiram[self.ultima_repetir][-2], self.pecas_repetiram[self.ultima_repetir][-3])*1000 + self.numero_estados_sem_repetir
                 print(f"Todas pecas repetiram pelo menos 3 vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.ultima_repetir}, estados: {self.pecas_repetiram[self.ultima_repetir]}")
 
                 

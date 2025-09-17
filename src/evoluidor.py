@@ -2,6 +2,7 @@ from sala import Sala
 import os
 import time
 from concurrent.futures import ProcessPoolExecutor
+import random
 
 class Evoluidor():
     def __init__(self, n_salas = 3, save = None, n_mut = 1):
@@ -48,6 +49,7 @@ class Evoluidor():
         novas_salas = [Sala(pais = [self.salas[0]], percents = [1], n_mut = 0, taxa_mut = 0)]
         for i in range(1, len(self.salas)):
             novas_salas.append(Sala(pais = [self.salas[0], self.salas[1], self.salas[2]], percents = [0.7, 0.2, 0.1], n_mut = self.n_mut, taxa_mut = 1))
+        random.shuffle(novas_salas)
         self.salas = novas_salas
         self.geracao += 1
 
@@ -97,7 +99,7 @@ def submotor(sala, dt):
     return sala  # <- devolve a sala modificada
 
 if __name__ == "__main__":
-    evoluidor = Evoluidor(n_salas=1, save=None)
+    evoluidor = Evoluidor(n_salas=5, save=None)
 
     tick_time = 1.0/120.0
     while evoluidor.geracao < 100:
