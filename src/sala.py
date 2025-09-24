@@ -164,6 +164,7 @@ class Sala():
             if isinstance(pais[0].objetos[i], pymunk.Segment):
                 continue
             id = pais[0].objetos[i].ID
+            self.ID = max(self.ID, id+1)
 
             # procurar no pai j o objeto com esse id
             k = 0
