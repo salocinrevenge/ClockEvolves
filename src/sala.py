@@ -96,10 +96,30 @@ class Sala():
         self.tipo_hash = tipo_hash
         self.pontos = 0
 
+    def criar_peca_aleatoria(self, tipo):
+        x = random.uniform(0+50, 800-50)
+        y = random.uniform(0+50, 800-50)
+        if tipo == "Pino":
+            if random.random() < 0.3:
+                parede = True
+            else:
+                parede = False
+            return {"tipo": "Pino", "parede": parede, "pos": (x,y), "ID": self.get_ID()}
+        angulo = random.uniform(0, 360)
+        escala = random.triangular(0.50, 1.50, 0.50)
+        categoria = random.randint(1, 2)
+        retornando = {"tipo": tipo, "pos": (x,y), "ID": self.get_ID(), "angulo": angulo, "escala": escala, "categoria": categoria}
+        if tipo == "Engrenagem":
+            orientation = random.triangular(-0.6, 0.6, 0)/2
+            orientation = round(orientation, 1)
+            retornando["orientation"] = orientation
+        return retornando
+
+
     def criar_aleatorio(self):
 
         need_create = {"engrenagem": 9, "ancora": 3, "viga": 6, "pino": 30}
-        # need_create = {"engrenagem": 0, "ancora": 0, "viga": 1, "pino": 0}
+        need_create = {"engrenagem": 0, "ancora": 0, "viga": 0, "pino": 0}
         for tipo, quantidade in need_create.items():
             for _ in range(quantidade):
                 x = random.uniform(0+50, 800-50)
@@ -140,17 +160,49 @@ class Sala():
                 if valor_prob <= 0:
                     break
                 j += 1
-            if hasattr(pais[j].objetos[i], "all_param"):
-                novos_parametros_objetos.append(pais[j].objetos[i].all_param.copy())
+
+            if isinstance(pais[0].objetos[i], pymunk.Segment):
+                continue
+            id = pais[0].objetos[i].ID
+
+            # procurar no pai j o objeto com esse id
+            k = 0
+            for _ in range(len(pais[j].objetos)):
+                if pais[j].objetos[k].ID == id:
+                    break
+                k+=1
+            else:
+                k = None
+
+            if k is None:
+                novos_parametros_objetos.append(pais[0].objetos[i].all_param.copy())
                 # define tipo como nome da classe
-                novos_parametros_objetos[-1]["tipo"] = pais[j].objetos[i].__class__.__name__
+                novos_parametros_objetos[-1]["tipo"] = pais[0].objetos[i].__class__.__name__
+            else:
+                novos_parametros_objetos.append(pais[j].objetos[k].all_param.copy())
+                # define tipo como nome da classe
+                novos_parametros_objetos[-1]["tipo"] = pais[j].objetos[k].__class__.__name__
 
         # gera um vetor de 0 a len(novo_objetos)
         indices = list(range(len(novos_parametros_objetos)))
         random.shuffle(indices)
         for i in range(n_mut):
             # print("mutando objeto: ", novos_parametros_objetos[indices[i]]["tipo"])
+            if i >= len(indices):
+                break
             self.mutar(novos_parametros_objetos[indices[i]], taxa_mut)
+
+        limite_max = 50
+        adicionar = randint(0, limite_max) < limite_max - len(novos_parametros_objetos)
+        remover = randint(0, limite_max) > limite_max - len(novos_parametros_objetos)
+
+        if remover:
+            aremover = random.choice(novos_parametros_objetos)
+            novos_parametros_objetos.remove(aremover)
+        if adicionar:
+            tipo = random.choice(("Engrenagem", "Ancora", "Viga", "Pino"))
+            novos_parametros_objetos.append(self.criar_peca_aleatoria(tipo))
+
         
         novos_objetos = []
         # recriar todos os objetos com base nos novos parametros e adicionar eles ao space atual
@@ -366,10 +418,13 @@ class Sala():
                 self.estados[i][hash_value].append(objetos)
             if todos_repetiram:
                 self.repetiu = True
-                self.pontos = self.pontuar(self.pecas_repetiram[self.ultima_repetir][-1], self.pecas_repetiram[self.ultima_repetir][-2], self.pecas_repetiram[self.ultima_repetir][-3])*1000 + self.numero_estados_sem_repetir
-                print(f"Todas pecas repetiram pelo menos 3 vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.ultima_repetir}, estados: {self.pecas_repetiram[self.ultima_repetir]}")
+                self.pontos = 0
+                if len(self.pecas_repetiram) > 0:
+                    self.pontos = self.pontuar(self.pecas_repetiram[self.ultima_repetir][-1], self.pecas_repetiram[self.ultima_repetir][-2], self.pecas_repetiram[self.ultima_repetir][-3])*1000 + self.numero_estados_sem_repetir
+                    print(f"Todas pecas repetiram pelo menos 3 vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.ultima_repetir}, estados: {self.pecas_repetiram[self.ultima_repetir]}")
+                else:
+                    print("nenhuma peca")
 
-                
         else:
             raise ValueError("Tipo de hash invalido")
 

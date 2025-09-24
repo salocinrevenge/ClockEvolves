@@ -102,5 +102,5 @@ if __name__ == "__main__":
     evoluidor = Evoluidor(n_salas=5, save=None)
 
     tick_time = 1.0/120.0
-    while evoluidor.geracao < 100:
+    while evoluidor.geracao < 1000000:
         evoluidor.tick(tick_time)
