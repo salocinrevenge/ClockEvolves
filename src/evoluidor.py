@@ -95,11 +95,10 @@ class Evoluidor():
 def submotor(sala, dt):
     while not sala.repetiu:
         sala.tick(dt)
-        time.sleep(0.01)
     return sala  # <- devolve a sala modificada
 
 if __name__ == "__main__":
-    evoluidor = Evoluidor(n_salas=100, save=None)
+    evoluidor = Evoluidor(n_salas=1, save=None)
 
     tick_time = 1.0/120.0
     while evoluidor.geracao < 1000000:

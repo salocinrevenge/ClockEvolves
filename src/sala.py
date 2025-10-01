@@ -100,7 +100,7 @@ class Sala():
             self.hash_mode = 1
         elif self.tipo_hash == "3 tempos":
             self.hash_mode = 2
-            self.numero_max_rep = 4
+            self.numero_max_rep = 10
         self.pontos = 0
 
     def criar_peca_aleatoria(self, tipo):
@@ -209,6 +209,7 @@ class Sala():
         npo_salvos = novos_parametros_objetos
         while True:
             self.space = pymunk.Space()
+            self.space.gravity = 0.0, 1000.0
             self.build_border()
             novos_parametros_objetos = deepcopy(npo_salvos)
 
@@ -481,12 +482,12 @@ class Sala():
                 todos_repetiram = False # ainda nao repeti o suficiente
                     
             if todos_repetiram:
-                self.repetiu = True
                 self.pontos = 0
+                self.repetiu = True
                 if len(self.pecas_repetiram) > 0:
                     # print("lista passada: ", self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]])
                     self.pontos = self.pontuar(self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]])*1000 + self.numero_estados_sem_repetir
-                    # print(f"Todas pecas repetiram pelo menos {self.numero_max_rep} vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.peca_que_levou_mais_estados[0]}, estados: {self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]]}")
+                    print(f"Todas pecas repetiram pelo menos {self.numero_max_rep} vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.peca_que_levou_mais_estados[0]}, estados: {self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]]}, pontuacao: {self.pontos}")
                 else:
                     pass
                     # print("nenhuma peca")
