@@ -32,7 +32,7 @@ class Poligono():
             shape.friction = friction
             shape.color = self.color
             # shape.color = (random.randint(50,255), random.randint(50,255), random.randint(50,255), 1)
-            shape.filter = pymunk.ShapeFilter(categories=categoria, mask= categoria)
+            shape.filter = pymunk.ShapeFilter(categories=categoria, mask= categoria, group=self.ID)
             self.shapes.append(shape)
         self.space = space
         if self.space:
@@ -41,7 +41,7 @@ class Poligono():
     def set_categoria(self, categoria, toggle = False):
         self.categoria = categoria
         for shape in self.shapes:
-            shape.filter = pymunk.ShapeFilter(categories=categoria, mask= categoria)
+            shape.filter = pymunk.ShapeFilter(categories=categoria, mask= categoria, group= self.ID)
         self.update_color_categoria(toggle=toggle)
         self.all_param["categoria"] = self.categoria
         self.all_param["color"] = self.color

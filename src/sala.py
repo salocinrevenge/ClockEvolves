@@ -9,7 +9,7 @@ from random import randint
 from poligono import Poligono
 from algebra import clamp
 import re
-from utils import hash
+from utils import hash, colidindo_com_outra
 import random
 import time
 
@@ -18,7 +18,7 @@ class Sala():
         """
         
         
-        tipo_hash = "local" / "global" / "repeat"
+        tipo_hash = "local" / "global" / "repeat" / "3 tempos"
         """
 
         self.ID = 0
@@ -94,6 +94,12 @@ class Sala():
         self.contador_debug = 0
         self.times = dict()
         self.tipo_hash = tipo_hash
+        self.hash_mode = 0
+        if self.tipo_hash == "local":
+            self.hash_mode = 1
+        elif self.tipo_hash == "3 tempos":
+            self.hash_mode = 2
+            self.numero_max_rep = 4
         self.pontos = 0
 
     def criar_peca_aleatoria(self, tipo):
@@ -119,9 +125,10 @@ class Sala():
     def criar_aleatorio(self):
 
         need_create = {"engrenagem": 9, "ancora": 3, "viga": 6, "pino": 30}
-        need_create = {"engrenagem": 0, "ancora": 0, "viga": 0, "pino": 0}
+        # need_create = {"engrenagem": 0, "ancora": 0, "viga": 0, "pino": 0}
         for tipo, quantidade in need_create.items():
-            for _ in range(quantidade):
+            criados = 0
+            while criados < quantidade:
                 x = random.uniform(0+50, 800-50)
                 y = random.uniform(0+50, 800-50)
                 if tipo == "pino":
@@ -134,14 +141,23 @@ class Sala():
                     rotacao = random.uniform(0, 360)
                     escala = random.triangular(0.50, 1.50, 0.50)
                     categoria = random.randint(1, 2)
+                    peca_final = None
                     if tipo == "engrenagem":
                         orientation = random.triangular(-0.6, 0.6, 0)/2
                         orientation = round(orientation, 1)
-                        self.objetos.append(Engrenagem(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, orientation=orientation, escala=escala, categoria=categoria))
+                        peca_final = Engrenagem(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, orientation=orientation, escala=escala, categoria=categoria)
                     elif tipo == "ancora":
-                        self.objetos.append(Ancora(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria))
+                        peca_final = Ancora(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria)
                     elif tipo == "viga":
-                        self.objetos.append(Viga(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria))
+                        peca_final = Viga(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria)
+                    if colidindo_com_outra(peca_final, self.space, {Pino}):
+                        print("recolocando")
+                        self.space.remove(peca_final.body, *peca_final.shapes)
+                        del peca_final
+                        continue
+                    self.objetos.append(peca_final)
+
+                criados+=1
 
     def cruzar(self, pais, percents = None, n_mut = None, taxa_mut = None):
         print("Cruzando salas")
@@ -310,13 +326,27 @@ class Sala():
         elif self.STATE == "edicao":
             pass
  
-    def pontuar(self, a, b, c): #  atual, anterior, preanterior
-        return max(b-c-abs(a-b-(b-c)), 0)
+    def pontuar(self, repetitions): #  atual, anterior, preanterior
+        assert len(repetitions) != 0, ValueError("Repetitions must have at least one element. Maybe you should increase numero_max_rep of class defined by hash type")
+        sem_pausas = [repetitions[0]]
+        for tempo in repetitions[1:]:
+            if tempo - sem_pausas[-1] == 1:
+                continue
+        
+        pontuacao = 0
+        for i in range(len(sem_pausas)):
+            if i > 1:
+                intervalo_atual = sem_pausas[i] - sem_pausas[i-1]
+            if i > 2:
+                intervalo_passado = sem_pausas[i-1] - sem_pausas[i-2]
+                pontuacao+= max(intervalo_passado - abs(intervalo_passado - intervalo_atual),0)
+
+        return pontuacao
 
     def atualiza_estados(self):
 
         if self.tipo_hash == "global":
-            objetos, hash_value = hash(self.get_current_objects())
+            objetos, hash_value = hash(self.get_current_objects(), mode = self.hash_mode)
 
             if hash_value not in self.estados:
                 self.estados[hash_value] = []
@@ -337,7 +367,7 @@ class Sala():
             for i, obj in enumerate(self.get_current_objects()):
                 if self.pecas_repetiram[i]:
                     continue
-                objetos, hash_value = hash([obj])
+                objetos, hash_value = hash([obj], self.hash_mode)
                 if i not in self.estados:
                     self.estados[i] = dict()
                 if hash_value not in self.estados[i]:
@@ -356,7 +386,7 @@ class Sala():
         elif self.tipo_hash == "repeat":
             # se ainda n tem pecas_repetiram criar atributo disso
             objetos_atualmente = self.get_current_objects()
-            objetos, hash_value_geral = hash(objetos_atualmente)
+            objetos, hash_value_geral = hash(objetos_atualmente, self.hash_mode)
 
             if hash_value_geral not in self.estados:
                 self.estados[hash_value_geral] = []
@@ -380,7 +410,7 @@ class Sala():
                 for i in range(len(objetos_atualmente)):
                     self.tempos_pecas.append([0,dict()])    # pontos, dicionario
             for i, obj in enumerate(objetos_atualmente):    # atualiza o estado atual de cada peça
-                objetos, hash_value = hash([obj])
+                objetos, hash_value = hash([obj], self.hash_mode)
                 if hash_value not in self.tempos_pecas[i][1]:
                     self.tempos_pecas[i][1][hash_value] = [[],[]] # objetos 
                 try: # procurar os objetos na lista, se não existir, adicionar
@@ -390,39 +420,51 @@ class Sala():
                     self.tempos_pecas[i][1][hash_value][1].append([0,0])
                     index = -1
                 self.tempos_pecas[i][1][hash_value][1][index].append(self.numero_estados_sem_repetir)
-                self.tempos_pecas[i][0] += self.pontuar(self.tempos_pecas[i][1][hash_value][1][index][-1], self.tempos_pecas[i][1][hash_value][1][index][-2], self.tempos_pecas[i][1][hash_value][1][index][-3])
+                self.tempos_pecas[i][0] += self.pontuar([self.tempos_pecas[i][1][hash_value][1][index][-1], self.tempos_pecas[i][1][hash_value][1][index][-2], self.tempos_pecas[i][1][hash_value][1][index][-3]])
         elif self.tipo_hash == "3 tempos":
             # se ainda n tem pecas_repetiram criar atributo disso
             if not hasattr(self, "pecas_repetiram"):
                 self.pecas_repetiram = []
+                self.mais_estados = []
+                self.peca_que_levou_mais_estados = [None, 0] # i peca, num estados
                 for i in range(len(self.get_current_objects())):
-                    self.pecas_repetiram.append([])
-            if not hasattr(self, "ultima_repetir"):
-                self.ultima_repetir = None
+                    self.pecas_repetiram.append(False)
+                    self.mais_estados.append([None, 0]) # hash, num rep
             todos_repetiram = True
             for i, obj in enumerate(self.get_current_objects()):
-                if len(self.pecas_repetiram[i]) >= 4:
+                if self.pecas_repetiram[i]:
+                    # print(f"opa, a peca {i} ja repetiu")
                     continue
-                objetos, hash_value = hash([obj], hard = True)
-                if i not in self.estados:
+                objetos, hash_value = hash([obj], mode = self.hash_mode)
+                if i not in self.estados.keys():
                     self.estados[i] = dict()
-                if hash_value not in self.estados[i]:
+                if hash_value not in self.estados[i].keys():
                     self.estados[i][hash_value] = []
 
-                if objetos in self.estados[i][hash_value]:
-                    # print("Estado ja existe: ", hash_value, "score da peca: ", self.numero_estados_sem_repetir, "tipo da peca: ", obj)
-                    self.pecas_repetiram[i].append(self.numero_estados_sem_repetir)
-                    self.ultima_repetir = i
-                    todos_repetiram = False
+                # print("Estado registrado: ", hash_value, "score da peca: ", self.numero_estados_sem_repetir, "tipo da peca: ", obj)
+                self.estados[i][hash_value].append(self.numero_estados_sem_repetir)
+                # print(len(self.estados[i][hash_value]), "é comparado com ",  self.mais_estados[i][1])
+                if len(self.estados[i][hash_value]) >= self.mais_estados[i][1]:
+                    self.mais_estados[i][1] = len(self.estados[i][hash_value])
+                    self.mais_estados[i][0] = hash_value
+
+                    if self.mais_estados[i][1] > self.peca_que_levou_mais_estados[1]:
+                        self.peca_que_levou_mais_estados[0] = i
+                        self.peca_que_levou_mais_estados[1] = self.mais_estados[i][1]
+
+                if len(self.estados[i][hash_value]) >= self.numero_max_rep:
+                    # print(len(self.estados[i][hash_value]), "é maior que",  self.numero_max_rep)
+                    self.pecas_repetiram[i] = True
                     continue
-                todos_repetiram = False
-                self.estados[i][hash_value].append(objetos)
+                todos_repetiram = False # ainda nao repeti o suficiente
+                    
             if todos_repetiram:
                 self.repetiu = True
                 self.pontos = 0
                 if len(self.pecas_repetiram) > 0:
-                    self.pontos = self.pontuar(self.pecas_repetiram[self.ultima_repetir][-1], self.pecas_repetiram[self.ultima_repetir][-2], self.pecas_repetiram[self.ultima_repetir][-3])*1000 + self.numero_estados_sem_repetir
-                    print(f"Todas pecas repetiram pelo menos 3 vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.ultima_repetir}, estados: {self.pecas_repetiram[self.ultima_repetir]}")
+                    print("lista passada: ", self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]])
+                    self.pontos = self.pontuar(self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]])*1000 + self.numero_estados_sem_repetir
+                    print(f"Todas pecas repetiram pelo menos {self.numero_max_rep} vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.peca_que_levou_mais_estados[0]}, estados: {self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]]}")
                 else:
                     print("nenhuma peca")
 
@@ -444,6 +486,8 @@ class Sala():
                             if self.peca_selecionada.joint is None:
                                 self.peca_selecionada = None
                         if self.peca_selecionada:
+                            if colidindo_com_outra(self.peca_selecionada, self.space, {Pino}):
+                                return
                             self.objetos.append(self.peca_selecionada)
                         self.peca_selecionada = None
                         self.parametros_editaveis = self.parametros_editaveis_padrao.copy()
@@ -553,7 +597,7 @@ class Sala():
                     return
 
                 if evento.key == pygame.K_c:
-                    print(hash(self.get_current_objects()))
+                    print(hash(self.get_current_objects()), self.hash_mode)
                     return
 
                 if evento.key == pygame.K_v:
@@ -638,12 +682,21 @@ class Sala():
             if "render" not in self.times:
                 self.times["render"] = 0
             tempo = time.perf_counter()
+        nao_seg = -1
         for objeto in self.objetos:
             if isinstance(objeto, pymunk.Segment):
                 pygame.draw.lines(screen, objeto.color, False, [objeto.a, objeto.b], 10)
             else:
                 objeto.render(screen)
-        # nova adicao
+                if type(objeto) != Pino:
+                    nao_seg+=1
+                    if self.debug and self.STATE == "simulacao":
+                        if self.tipo_hash == "3 tempos":
+                            if not self.pecas_repetiram[nao_seg]:
+                                # desenha um circulo verde no centro da peca
+                                pygame.draw.circle(screen, (0,0,0), (int(objeto.body.position.x), int(objeto.body.position.y)), 11)
+                                pygame.draw.circle(screen, (0,255,0), (int(objeto.body.position.x), int(objeto.body.position.y)), 10)
+
         if self.debug:
             try:
                 self.times["render"] += (time.perf_counter() - tempo)
@@ -659,6 +712,10 @@ class Sala():
                     font = pygame.font.Font(None, 12)
                     text = font.render(f"{key}: {(value / total_time):.2f}%", True, (255, 255, 255))
                     screen.blit(text, (800 - 100, 600 - 100 + i * 20))
+            font = pygame.font.Font(None, 20)
+            text = font.render(f"Estado: {self.numero_estados_sem_repetir}", True, (255, 255, 255))
+            screen.blit(text, (300, 10))
+            
 
         if self.STATE == "edicao":
             self.desenha_editor(screen)

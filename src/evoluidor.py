@@ -99,7 +99,7 @@ def submotor(sala, dt):
     return sala  # <- devolve a sala modificada
 
 if __name__ == "__main__":
-    evoluidor = Evoluidor(n_salas=5, save=None)
+    evoluidor = Evoluidor(n_salas=50, save=None)
 
     tick_time = 1.0/120.0
     while evoluidor.geracao < 1000000:
