@@ -152,7 +152,7 @@ class Sala():
                     elif tipo == "viga":
                         peca_final = Viga(pos=(x, y), ID=self.get_ID(), space=self.space, angulo=rotacao, escala=escala, categoria=categoria)
                     if colidindo_com_outra(peca_final, self.space, {Pino}):
-                        print("recolocando")
+                        # print("recolocando")
                         self.space.remove(peca_final.body, *peca_final.shapes)
                         del peca_final
                         continue
@@ -484,11 +484,12 @@ class Sala():
                 self.repetiu = True
                 self.pontos = 0
                 if len(self.pecas_repetiram) > 0:
-                    print("lista passada: ", self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]])
+                    # print("lista passada: ", self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]])
                     self.pontos = self.pontuar(self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]])*1000 + self.numero_estados_sem_repetir
-                    print(f"Todas pecas repetiram pelo menos {self.numero_max_rep} vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.peca_que_levou_mais_estados[0]}, estados: {self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]]}")
+                    # print(f"Todas pecas repetiram pelo menos {self.numero_max_rep} vezes, maior tempo: {self.numero_estados_sem_repetir}, peca: {self.peca_que_levou_mais_estados[0]}, estados: {self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]]}")
                 else:
-                    print("nenhuma peca")
+                    pass
+                    # print("nenhuma peca")
 
         else:
             raise ValueError("Tipo de hash invalido")
