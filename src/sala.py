@@ -12,6 +12,7 @@ import re
 from utils import hash, colidindo_com_outra
 import random
 import time
+from copy import deepcopy
 
 class Sala():
     def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "3 tempos") -> None:
@@ -124,8 +125,8 @@ class Sala():
 
     def criar_aleatorio(self):
 
-        need_create = {"engrenagem": 9, "ancora": 3, "viga": 6, "pino": 30}
-        # need_create = {"engrenagem": 0, "ancora": 0, "viga": 0, "pino": 0}
+        # need_create = {"engrenagem": 9, "ancora": 3, "viga": 6, "pino": 30}
+        need_create = {"engrenagem": 0, "ancora": 0, "viga": 0, "pino": 0}
         for tipo, quantidade in need_create.items():
             criados = 0
             while criados < quantidade:
@@ -185,6 +186,8 @@ class Sala():
             # procurar no pai j o objeto com esse id
             k = 0
             for _ in range(len(pais[j].objetos)):
+                if type(pais[j].objetos[k]) == pymunk.Segment:
+                    continue
                 if pais[j].objetos[k].ID == id:
                     break
                 k+=1
@@ -203,43 +206,62 @@ class Sala():
         # gera um vetor de 0 a len(novo_objetos)
         indices = list(range(len(novos_parametros_objetos)))
         random.shuffle(indices)
-        for i in range(n_mut):
-            # print("mutando objeto: ", novos_parametros_objetos[indices[i]]["tipo"])
-            if i >= len(indices):
-                break
-            self.mutar(novos_parametros_objetos[indices[i]], taxa_mut)
+        npo_salvos = novos_parametros_objetos
+        while True:
+            self.space = pymunk.Space()
+            self.build_border()
+            novos_parametros_objetos = deepcopy(npo_salvos)
 
-        limite_max = 50
-        adicionar = randint(0, limite_max) < limite_max - len(novos_parametros_objetos)
-        remover = randint(0, limite_max) > limite_max - len(novos_parametros_objetos)
+            for i in range(n_mut):
+                # print("mutando objeto: ", novos_parametros_objetos[indices[i]]["tipo"])
+                if i >= len(indices):
+                    break
+                self.mutar(novos_parametros_objetos[indices[i]], taxa_mut)
 
-        if remover:
-            aremover = random.choice(novos_parametros_objetos)
-            novos_parametros_objetos.remove(aremover)
-        if adicionar:
-            tipo = random.choice(("Engrenagem", "Ancora", "Viga", "Pino"))
-            novos_parametros_objetos.append(self.criar_peca_aleatoria(tipo))
+            limite_max = 50
+            adicionar = randint(0, limite_max) < limite_max - len(novos_parametros_objetos)
+            remover = randint(0, limite_max) > limite_max - len(novos_parametros_objetos)
 
-        
-        novos_objetos = []
-        # recriar todos os objetos com base nos novos parametros e adicionar eles ao space atual
-        for objeto in novos_parametros_objetos:
-            objeto["space"] = self.space
-            # cria o objeto com esses parametros e o adiciona ao space
-            if objeto["tipo"] == "Pino":
-                del objeto["tipo"]
-                novos_objetos.append(Pino(**objeto))
-            elif objeto["tipo"] == "Engrenagem":
-                # remove "tipo" de objeto
-                del objeto["tipo"]
-                novos_objetos.append(Engrenagem(**objeto))
-            elif objeto["tipo"] == "Ancora":
-                del objeto["tipo"]
-                novos_objetos.append(Ancora(**objeto))
-            elif objeto["tipo"] == "Viga":
-                del objeto["tipo"]
-                novos_objetos.append(Viga(**objeto))
+            if remover:
+                aremover = random.choice(novos_parametros_objetos)
+                novos_parametros_objetos.remove(aremover)
+            if adicionar:
+                tipo = random.choice(("Engrenagem", "Ancora", "Viga", "Pino"))
+                novos_parametros_objetos.append(self.criar_peca_aleatoria(tipo))
 
+            
+            novos_objetos = []
+            colidiu = False
+            # recriar todos os objetos com base nos novos parametros e adicionar eles ao space atual
+            for objeto in novos_parametros_objetos:
+                objeto["space"] = self.space
+                # cria o objeto com esses parametros e o adiciona ao space
+                if objeto["tipo"] == "Pino":
+                    del objeto["tipo"]
+                    novos_objetos.append(Pino(**objeto))
+                    continue
+                elif objeto["tipo"] == "Engrenagem":
+                    # remove "tipo" de objeto
+                    del objeto["tipo"]
+                    obj = Engrenagem(**objeto)
+                elif objeto["tipo"] == "Ancora":
+                    del objeto["tipo"]
+                    obj = Ancora(**objeto)
+                elif objeto["tipo"] == "Viga":
+                    del objeto["tipo"]
+                    obj = Viga(**objeto)
+                
+            
+                if colidindo_com_outra(obj, self.space, {Pino}):
+                    colidiu = True
+                    break
+                novos_objetos.append(obj)
+            if colidiu:
+                print("Deu ruim, vou refazer")
+                continue
+                
+
+            break
         self.objetos = novos_objetos
 
     def mutar(self, objeto, taxa):
