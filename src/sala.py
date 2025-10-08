@@ -100,7 +100,7 @@ class Sala():
             self.hash_mode = 1
         elif self.tipo_hash == "3 tempos":
             self.hash_mode = 2
-            self.numero_max_rep = 10
+            self.numero_max_rep = 6
         self.pontos = 0
 
     def criar_peca_aleatoria(self, tipo):
@@ -355,6 +355,8 @@ class Sala():
         for tempo in repetitions[1:]:
             if tempo - sem_pausas[-1] == 1:
                 continue
+            else:
+                sem_pausas.append(tempo)
         
         pontuacao = 0
         for i in range(len(sem_pausas)):
@@ -471,9 +473,15 @@ class Sala():
                     self.mais_estados[i][1] = len(self.estados[i][hash_value])
                     self.mais_estados[i][0] = hash_value
 
-                    if self.mais_estados[i][1] > self.peca_que_levou_mais_estados[1]:
-                        self.peca_que_levou_mais_estados[0] = i
-                        self.peca_que_levou_mais_estados[1] = self.mais_estados[i][1]
+
+                    # print("tenho: ", self.mais_estados[i][1])
+                    if self.mais_estados[i][1] >= self.peca_que_levou_mais_estados[1]:
+                        # if self.peca_que_levou_mais_estados[0] != None: 
+                        #     print("comparando ", self.estados[i][self.mais_estados[i][0]][-1], " com ", self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]][-1])
+                        if self.peca_que_levou_mais_estados[0] == None or self.estados[i][self.mais_estados[i][0]][-1] >= self.estados[self.peca_que_levou_mais_estados[0]][self.mais_estados[self.peca_que_levou_mais_estados[0]][0]][-1]:
+                            self.peca_que_levou_mais_estados[0] = i
+                            self.peca_que_levou_mais_estados[1] = self.mais_estados[i][1]
+                            # print("atualize os estados: ", self.peca_que_levou_mais_estados)
 
                 if len(self.estados[i][hash_value]) >= self.numero_max_rep:
                     # print(len(self.estados[i][hash_value]), "é maior que",  self.numero_max_rep)
