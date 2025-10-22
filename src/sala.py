@@ -15,7 +15,7 @@ import time
 from copy import deepcopy
 
 class Sala():
-    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "3 tempos") -> None:
+    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "patient_new") -> None:
         """
         
         
@@ -101,6 +101,9 @@ class Sala():
         elif self.tipo_hash == "3 tempos":
             self.hash_mode = 2
             self.numero_max_rep = 6
+        elif self.tipo_hash == "patient_new":
+            self.hash_mode = 2
+            print("tipo de hash: patient_new")
         self.pontos = 0
 
     def criar_peca_aleatoria(self, tipo):
@@ -499,6 +502,27 @@ class Sala():
                 else:
                     pass
                     # print("nenhuma peca")
+
+        elif self.tipo_hash == "patient_new":
+            if not hasattr(self, "estados_counter"):
+                self.estados_counter = 100
+                self.historico_estados = [{} for _ in range(len(self.get_current_objects()))]
+                self.pontos = 0
+            
+            for i, obj in enumerate(self.get_current_objects()):
+                objetos, hash_value = hash([obj], self.hash_mode)
+            
+                # Se é um novo estado para esta peça
+                if hash_value not in self.historico_estados[i]:
+                    self.historico_estados[i][hash_value] = []
+                    self.estados_counter = 100
+                else:
+                    self.historico_estados[i][hash_value].append(self.numero_estados_sem_repetir)
+                    self.pontos += 1
+
+            self.estados_counter -= 1
+            if self.estados_counter <= 0:
+                self.repetiu = True
 
         else:
             raise ValueError("Tipo de hash invalido")
