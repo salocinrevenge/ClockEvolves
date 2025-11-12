@@ -15,17 +15,23 @@ import time
 from copy import deepcopy
 
 class Sala():
-    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "patient_new") -> None:
+    def __init__(self, editor = False, carregar = None, pais = None, percents = None, n_mut = None, taxa_mut = None, aleatorio = False, tipo_hash = "colisions") -> None:
         """
         
         
-        tipo_hash = "local" / "global" / "repeat" / "3 tempos"
+        tipo_hash = "local" / "global" / "repeat" / "3 tempos" /  "patient_new" / "colisions"
         """
 
         self.ID = 0
 
         self.space = pymunk.Space()
         self.space.gravity = 0.0, 1000.0
+        # contador de colisões por par de IDs (chave: "min-max")
+        self.colisions_counter = dict()
+        # registrar handler padrão para capturar colisões assim que ocorrerem
+        # usamos um callback de begin para registrar o primeiro contato
+        handler = self.space.add_default_collision_handler()
+        handler.begin = self._on_collision_begin
         self.dim = (800, 800)
 
         self.parametros_editaveis_padrao = {"x": 100, "y": 100,"escala": 100, "largura": 10, "parede": False, "angulo": 0, "orientation": 0}
@@ -101,7 +107,7 @@ class Sala():
         elif self.tipo_hash == "3 tempos":
             self.hash_mode = 2
             self.numero_max_rep = 6
-        elif self.tipo_hash == "patient_new":
+        elif self.tipo_hash == "patient_new" or self.tipo_hash == "colisions":
             self.hash_mode = 2
             print("tipo de hash: patient_new")
         self.pontos = 0
@@ -321,6 +327,33 @@ class Sala():
             self.space.add(segment_shape)
 
 
+    def _on_collision_begin(self, arbiter, space, data):
+        """Callback chamado quando duas shapes iniciam contato.
+
+        Registra o par de IDs na tabela self.colisions_counter com o número
+        atual de estados self.numero_estados_sem_repetir.
+        """
+        try:
+            shape1, shape2 = arbiter.shapes
+        except Exception:
+            return True
+        # Ignorar colisões com o corpo estático (bordas)
+        id1 = getattr(shape1, 'ID', None) if type(shape1) != pymunk.Segment else None
+        id2 = getattr(shape2, 'ID', None) if not isinstance(shape2, pymunk.Segment) else None
+        # mostra a classe das shapes
+
+        if id1 is not None and id2 is not None:
+            key = f"{min(id1, id2)}-{max(id1, id2)}"
+            if key not in self.colisions_counter:
+                self.colisions_counter[key] = []
+            # armazenar o estado atual (tempo em estados da simulação)
+            self.colisions_counter[key].append(getattr(self, 'numero_estados_sem_repetir', 0))
+            print(f"Colisão entre ID {id1} e ID {id2} registrada no estado {self.numero_estados_sem_repetir}.")
+            print(f"Total de colisões para este par: {len(self.colisions_counter[key])}")
+
+        # retornar True para permitir que o motor processe a colisão normalmente
+        return True
+
     def tick(self, dt):
         if self.debug:
             if self.contador_debug == 0:
@@ -522,6 +555,53 @@ class Sala():
 
             self.estados_counter -= 1
             if self.estados_counter <= 0:
+                self.repetiu = True
+        elif self.tipo_hash == "colisions":
+            if not hasattr(self, "estados_counter"):
+                self.estados_counter = 100
+                self.historico_estados = [{} for _ in range(len(self.get_current_objects()))]
+                self.pontos = 0
+
+            if not hasattr(self, "colisions_counter"):
+                self.colisions_counter = dict()
+            
+            for i, obj in enumerate(self.get_current_objects()):
+                objetos, hash_value = hash([obj], self.hash_mode)
+            
+                # Se é um novo estado para esta peça
+                if hash_value not in self.historico_estados[i]:
+                    self.historico_estados[i][hash_value] = []
+                    self.estados_counter = 100
+                else:
+                    self.historico_estados[i][hash_value].append(self.numero_estados_sem_repetir)
+                    self.pontos += 1
+
+            self.estados_counter -= 1
+            if self.estados_counter <= 0:
+                # ao finalizar, some os resultados de pontuar() para cada estado de cada peça
+                # e também para cada par de colisões
+                # pontuar() espera listas não vazias, então pulamos listas vazias
+
+                # para cada peça
+                for hist in self.historico_estados:
+                    for times_list in hist.values():
+                        if times_list:
+                            try:
+                                self.pontos += self.pontuar(times_list)
+                            except AssertionError:
+                                pass
+
+
+                print("Pontuação parcial baseada em estados: ", self.pontos)
+                # para cada par de colisões
+                for times_list in self.colisions_counter.values():
+                    if times_list:
+                        try:
+                            self.pontos += self.pontuar(times_list)
+                        except AssertionError:
+                            pass
+
+                print("Pontuação final baseada em estados e colisões: ", self.pontos)
                 self.repetiu = True
 
         else:

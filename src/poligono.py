@@ -18,6 +18,7 @@ class Poligono():
         self.pontosColisao, self.pontos_externos = algebra.triangulariza(pontos)
         moment = pymunk.moment_for_poly(mass = massa, vertices=pontos)
         self.body = pymunk.Body(massa, moment)
+        self.body.ID = self.ID
         self.body.position = pos
         self.shapes = []
         self.color = (255,255,255,1)
@@ -28,6 +29,7 @@ class Poligono():
             self.color = color
         for triangulo in self.pontosColisao:
             shape = pymunk.Poly(self.body,vertices=triangulo.tolist())
+            shape.ID = self.ID
             shape.elasticity = elasticity
             shape.friction = friction
             shape.color = self.color
