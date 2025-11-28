@@ -45,6 +45,7 @@ class Sala():
             self.STATE = "simulacao"
         if editor:
             self.cria_editor()
+            self.STATE = "edicao"
         elif pais:
             self.cruzar(pais, percents, n_mut, taxa_mut)
             self.STATE = "simulacao"

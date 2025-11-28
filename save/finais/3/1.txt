@@ -1,0 +1,1 @@
+viga.Viga dict:{'pos': (60.78840229508111, 508.1139257664757), 'ID': 0, 'comprimento': 200, 'largura': 10, 'massa': 1, 'elasticity': 0.3, 'friction': 1.0, 'space': <pymunk.space.Space object at 0x7feae6177ee0>, 'color': None, 'angulo': 155.08528627430616, 'categoria': 2, 'escala': 0.8923183185019122}

@@ -1,0 +1,1 @@
+engrenagem.Engrenagem dict:{'ID': 0, 'pos': (150.26445083112023, 464.49057596020566), 'raio': 64, 'dentes': None, 'massa': 1, 'space': <pymunk.space.Space object at 0x7fd27ded7e20>, 'elasticity': 0.6, 'friction': 0.1, 'color': None, 'angulo': 186.26912901245103, 'categoria': 1, 'escala': 0.9623979114818586, 'tamanho_dente': 10, 'orientation': 0}
